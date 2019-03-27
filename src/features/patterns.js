@@ -1,13 +1,19 @@
 
 const lookPattern = /^look$/
 const lookAtPattern = /^look at/
+const goPattern = /^go/
 
-
-const isLookPattern = function (str) {
+exports.isLookPattern = function (str) {
   return lookPattern.test(str)
 }
 
-const isLookAtPattern = function (str) {
+exports.isLookAtPattern = function (str) {
   return lookAtPattern.test(str)
 }
 
+exports.isGoPattern = function (str) {
+  return goPattern.test(str)
+}
+
+exports.lookAtPattern = lookAtPattern
+exports.goPattern = goPattern
