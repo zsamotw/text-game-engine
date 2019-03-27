@@ -1,13 +1,19 @@
+const { lookAtPattern, goPattern } = require('./patterns.js')
 
-const getLookCommand = function () {
-  return { command: 'look', rest: '' }
+exports.getLookCommand = function () {
+  return { order: 'Look', rest: '' }
 }
 
-const getLookAtCommand = function (str) {
-  const rest = str.split(lookAtPattern)[1]
-  return { command: 'LookAt', rest: rest }
+exports.getLookAtCommand = function (str) {
+  const rest = str.split(lookAtPattern)[1].trim()
+  return { order: 'LookAt', rest: rest }
 }
 
-const getUndefindedCommand = function(str) {
-  return { command: 'Undefined', rest: '' }
+exports.getGoCommand = function (str) {
+  const rest = str.split(goPattern)[1].trim()
+  return { order: 'Go', rest: rest }
+}
+
+exports.getUndefinedCommand = function (str) {
+  return { order: 'Undefined', rest: '' }
 }
