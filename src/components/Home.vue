@@ -1,10 +1,12 @@
 var home = Vue.component('Home', {
+import Terminal from './Terminal.vue'
+import MessagesBox from './MessagesBox.vue'
 <template>
   <div class="contener">
     <div class="title">{{ title }}</div>
     <div class="game-field">
-      <MessagesBox></MessagesBox>
-      <Terminal></Terminal>
+      <MessagesBox v-bind:messages="messages"></MessagesBox>
+      <Terminal v-on:message="addMessage"></Terminal>
     </div>
   </div>
 </template>
@@ -20,11 +22,16 @@ export default {
   },
   data: function () {
     return {
-      title: 'Game'
-    }
+      title: 'Game',
+      messages: ['Welcome in G a m e']
+    };
   },
-  methods: {}
-}
+  methods: {
+    addMessage: function (message) {
+      this.messages.push(message)
+    }
+  }
+};
 </script>
 
 <style  scoped>
@@ -34,7 +41,10 @@ export default {
 }
 
 .title {
+  text-decoration: brown;
+  text-transform: uppercase;
 }
+
 .game-field {
   height: 100%;
   width: 100%;
