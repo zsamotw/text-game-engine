@@ -7,20 +7,20 @@ const {
 } = require('./lenses')
 
 const {
+  getCurrentStage,
   getDoorsForCurrentStage,
   getElemsForCurrentStage,
-  getPocket,
-  restCommandEq: restCommandEqName
+  getPocket
 } = require('./helperFunctions')
 
 const {
+  getElemEqualsToCommand,
   addElemToPocket,
   putElemToStage
 } = require('./domainFunctions')
 
 const getLookResult = function (state) {
-  const stage = R.find(
-    R.propEq('id', R.prop('currentStageId', state)))(R.prop('stages', state))
+  const stage = getCurrentStage(state)
 
   if (R.isNil(stage)) {
     return {
@@ -38,7 +38,7 @@ const getLookResult = function (state) {
 }
 
 const getLookAtResult = function (command, state) {
-  const elem = R.find(restCommandEqName(command), getElemsForCurrentStage(state))
+  const elem = getElemEqualsToCommand(command, state)
 
   if (R.isNil(elem)) {
     return {
@@ -71,7 +71,8 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = R.find(restCommandEqName(command), getElemsForCurrentStage(state))
+  const elem = getElemEqualsToCommand(command, state)
+
   if (R.isNil(elem)) {
     return {
       state: state,
@@ -90,7 +91,8 @@ const getTakeResult = function (command, state) {
 }
 
 const getPutResult = function (command, state) {
-  const elem = R.find(restCommandEqName(command), getPocket(state))
+  const elem = getElemEqualsToCommand(command, state)
+
   if (R.isNil(elem)) {
     return {
       state: state,

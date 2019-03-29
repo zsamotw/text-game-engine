@@ -4,8 +4,11 @@ const {
   getElemsForCurrentStage,
   getPocket,
   getStages,
-  mapStages
+  mapStages,
+  restCommandEq: restCommandEqName
 } = require('./helperFunctions')
+
+const getElemEqualsToCommand = (command, state) => R.find(restCommandEqName(command), getElemsForCurrentStage(state))
 
 const addElemToPocket = (elem, state) => {
   const elems = getElemsForCurrentStage(state)
@@ -50,6 +53,7 @@ const putElemToStage = (elem, state) => {
 }
 
 module.exports = {
+  getElemEqualsToCommand,
   addElemToPocket,
   putElemToStage
 }
