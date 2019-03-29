@@ -4,11 +4,11 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-  messages : ['firsr', 'last']
+  messages: ['firsr', 'last']
 }
 
 const getters = {
-  getMessages(state) {
+  getMessages (state) {
     return state.messages
   }
 }

@@ -7,13 +7,16 @@ const {
 } = require('./lenses')
 
 const {
+  getDoorsForCurrentStage,
   getElemsForCurrentStage,
   getPocket,
-  getDoorsForCurrentStage,
-  addElemToPocket,
-  putElemToStage,
   restCommandEq: restCommandEqName
 } = require('./helperFunctions')
+
+const {
+  addElemToPocket,
+  putElemToStage
+} = require('./domainFunctions')
 
 const getLookResult = function (state) {
   const stage = R.find(
