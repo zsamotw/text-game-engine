@@ -2,12 +2,18 @@ const R = require('ramda')
 const {
   isLookPattern,
   isLookAtPattern,
-  isGoPattern
+  isGoPattern,
+  isTakePattern,
+  isPutPattern,
+  isPocketPattern
 } = require('./patterns.js')
 const {
   getLookCommand,
   getLookAtCommand,
+  getTakeCommand,
   getGoCommand,
+  getPutCommand,
+  getPocketCommand,
   getUndefinedCommand
 } = require('./commands.js')
 
@@ -16,6 +22,9 @@ const stringMatcher =
     [isLookPattern, R.always(getLookCommand())],
     [isLookAtPattern, str => getLookAtCommand(str)],
     [isGoPattern, str => getGoCommand(str)],
+    [isTakePattern, str => getTakeCommand(str)],
+    [isPutPattern, str => getPutCommand(str)],
+    [isPocketPattern, str => getPocketCommand(str)],
     [R.T, str => getUndefinedCommand(str)]
   ])
 

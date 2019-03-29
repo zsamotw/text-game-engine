@@ -8,7 +8,10 @@ const {
 
 const {
   getElemsForCurrentStage,
+  getPocket,
   getDoorsForCurrentStage,
+  addElemToPocket,
+  putElemToStage,
   restCommandEq: restCommandEqName
 } = require('./helperFunctions')
 
@@ -16,33 +19,39 @@ const getLookResult = function (state) {
   const stage = R.find(
     R.propEq('id', R.prop('currentStageId', state)))(R.prop('stages', state))
 
-  if (R.isNil(stage)) return {
-    state: state,
-    message: 'Error. NO stage defined as current'
-  }
-  else return {
-    state: state,
-    message: R.prop('description', stage)
+  if (R.isNil(stage)) {
+    return {
+      state: state,
+      message: 'Error. NO stage defined as current'
+    }
+  } else {
+    const elemsNames = R.map((e) => e.name, getElemsForCurrentStage(state))
+    const description = R.prop('description', stage)
+    return {
+      state: state,
+      message: `Description: ${description} Elems: ${elemsNames}`
+    }
   }
 }
 
 const getLookAtResult = function (command, state) {
-  const elems = getElemsForCurrentStage(state)
-  const elem = R.find(restCommandEqName(command), elems)
+  const elem = R.find(restCommandEqName(command), getElemsForCurrentStage(state))
 
-  if (R.isNil(elem)) return {
-    state: state,
-    message: 'No such elem in this stage'
-  }
-  else return {
-    state: state,
-    message: R.prop('description', elem)
+  if (R.isNil(elem)) {
+    return {
+      state: state,
+      message: 'No such elem in this stage'
+    }
+  } else {
+    return {
+      state: state,
+      message: R.prop('description', elem)
+    }
   }
 }
 
 const getGoResult = function (command, state) {
-  const doors = getDoorsForCurrentStage(state)
-  const nextStageId = R.prop(R.prop('rest', command))(doors)
+  const nextStageId = R.prop(R.prop('rest', command))(getDoorsForCurrentStage(state))
   const nextStage = R.find(R.propEq('id', nextStageId), R.prop('stages', state))
 
   if (R.isNil(nextStageId)) {
@@ -58,6 +67,52 @@ const getGoResult = function (command, state) {
   }
 }
 
+const getTakeResult = function (command, state) {
+  const elem = R.find(restCommandEqName(command), getElemsForCurrentStage(state))
+  if (R.isNil(elem)) {
+    return {
+      state: state,
+      message: 'No such elem in this stage'
+    }
+  } else {
+    const {
+      newState,
+      message
+    } = addElemToPocket(elem, state)
+    return {
+      state: newState,
+      message: message
+    }
+  }
+}
+
+const getPutResult = function (command, state) {
+  const elem = R.find(restCommandEqName(command), getPocket(state))
+  if (R.isNil(elem)) {
+    return {
+      state: state,
+      message: 'No such elem in pocket'
+    }
+  } else {
+    const {
+      newState,
+      message
+    } = putElemToStage(elem, state)
+    return {
+      state: newState,
+      message: message
+    }
+  }
+}
+
+const getPocketResult = function (command, state) {
+  const elems = R.map((e) => e.name, getPocket(state))
+  return {
+    state: state,
+    message: `In your pocket: ${elems}`
+  }
+}
+
 const getUndefinedResult = function (command, state) {
   return {
     state: state,
@@ -69,6 +124,9 @@ const processCommand = R.cond([
   [(command, state) => R.equals(R.prop('order', command), 'Look'), (command, state) => getLookResult(state)],
   [(command, state) => R.equals(R.prop('order', command), 'LookAt'), (command, state) => getLookAtResult(command, state)],
   [(command, state) => R.equals(R.prop('order', command), 'Go'), (command, state) => getGoResult(command, state)],
+  [(command, state) => R.equals(R.prop('order', command), 'Take'), (command, state) => getTakeResult(command, state)],
+  [(command, state) => R.equals(R.prop('order', command), 'Put'), (command, state) => getPutResult(command, state)],
+  [(command, state) => R.equals(R.prop('order', command), 'Pocket'), (command, state) => getPocketResult(command, state)],
   [(command, state) => R.equals(R.prop('order', command), 'Undefined'), (command, state) => getUndefinedResult(command, state)],
   [R.T, (state, command) => 'Errorrrr!!!']
 ])
