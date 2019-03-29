@@ -71,7 +71,7 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, state)
+  const elem = getElemEqualsToCommand(command, getElemsForCurrentStage(state))
 
   if (R.isNil(elem)) {
     return {
@@ -91,7 +91,7 @@ const getTakeResult = function (command, state) {
 }
 
 const getPutResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, state)
+  const elem = getElemEqualsToCommand(command, getPocket(state))
 
   if (R.isNil(elem)) {
     return {

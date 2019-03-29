@@ -8,7 +8,7 @@ const {
   restCommandEq: restCommandEqName
 } = require('./helperFunctions')
 
-const getElemEqualsToCommand = (command, state) => R.find(restCommandEqName(command), getElemsForCurrentStage(state))
+const getElemEqualsToCommand = (command, elems) => R.find(restCommandEqName(command), elems)
 
 const addElemToPocket = (elem, state) => {
   const elems = getElemsForCurrentStage(state)
