@@ -2,7 +2,7 @@
 const state = {
   stages: [{
     name: 'kitchen.',
-    description: 'kitchen, kitchen, och kitchen... there is a knife on the table. And flower. and one door.',
+    description: 'kitchen, kitchen, och kitchen...Dirty table, two chairs  and one door.',
     id: 1,
     elems: [{
       name: 'knife',
@@ -20,7 +20,7 @@ const state = {
   },
   {
     name: 'living room',
-    description: 'Huge room with nothing. There is a newspaper on the sofa. There are one door to kichen. You can go there.',
+    description: 'Huge room with nothing. One sofa. There are one door to kichen. You can go there.',
     id: 2,
     elems: [{
       name: 'newspaper',
