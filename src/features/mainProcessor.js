@@ -1,21 +1,14 @@
-const R = require('ramda')
+// Result -> (State, Message)
 
-const {
-  stateCurrentStageIdLens
-} = require('./lenses')
-const Cp = require('./commandProcessor.js')
-const {
-  stringMatcher
-} = require('./stringProcessor.js')
-const {
-  addElemToPocket,
-  putElemToStage
-} = require('./domainFunctions')
+const R = require('ramda')
+const L = require('./lenses')
+const CP = require('./commandProcessor.js')
+const SP = require('./stringProcessor.js')
+const DF = require('./domainFunctions')
 
 const getResult = function (input, gameState) {
-  console.log(gameState);
-  const command = stringMatcher(input)
-  return Cp.processCommand(command, gameState)
+  const command = SP.stringMatcher(input)
+  return CP.processCommand(command, gameState)
 }
 
 const matchResult = function (result, state) {
@@ -28,7 +21,7 @@ const matchResult = function (result, state) {
     }
   } else if (R.equals(type, 'changeNextStageId')) {
     const nextStageId = R.prop('nextStageId', result)
-    const newState = R.set(stateCurrentStageIdLens, nextStageId, state)
+    const newState = R.set(L.stateCurrentStageIdLens, nextStageId, state)
     return {
       state: newState,
       message: message
@@ -38,7 +31,7 @@ const matchResult = function (result, state) {
     const {
       newState,
       message
-    } = addElemToPocket(elem, state)
+    } = DF.addElemToPocket(elem, state)
     return {
       state: newState,
       message: message
@@ -48,7 +41,7 @@ const matchResult = function (result, state) {
     const {
       newState,
       message
-    } = putElemToStage(elem, state)
+    } = DF.putElemToStage(elem, state)
     return {
       state: newState,
       message: message

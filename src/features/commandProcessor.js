@@ -1,20 +1,11 @@
-// processCommand :: Command -> State -> (State, message)
+// processCommand :: Command -> State -> Result
 
 const R = require('ramda')
-
-const {
-  getCurrentStage,
-  getDoorsForCurrentStage,
-  getElemsForCurrentStage,
-  getPocket
-} = require('./helperFunctions')
-
-const {
-  getElemEqualsToCommand
-} = require('./domainFunctions')
+const HF = require('./helperFunctions')
+const DF = require('./domainFunctions')
 
 const getLookResult = function (state) {
-  const stage = getCurrentStage(state)
+  const stage = HF.getCurrentStage(state)
 
   if (R.isNil(stage)) {
     return {
@@ -22,7 +13,7 @@ const getLookResult = function (state) {
       message: 'Error. NO stage defined as current'
     }
   } else {
-    const elemsNames = R.map((e) => e.name, getElemsForCurrentStage(state))
+    const elemsNames = R.map((e) => e.name, HF.getElemsForCurrentStage(state))
     const description = R.prop('description', stage)
     return {
       type: 'noChange',
@@ -32,7 +23,7 @@ const getLookResult = function (state) {
 }
 
 const getLookAtResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, getElemsForCurrentStage(state))
+  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
 
   if (R.isNil(elem)) {
     return {
@@ -48,7 +39,7 @@ const getLookAtResult = function (command, state) {
 }
 
 const getGoResult = function (command, state) {
-  const nextStageId = R.prop(R.prop('rest', command))(getDoorsForCurrentStage(state))
+  const nextStageId = R.prop(R.prop('rest', command))(HF.getDoorsForCurrentStage(state))
   const nextStage = R.find(R.propEq('id', nextStageId), R.prop('stages', state))
 
   if (R.isNil(nextStageId)) {
@@ -66,7 +57,7 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, getElemsForCurrentStage(state))
+  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
 
   if (R.isNil(elem)) {
     return {
@@ -82,7 +73,7 @@ const getTakeResult = function (command, state) {
 }
 
 const getPutResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, getPocket(state))
+  const elem = DF.getElemEqualsToCommand(command, HF.getPocket(state))
 
   if (R.isNil(elem)) {
     return {
@@ -98,7 +89,7 @@ const getPutResult = function (command, state) {
 }
 
 const getPocketResult = function (command, state) {
-  const elems = R.map((e) => e.name, getPocket(state))
+  const elems = R.map((e) => e.name, HF.getPocket(state))
   return {
     type: 'pocket',
     elems: elems,
@@ -109,7 +100,7 @@ const getPocketResult = function (command, state) {
 const getUndefinedResult = function (command, state) {
   return {
     type: 'undefinedCommand',
-    message: `ooops!! ${command} is wrong`
+    message: `ooops!! it is wrong command.`
   }
 }
 

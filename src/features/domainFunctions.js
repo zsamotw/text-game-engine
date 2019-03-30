@@ -1,22 +1,15 @@
 const R = require('ramda')
-const {
-  getCurrentStageId,
-  getElemsForCurrentStage,
-  getPocket,
-  getStages,
-  mapStages,
-  restCommandEq: restCommandEqName
-} = require('./helperFunctions')
+const HF = require('./helperFunctions')
 
-const getElemEqualsToCommand = (command, elems) => R.find(restCommandEqName(command), elems)
+const getElemEqualsToCommand = (command, elems) => R.find(HF.restCommandEqName(command), elems)
 
 const addElemToPocket = (elem, state) => {
-  const elems = getElemsForCurrentStage(state)
+  const elems = HF.getElemsForCurrentStage(state)
   const elemsWithoutElem = R.filter((e) => e.name !== elem.name, elems)
 
-  const newStages = mapStages(getStages(state), getCurrentStageId(state), 'elems', elemsWithoutElem)
+  const newStages = HF.mapStages(HF.getStages(state), HF.getCurrentStageId(state), 'elems', elemsWithoutElem)
 
-  const pocketWithElem = R.append(elem, getPocket(state))
+  const pocketWithElem = R.append(elem, HF.getPocket(state))
 
   const computeNewState = (state) => {
     const tempState = R.assoc('stages', newStages, state)
@@ -32,12 +25,12 @@ const addElemToPocket = (elem, state) => {
 }
 
 const putElemToStage = (elem, state) => {
-  const elems = getElemsForCurrentStage(state)
+  const elems = HF.getElemsForCurrentStage(state)
   const elemsWithElem = R.append(elem, elems)
 
-  const newStages = mapStages(getStages(state), getCurrentStageId(state), 'elems', elemsWithElem)
+  const newStages = HF.mapStages(HF.getStages(state), HF.getCurrentStageId(state), 'elems', elemsWithElem)
 
-  const pocketWithOutElem = R.filter((e) => e.name !== elem.name, getPocket(state))
+  const pocketWithOutElem = R.filter((e) => e.name !== elem.name, HF.getPocket(state))
 
   const computeNewState = (state) => {
     const tempState = R.assoc('stages', newStages, state)
@@ -53,7 +46,7 @@ const putElemToStage = (elem, state) => {
 }
 
 module.exports = {
-  getElemEqualsToCommand,
-  addElemToPocket,
-  putElemToStage
+  getElemEqualsToCommand: getElemEqualsToCommand,
+  addElemToPocket: addElemToPocket,
+  putElemToStage: putElemToStage
 }

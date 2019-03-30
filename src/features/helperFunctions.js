@@ -48,21 +48,13 @@ const mapStages = (stages, id, propName, obj) => {
 }
 
 module.exports = {
-  getStages,
-  getCurrentStageId,
-  getCurrentStage,
-  getPocket,
-  getRestOfCommand,
-  getElemsForCurrentStage,
-  getDoorsForCurrentStage,
-  mapStages,
-  restCommandEq: restCommandEqName
+  getStages: getStages,
+  getCurrentStageId: getCurrentStageId,
+  getCurrentStage: getCurrentStage,
+  getPocket: getPocket,
+  getRestOfCommand: getRestOfCommand,
+  getElemsForCurrentStage: getElemsForCurrentStage,
+  getDoorsForCurrentStage: getDoorsForCurrentStage,
+  mapStages: mapStages,
+  restCommandEqName: restCommandEqName
 }
-
-/// ///////////////
-// test in node =>
-/// //////////////
-const {
-  state
-} = require('../db/state')
-console.log(getElemsForCurrentStage(state))
