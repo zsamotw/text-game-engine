@@ -8,7 +8,7 @@ import { request } from 'http';
 </template>
 
 <script>
-import { process } from "../features/mainProcessor.js";
+import { getResult, matchResult } from "../features/mainProcessor.js";
 import { state } from "../db/state.js";
 
 export default {
@@ -21,7 +21,8 @@ export default {
   },
   methods: {
     addMessage() {
-      const { state, message } = process(this.command, this.gameState);
+      const result = getResult(this.command, this.gameState);
+      const { state, message } = matchResult(result, this.gameState)
       this.gameState = state;
       this.message = message;
       this.$emit('message', message);

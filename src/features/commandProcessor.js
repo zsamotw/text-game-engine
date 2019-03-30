@@ -3,10 +3,6 @@
 const R = require('ramda')
 
 const {
-  stateCurrentStageIdLens
-} = require('./lenses')
-
-const {
   getCurrentStage,
   getDoorsForCurrentStage,
   getElemsForCurrentStage,
@@ -14,9 +10,7 @@ const {
 } = require('./helperFunctions')
 
 const {
-  getElemEqualsToCommand,
-  addElemToPocket,
-  putElemToStage
+  getElemEqualsToCommand
 } = require('./domainFunctions')
 
 const getLookResult = function (state) {
@@ -24,30 +18,30 @@ const getLookResult = function (state) {
 
   if (R.isNil(stage)) {
     return {
-      state: state,
+      type: 'noChange',
       message: 'Error. NO stage defined as current'
     }
   } else {
     const elemsNames = R.map((e) => e.name, getElemsForCurrentStage(state))
     const description = R.prop('description', stage)
     return {
-      state: state,
+      type: 'noChange',
       message: `Description: ${description} Elems: ${elemsNames}`
     }
   }
 }
 
 const getLookAtResult = function (command, state) {
-  const elem = getElemEqualsToCommand(command, state)
+  const elem = getElemEqualsToCommand(command, getElemsForCurrentStage(state))
 
   if (R.isNil(elem)) {
     return {
-      state: state,
+      type: 'noChange',
       message: 'No such elem in this stage'
     }
   } else {
     return {
-      state: state,
+      type: 'noChange',
       message: R.prop('description', elem)
     }
   }
@@ -59,12 +53,13 @@ const getGoResult = function (command, state) {
 
   if (R.isNil(nextStageId)) {
     return {
-      state: state,
-      message: 'You can not go this direction'
+      type: 'noChange',
+      message: 'Oopps. Something wrong. You can not go this direction.'
     }
   } else {
     return {
-      state: R.set(stateCurrentStageIdLens, nextStageId, state),
+      type: 'changeNextStageId',
+      nextStageId: nextStageId,
       message: `You are in next stage: ${R.prop('name', nextStage)}`
     }
   }
@@ -75,17 +70,13 @@ const getTakeResult = function (command, state) {
 
   if (R.isNil(elem)) {
     return {
-      state: state,
+      type: 'noChange',
       message: 'No such elem in this stage'
     }
   } else {
-    const {
-      newState,
-      message
-    } = addElemToPocket(elem, state)
     return {
-      state: newState,
-      message: message
+      type: 'addElemToPocket',
+      elem: elem
     }
   }
 }
@@ -95,17 +86,13 @@ const getPutResult = function (command, state) {
 
   if (R.isNil(elem)) {
     return {
-      state: state,
+      type: 'noChange',
       message: 'No such elem in pocket'
     }
   } else {
-    const {
-      newState,
-      message
-    } = putElemToStage(elem, state)
     return {
-      state: newState,
-      message: message
+      type: 'putElemToStage',
+      elem: elem
     }
   }
 }
@@ -113,15 +100,16 @@ const getPutResult = function (command, state) {
 const getPocketResult = function (command, state) {
   const elems = R.map((e) => e.name, getPocket(state))
   return {
-    state: state,
+    type: 'pocket',
+    elems: elems,
     message: `In your pocket: ${elems}`
   }
 }
 
 const getUndefinedResult = function (command, state) {
   return {
-    state: state,
-    message: 'ooops wrong command'
+    type: 'undefinedCommand',
+    message: `ooops!! ${command} is wrong`
   }
 }
 
@@ -137,18 +125,5 @@ const processCommand = R.cond([
 ])
 
 module.exports = {
-  processCommand
+  processCommand: processCommand
 }
-
-/// ///////////////
-// test in node =>
-/// //////////////
-
-const {
-  state
-} = require('../db/state.js')
-const res1 = processCommand({
-  order: 'Look',
-  rest: ''
-}, state)
-console.log(res1)
