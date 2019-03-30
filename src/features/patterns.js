@@ -7,14 +7,23 @@ const takePattern = /^take/
 const putPattern = /^put/
 const pocketPattern = /^pocket$/
 
-exports.isLookPattern = (str) => R.test(lookPattern, str)
-exports.isLookAtPattern = (str) => R.test(lookAtPattern, str)
-exports.isGoPattern = (str) => R.test(goPattern, str)
-exports.isTakePattern = (str) => R.test(takePattern, str)
-exports.isPutPattern = (str) => R.test(putPattern, str)
-exports.isPocketPattern = (str) => R.test(pocketPattern, str)
+const isLookPattern = (str) => R.test(lookPattern, str)
+const isLookAtPattern = (str) => R.test(lookAtPattern, str)
+const isGoPattern = (str) => R.test(goPattern, str)
+const isTakePattern = (str) => R.test(takePattern, str)
+const isPutPattern = (str) => R.test(putPattern, str)
+const isPocketPattern = (str) => R.test(pocketPattern, str)
 
-exports.lookAtPattern = lookAtPattern
-exports.goPattern = goPattern
-exports.takePattern = takePattern
-exports.putPattern = putPattern
+module.exports = {
+  isLookAtPattern: isLookAtPattern,
+  isLookPattern: isLookPattern,
+  isGoPattern: isGoPattern,
+  isTakePattern: isTakePattern,
+  isPutPattern: isPutPattern,
+  isPocketPattern: isPocketPattern,
+  lookAtPattern: lookAtPattern,
+  goPattern: goPattern,
+  takePattern: takePattern,
+  putPattern: putPattern
+
+}
