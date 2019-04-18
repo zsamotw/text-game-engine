@@ -1,35 +1,20 @@
 const R = require('ramda')
 
-const getStages = (state) => {
-  return R.prop('stages', state)
-}
+const getStages = (state) => R.prop('stages', state)
 
-const getPocket = (state) => {
-  return R.prop('pocket', state)
-}
+const getPocket = (state) => R.prop('pocket', state)
 
-const getCurrentStageId = (state) => {
-  return R.prop('currentStageId', state)
-}
+const getCurrentStageId = (state) => R.prop('currentStageId', state)
 
-const getCurrentStage = (state) => {
-  return R.find(R.propEq('id', R.prop('currentStageId', state)), R.prop('stages', state))
-}
+const getCurrentStage = (state) => R.find(R.propEq('id', R.prop('currentStageId', state)), R.prop('stages', state))
 
-const getElemsForStage = (stage) => {
-  return R.prop('elems', stage)
-}
+const getElemsForStage = (stage) => R.prop('elems', stage)
 
-const getDoorsForStage = (stage) => {
-  return R.prop('doors', stage)
-}
-const getRestOfCommand = (command) => {
-  return R.prop('rest', command)
-}
+const getDoorsForStage = (stage) => R.prop('doors', stage)
 
-const nameEq = (name) => {
-  return R.propEq('name', name)
-}
+const getRestOfCommand = (command) => R.prop('rest', command)
+
+const nameEq = (name) => R.propEq('name', name)
 
 const getElemsForCurrentStage = R.compose(getElemsForStage, getCurrentStage)
 

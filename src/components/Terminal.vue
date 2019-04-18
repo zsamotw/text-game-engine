@@ -8,9 +8,9 @@ import { request } from 'http';
 </template>
 
 <script>
-import { clone } from 'ramda';
-import { getResult, matchResult } from '../features/mainProcessor.js';
-import { state } from '../db/state.js';
+import { clone } from "ramda";
+import { getResult, matchResult } from "../features/mainProcessor.js";
+import { state } from "../db/state.js";
 
 export default {
   data: function() {
@@ -22,13 +22,13 @@ export default {
   },
   methods: {
     addMessage() {
-      const result = getResult (this.command, clone(this.gameState));
-      const { state, message } = matchResult (result, clone(this.gameState))
+      const result = getResult(this.command, clone(this.gameState));
+      const { state, message } = matchResult(result, clone(this.gameState));
       this.gameState = state;
       this.message = message;
-      this.$emit ('message', message);
-      this.message = '';
-      this.command = '';
+      this.$emit("message", message);
+      this.message = "";
+      this.command = "";
     }
   }
 };
