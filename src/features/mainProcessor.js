@@ -11,7 +11,6 @@ const getResult = function (input, gameState) {
   const command = SP.stringMatcher(input)
   return CP.processCommand(command, gameState)
 }
-
 const matchResult = function (result, state) {
   console.log('in match result', result, state)
   const type = R.prop('type', result)
