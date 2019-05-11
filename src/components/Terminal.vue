@@ -3,7 +3,7 @@ import { request } from 'http';
 
 <template>
   <div>
-    <i class="fas fa-terminal"></i>
+    <i class="fas fa-terminal icon-terminal"></i>
     <input v-model="command" v-on:keyup.enter="addMessage" type="text" name="terminal" autofocus>
   </div>
 </template>
@@ -23,10 +23,7 @@ export default {
   },
   methods: {
     addMessage() {
-      console.log("in add message");
       const result = getResult(this.command, clone(this.gameState));
-      console.log(result);
-      console.log(matchResult);
       const { state, message } = matchResult(result, clone(this.gameState));
       this.gameState = state;
       this.message = message;
@@ -39,7 +36,12 @@ export default {
 </script>
 
 <style scoped>
+.icon-terminal {
+  font-size: 80%;
+}
+
 input {
+  font-size: 15px;
   border: none;
   margin-left: 5px;
   outline: none;
