@@ -1,8 +1,12 @@
 const R = require('ramda')
 
+const maxPocketSize = 2
+
 const getStages = (state) => R.prop('stages', state)
 
 const getPocket = (state) => R.prop('pocket', state)
+
+const isPlaceInPocket = (state) => getPocket(state).length < maxPocketSize
 
 const getCurrentStageId = (state) => R.prop('currentStageId', state)
 
@@ -37,6 +41,7 @@ module.exports = {
   getCurrentStageId: getCurrentStageId,
   getCurrentStage: getCurrentStage,
   getPocket: getPocket,
+  isPlaceInPocket,
   getRestOfCommand: getRestOfCommand,
   getElemsForCurrentStage: getElemsForCurrentStage,
   getDoorsForCurrentStage: getDoorsForCurrentStage,
