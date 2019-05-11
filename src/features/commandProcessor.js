@@ -57,17 +57,24 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
+  if (HF.isPlaceInPocket(state)) {
+    const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
 
-  if (R.isNil(elem)) {
-    return {
-      type: 'noChange',
-      message: 'No such elem in this stage'
+    if (R.isNil(elem)) {
+      return {
+        type: 'noChange',
+        message: 'No such elem in this stage'
+      }
+    } else {
+      return {
+        type: 'addElemToPocket',
+        elem: elem
+      }
     }
   } else {
     return {
-      type: 'addElemToPocket',
-      elem: elem
+      type: 'noChange',
+      message: 'No place in pocket'
     }
   }
 }
