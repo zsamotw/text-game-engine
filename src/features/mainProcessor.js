@@ -5,7 +5,6 @@ const L = require('./lenses')
 const CP = require('./commandProcessor.js')
 const SP = require('./stringProcessor.js')
 const DF = require('./domainFunctions')
-const { matches } = require('z')
 
 const getResult = function (input, gameState) {
   const command = SP.stringMatcher(input)
@@ -16,97 +15,49 @@ const matchResult = function (result, state) {
   const type = R.prop('type', result)
   const message = R.prop('message', result)
 
-  // return matches(type)(
-  //   (x = 'noChange') => {
-  //     console.log('in no change')
-  //     return {
-  //       state: state,
-  //       message: message
-  //     }
-  //   },
-  //   (x = 'changeNextStageId') => {
-  //     const nextStageId = R.prop('nextStageId', result)
-  //     const newState = R.set(L.stateCurrentStageIdLens, nextStageId, state)
-  //     return {
-  //       state: newState,
-  //       message: message
-  //     }
-  //   },
-  //   (x = 'addElemToPocket') => {
-  //     const elem = R.prop('elem', result)
-  //     const { newState, message } = DF.addElemToPocket(elem, state)
-  //     return {
-  //       state: newState,
-  //       message: message
-  //     }
-  //   },
-  //   (x = 'putElemToStage') => {
-  //     const elem = R.prop('elem', result)
-  //     const { newState, message } = DF.putElemToStage(elem, state)
-  //     return {
-  //       state: newState,
-  //       message: message
-  //     }
-  //   },
-  //   (x = 'pocket') => {
-  //     const message = R.prop('message', result)
-  //     return {
-  //       state: state,
-  //       message: message
-  //     }
-  //   },
-  //   (x = 'undefinedCommand') => {
-  //     const message = R.prop('message', result)
-  //     return {
-  //       state: state,
-  //       message: message
-  //     }
-  //   }
-  // )
-
-  if (R.equals(type, 'noChange')) {
-    return {
-      state: state,
-      message: message
+  switch (type) {
+    case 'noChange':
+      return {
+        state: state,
+        message: message
+      }
+    case 'changeNextStageId': {
+      const nextStageId = R.prop('nextStageId', result)
+      const newState = R.set(L.stateCurrentStageIdLens, nextStageId, state)
+      return {
+        state: newState,
+        message: message
+      }
     }
-  } else if (R.equals(type, 'changeNextStageId')) {
-    const nextStageId = R.prop('nextStageId', result)
-    const newState = R.set(L.stateCurrentStageIdLens, nextStageId, state)
-    return {
-      state: newState,
-      message: message
+    case 'addElemToPocket': {
+      const elem = R.prop('elem', result)
+      const { newState, message } = DF.addElemToPocket(elem, state)
+      return {
+        state: newState,
+        message: message
+      }
     }
-  } else if (R.equals(type, 'addElemToPocket')) {
-    const elem = R.prop('elem', result)
-    const {
-      newState,
-      message
-    } = DF.addElemToPocket(elem, state)
-    return {
-      state: newState,
-      message: message
+    case 'putElemToStage': {
+      const elem = R.prop('elem', result)
+      const { newState, message } = DF.putElemToStage(elem, state)
+      return {
+        state: newState,
+        message: message
+      }
     }
-  } else if (R.equals(type, 'putElemToStage')) {
-    const elem = R.prop('elem', result)
-    const {
-      newState,
-      message
-    } = DF.putElemToStage(elem, state)
-    return {
-      state: newState,
-      message: message
+    case 'pocket': {
+      const message = R.prop('message', result)
+      return {
+        state: state,
+        message: message
+      }
     }
-  } else if (R.equals(type, 'pocket')) {
-    const message = R.prop('message', result)
-    return {
-      state: state,
-      message: message
-    }
-  } else if (R.equals(type, 'undefinedCommand')) {
-    const message = R.prop('message', result)
-    return {
-      state: state,
-      message: message
+    case 'undefinedCommand': {
+      const message = R.prop('message', result)
+      return {
+        state: state,
+        message: message
+      }
     }
   }
 }
