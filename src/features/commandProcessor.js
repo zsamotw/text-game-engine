@@ -57,26 +57,44 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  if (HF.isPlaceInPocket(state)) {
-    const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
+  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
+  const isPlace = HF.isPlaceInPocket(state)
 
-    if (R.isNil(elem)) {
+  switch (true) {
+    case !isPlace: {
       return {
         type: 'noChange',
-        message: 'No such elem in this stage'
+        message: 'No place in pocket'
       }
-    } else {
+    }
+    case isPlace && !R.isNil(elem):
       return {
         type: 'addElemToPocket',
         elem: elem
       }
-    }
-  } else {
-    return {
-      type: 'noChange',
-      message: 'No place in pocket'
-    }
+    case isPlace && R.isNil(elem):
+      return {
+        type: 'noChange',
+        message: 'No such elem in this stage'
+      }
   }
+
+  // if (HF.isPlaceInPocket(state)) {
+  //   const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
+
+  //   if (R.isNil(elem)) {
+  //     return {
+  //       type: 'noChange',
+  //       message: 'No such elem in this stage'
+  //     }
+  //   } else {
+  //     return {
+  //       type: 'addElemToPocket',
+  //       elem: elem
+  //     }
+  //   }
+  // } else {
+  // }
 }
 
 const getPutResult = function (command, state) {
