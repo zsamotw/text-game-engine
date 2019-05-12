@@ -41,7 +41,7 @@ module.exports = {
   getCurrentStageId: getCurrentStageId,
   getCurrentStage: getCurrentStage,
   getPocket: getPocket,
-  isPlaceInPocket,
+  isPlaceInPocket: isPlaceInPocket,
   getRestOfCommand: getRestOfCommand,
   getElemsForCurrentStage: getElemsForCurrentStage,
   getDoorsForCurrentStage: getDoorsForCurrentStage,

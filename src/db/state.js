@@ -7,7 +7,8 @@ const state = {
     elems: [{
       name: 'knife',
       description: 'very sharp knife.'
-    }, {
+    },
+    {
       name: 'flower',
       description: 'green flower which needs water.'
     }],
@@ -25,6 +26,10 @@ const state = {
     elems: [{
       name: 'newspaper',
       description: 'It is Gazeta Wyborcza with articele about Tomasz is Great!!!'
+    },
+    {
+      name: 'hammer',
+      description: 'black hammer'
     }],
     doors: {
       north: undefined,

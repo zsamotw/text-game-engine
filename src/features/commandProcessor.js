@@ -10,7 +10,7 @@ const getLookResult = function (state) {
   if (R.isNil(stage)) {
     return {
       type: 'noChange',
-      message: 'Error. NO stage defined as current'
+      message: 'Error. No stage defined as current'
     }
   } else {
     const elemsNames = R.map((e) => e.name, HF.getElemsForCurrentStage(state))
@@ -51,7 +51,7 @@ const getGoResult = function (command, state) {
     return {
       type: 'changeNextStageId',
       nextStageId: nextStageId,
-      message: `You are in next stage: ${R.prop('name', nextStage)}`
+      message: `You are in  ${R.prop('name', nextStage)}`
     }
   }
 }
