@@ -78,23 +78,6 @@ const getTakeResult = function (command, state) {
         message: 'No such elem in this stage'
       }
   }
-
-  // if (HF.isPlaceInPocket(state)) {
-  //   const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
-
-  //   if (R.isNil(elem)) {
-  //     return {
-  //       type: 'noChange',
-  //       message: 'No such elem in this stage'
-  //     }
-  //   } else {
-  //     return {
-  //       type: 'addElemToPocket',
-  //       elem: elem
-  //     }
-  //   }
-  // } else {
-  // }
 }
 
 const getPutResult = function (command, state) {
