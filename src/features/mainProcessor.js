@@ -11,7 +11,6 @@ const getResult = function (input, gameState) {
   return CP.processCommand(command, gameState)
 }
 const matchResult = function (result, state) {
-  console.log('in match result', result, state)
   const type = R.prop('type', result)
   const message = R.prop('message', result)
 
