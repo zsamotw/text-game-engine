@@ -6,30 +6,41 @@ import MessagesBox from './MessagesBox.vue'
     <div class="title">{{ title }}</div>
     <div class="game-field">
       <MessagesBox v-bind:messages="messages"></MessagesBox>
-      <Terminal v-on:message="addMessage"></Terminal>
+      <Terminal v-on:command="processCommand"></Terminal>
     </div>
   </div>
 </template>
 
 <script>
-import Terminal from './Terminal'
-import MessagesBox from './MessagesBox'
+import { clone } from 'ramda';
+import { state } from '../db/state.js';
+import { getResult, matchResult } from '../features/mainProcessor.js';
+import { getSystemMessagesFromState } from '../features/systemMessageProcessor';
+import MessagesBox from './MessagesBox';
+import Terminal from './Terminal';
 
 export default {
   components: {
     Terminal,
     MessagesBox
   },
-  data: function () {
+  data: function() {
     return {
+      gameState: state,
       title: 'Game',
-      messages: ['Welcome in G a m e']
+      messages: ["Welcome in G a m e"]
     };
   },
   methods: {
-    addMessage: function (message) {
-      this.messages.push(message)
+    processCommand: function(command) {
+      const result = getResult(command, clone(this.gameState));
+      const { state, message } = matchResult(result, clone(this.gameState));
+      this.gameState = state;
+      this.messages.push(message);
     }
+  },
+  created: function() {
+    getSystemMessagesFromState(state).subscribe(m => this.messages.push(m));
   }
 };
 </script>
@@ -43,6 +54,7 @@ export default {
 .title {
   text-decoration: brown;
   text-transform: uppercase;
+  font-size: 200%;
 }
 
 .game-field {
