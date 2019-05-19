@@ -12,6 +12,8 @@ const getCurrentStageId = (state) => R.prop('currentStageId', state)
 
 const getCurrentStage = (state) => R.find(R.propEq('id', R.prop('currentStageId', state)), R.prop('stages', state))
 
+const getSystemMessages = (state) => R.prop('systemMessages', state)
+
 const getElemsForStage = (stage) => R.prop('elems', stage)
 
 const getDoorsForStage = (stage) => R.prop('doors', stage)
@@ -36,15 +38,19 @@ const mapStages = (stages, id, propName, obj) => {
   }, stages)
 }
 
+const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max))
+
 module.exports = {
   getStages: getStages,
   getCurrentStageId: getCurrentStageId,
   getCurrentStage: getCurrentStage,
+  getSystemMessages: getSystemMessages,
   getPocket: getPocket,
   isPlaceInPocket: isPlaceInPocket,
   getRestOfCommand: getRestOfCommand,
   getElemsForCurrentStage: getElemsForCurrentStage,
   getDoorsForCurrentStage: getDoorsForCurrentStage,
   mapStages: mapStages,
-  restCommandEqName: restCommandEqName
+  restCommandEqName: restCommandEqName,
+  getRandomInt: getRandomInt
 }

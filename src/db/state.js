@@ -40,7 +40,14 @@ const state = {
   }
   ],
   currentStageId: 1,
-  pocket: []
+  pocket: [],
+  systemMessages: [
+    'Hello, Hello',
+    'Go to the next room. Somebody could wait for you.',
+    'What time it is ?',
+    'Look at the clock.',
+    'It is last hour!'
+  ]
 }
 
 module.exports = {
