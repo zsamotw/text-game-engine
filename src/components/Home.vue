@@ -15,7 +15,7 @@ import MessagesBox from './MessagesBox.vue'
 import { clone } from 'ramda';
 import { state } from '../db/state.js';
 import { getResult, matchResult } from '../features/mainProcessor.js';
-import { getSystemMessagesFromState } from '../features/systemMessageProcessor';
+import { getSystemMessagesStream } from '../features/systemMessageProcessor';
 import { getActorsStream } from '../features/actorsProcessor';
 import MessagesBox from './MessagesBox';
 import Terminal from './Terminal';
@@ -41,7 +41,7 @@ export default {
     }
   },
   created: function() {
-    getSystemMessagesFromState(state).subscribe(m => this.messages.push(m));
+    getSystemMessagesStream(state).subscribe(m => this.messages.push(m));
     getActorsStream(this.gameState).subscribe(state => {
       this.gameState = state;
     })

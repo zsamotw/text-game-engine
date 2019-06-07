@@ -4,16 +4,16 @@ const R = require('ramda')
 const SF = require('../features/stateFunctions')
 const HF = require('../features/helperFunctions')
 
-const getSystemMessagesStream = messages =>
+const getSystemMessages = messages =>
   Rx.interval(10000).pipe(
     map(val => messages[HF.getRandomInt(messages.length)])
   )
 
-const getSystemMessagesFromState = R.compose(
-  getSystemMessagesStream,
+const getSystemMessagesStream = R.compose(
+  getSystemMessages,
   SF.getSystemMessages
 )
 
 module.exports = {
-  getSystemMessagesFromState
+  getSystemMessagesStream
 }
