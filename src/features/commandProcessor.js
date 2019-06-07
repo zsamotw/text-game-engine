@@ -1,29 +1,30 @@
 // processCommand :: Command -> State -> Result
 
 const R = require('ramda')
-const HF = require('./helperFunctions')
+const SF = require('./stateFunctions')
 const DF = require('./domainFunctions')
 
 const getLookResult = function (state) {
-  const stage = HF.getCurrentStage(state)
+  const stage = SF.getCurrentStage(state)
 
   if (R.isNil(stage)) {
     return {
       type: 'noChange',
-      message: 'Error. No stage defined as current'
+      message: 'Error. No stage defined as current. Contact with game owner.'
     }
   } else {
-    const elemsNames = R.map((e) => e.name, HF.getElemsForCurrentStage(state))
+    const elemsNames = SF.getElemsForCurrentStage(state).map(e => R.prop('name', e))
+    const actorNames = SF.getActorsForCurrentStage(state).map(a => R.prop('name', a))
     const description = R.prop('description', stage)
     return {
       type: 'noChange',
-      message: `Description: ${description} Elems: ${elemsNames}`
+      message: `${description} Elems: ${elemsNames} Actors: ${actorNames}`
     }
   }
 }
 
 const getLookAtResult = function (command, state) {
-  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
+  const elem = DF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
 
   if (R.isNil(elem)) {
     return {
@@ -39,7 +40,7 @@ const getLookAtResult = function (command, state) {
 }
 
 const getGoResult = function (command, state) {
-  const nextStageId = R.prop(R.prop('rest', command))(HF.getDoorsForCurrentStage(state))
+  const nextStageId = R.prop(R.prop('rest', command))(SF.getDoorsForCurrentStage(state))
   const nextStage = R.find(R.propEq('id', nextStageId), R.prop('stages', state))
 
   if (R.isNil(nextStageId)) {
@@ -57,8 +58,8 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = DF.getElemEqualsToCommand(command, HF.getElemsForCurrentStage(state))
-  const isPlace = HF.isPlaceInPocket(state)
+  const elem = DF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
+  const isPlace = SF.isPlaceInPocket(state)
 
   switch (true) {
     case !isPlace: {
@@ -81,7 +82,7 @@ const getTakeResult = function (command, state) {
 }
 
 const getPutResult = function (command, state) {
-  const elem = DF.getElemEqualsToCommand(command, HF.getPocket(state))
+  const elem = DF.getElemEqualsToCommand(command, SF.getPocket(state))
 
   if (R.isNil(elem)) {
     return {
@@ -97,7 +98,7 @@ const getPutResult = function (command, state) {
 }
 
 const getPocketResult = function (command, state) {
-  const elems = R.map((e) => e.name, HF.getPocket(state))
+  const elems = R.map((e) => e.name, SF.getPocket(state))
   return {
     type: 'pocket',
     elems: elems,
@@ -124,5 +125,5 @@ const processCommand = R.cond([
 ])
 
 module.exports = {
-  processCommand: processCommand
+  processCommand
 }

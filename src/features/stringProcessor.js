@@ -14,5 +14,5 @@ const stringMatcher =
   ])
 
 module.exports = {
-  stringMatcher: stringMatcher
+  stringMatcher
 }

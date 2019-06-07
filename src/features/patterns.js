@@ -15,15 +15,15 @@ const isPutPattern = (str) => R.test(putPattern, str)
 const isPocketPattern = (str) => R.test(pocketPattern, str)
 
 module.exports = {
-  isLookAtPattern: isLookAtPattern,
-  isLookPattern: isLookPattern,
-  isGoPattern: isGoPattern,
-  isTakePattern: isTakePattern,
-  isPutPattern: isPutPattern,
-  isPocketPattern: isPocketPattern,
-  lookAtPattern: lookAtPattern,
-  goPattern: goPattern,
-  takePattern: takePattern,
-  putPattern: putPattern
+  isLookAtPattern,
+  isLookPattern,
+  isGoPattern,
+  isTakePattern,
+  isPutPattern,
+  isPocketPattern,
+  lookAtPattern,
+  goPattern,
+  takePattern,
+  putPattern
 
 }
