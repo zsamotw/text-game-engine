@@ -1,5 +1,3 @@
-// const { State } = require('../models/state.js')
-
 const state = {
   stages: [
     {
