@@ -53,14 +53,14 @@ const state = {
       name: 'tomasz',
       description: 'It is tomasz',
       interval: 3000,
-      stage: 1
+      stageId: 1
     },
     {
       id: 2,
       name: 'antonina',
       description: 'It is antonina',
       interval: 3000,
-      stage: 2
+      stageId: 2
     }
   ],
   systemMessages: [

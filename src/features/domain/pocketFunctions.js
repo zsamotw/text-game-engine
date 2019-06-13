@@ -1,21 +1,25 @@
 const R = require('ramda')
-const SF = require('./stateFunctions')
+const SF = require('./stagesFunctions')
+const GH = require('../helpers/genericHelper')
 
-const getElemEqualsToCommand = (command, elems) =>
-  R.find(SF.restCommandEqName(command), elems)
+const maxPocketSize = 2
+
+const getPocket = state => R.prop('pocket', state)
+
+const isPlaceInPocket = state => getPocket(state).length < maxPocketSize
 
 const addElemToPocket = (elem, state) => {
   const elems = SF.getElemsForCurrentStage(state)
   const elemsWithoutElem = R.filter(e => e.name !== elem.name, elems)
 
-  const newStages = SF.changePropertyOfIterable(
+  const newStages = GH.changePropertyOfIterable(
     SF.getStages(state),
     SF.getCurrentStageId(state),
     'elems',
     elemsWithoutElem
   )
 
-  const pocketWithElem = R.append(elem, SF.getPocket(state))
+  const pocketWithElem = R.append(elem, getPocket(state))
 
   const computeNewState = state => {
     const tempState = R.assoc('stages', newStages, state)
@@ -34,7 +38,7 @@ const putElemToStage = (elem, state) => {
   const elems = SF.getElemsForCurrentStage(state)
   const elemsWithElem = R.append(elem, elems)
 
-  const newStages = SF.changePropertyOfIterable(
+  const newStages = GH.changePropertyOfIterable(
     SF.getStages(state),
     SF.getCurrentStageId(state),
     'elems',
@@ -43,7 +47,7 @@ const putElemToStage = (elem, state) => {
 
   const pocketWithOutElem = R.filter(
     e => e.name !== elem.name,
-    SF.getPocket(state)
+    getPocket(state)
   )
 
   const computeNewState = state => {
@@ -60,7 +64,10 @@ const putElemToStage = (elem, state) => {
 }
 
 module.exports = {
-  getElemEqualsToCommand,
+  // getElemEqualsToCommand,
+  getPocket,
+  isPlaceInPocket,
+  maxPocketSize,
   addElemToPocket,
   putElemToStage
 }

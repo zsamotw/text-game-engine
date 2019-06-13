@@ -1,17 +1,17 @@
-const Rx = require('rxjs')
 const { map } = require('rxjs/operators')
+const GH = require('../helpers/genericHelper.js')
+const MF = require('../domain/messagesFunctions')
 const R = require('ramda')
-const SF = require('../features/stateFunctions')
-const HF = require('../features/helperFunctions')
+const Rx = require('rxjs')
 
 const getSystemMessages = messages =>
   Rx.interval(10000).pipe(
-    map(val => messages[HF.getRandomInt(messages.length)])
+    map(val => messages[GH.getRandomInt(messages.length)])
   )
 
 const getSystemMessagesStream = R.compose(
   getSystemMessages,
-  SF.getSystemMessages
+  MF.getSystemMessages
 )
 
 module.exports = {

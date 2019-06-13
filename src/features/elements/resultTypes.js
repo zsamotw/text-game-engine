@@ -6,11 +6,10 @@ const pocket = 'pocket'
 const undefinedCommand = 'undefinedCommand'
 
 module.exports = {
-  noStateChange
+  noStateChange,
   changeNextStageId,
   addElemToPocket,
   putElemToStage,
   pocket,
   undefinedCommand
-
 }

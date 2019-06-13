@@ -14,9 +14,9 @@ import MessagesBox from './MessagesBox.vue'
 <script>
 import { clone } from 'ramda';
 import { state } from '../db/state.js';
-import { getResult, matchResult } from '../features/mainProcessor.js';
-import { getSystemMessagesStream } from '../features/systemMessageProcessor';
-import { getActorsStream } from '../features/actorsProcessor';
+import { getResult, getNewStateAndMessage } from '../features/processors/resultProcessor';
+import { getSystemMessagesStream } from '../features/processors/systemMessagesProcessor';
+import { getActorsStream } from '../features/processors/actorsProcessor';
 import MessagesBox from './MessagesBox';
 import Terminal from './Terminal';
 
@@ -34,17 +34,18 @@ export default {
   },
   methods: {
     processCommand: function(command) {
+      console.log('in procees command in home')
       const result = getResult(command, clone(this.gameState));
-      const { state, message } = matchResult(result, clone(this.gameState));
+      console.log('after result')
+      const { state, message } = getNewStateAndMessage(result, clone(this.gameState));
+      console.log(message)
       this.gameState = state;
       this.messages.push(message);
     }
   },
   created: function() {
-    getSystemMessagesStream(state).subscribe(m => this.messages.push(m));
-    getActorsStream(this.gameState).subscribe(state => {
-      this.gameState = state;
-    })
+    //getSystemMessagesStream(state).subscribe(m => this.messages.push(m));
+    //getActorsStream(this.gameState).subscribe(state => this.gameState = state);
   }
 };
 </script>

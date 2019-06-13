@@ -1,16 +1,18 @@
-// Result -> (State, Message)
-
 const R = require('ramda')
-const L = require('./lenses')
-const CP = require('./commandProcessor.js')
-const SP = require('./stringProcessor.js')
-const DF = require('./domainFunctions')
+const L = require('../elements/lenses')
+const CP = require('./commandsProcessor')
+const SMH = require('../helpers/stringMatcherHelper')
+const PF = require('../domain/pocketFunctions')
 
+// getResult :: String -> State -> Result
 const getResult = function (input, gameState) {
-  const command = SP.stringMatcher(input)
-  return CP.processCommand(command, gameState)
+  console.log('in get new state and message')
+  const command = SMH.stringMatcher(input)
+  return CP.processCommandAndGetResult(command, gameState)
 }
-const matchResult = function (result, state) {
+
+// getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
+const getNewStateAndMessage = function (result, state) {
   const type = R.prop('type', result)
   const message = R.prop('message', result)
 
@@ -30,7 +32,7 @@ const matchResult = function (result, state) {
     }
     case 'addElemToPocket': {
       const elem = R.prop('elem', result)
-      const { newState, message } = DF.addElemToPocket(elem, state)
+      const { newState, message } = PF.addElemToPocket(elem, state)
       return {
         state: newState,
         message: message
@@ -38,7 +40,7 @@ const matchResult = function (result, state) {
     }
     case 'putElemToStage': {
       const elem = R.prop('elem', result)
-      const { newState, message } = DF.putElemToStage(elem, state)
+      const { newState, message } = PF.putElemToStage(elem, state)
       return {
         state: newState,
         message: message
@@ -63,5 +65,5 @@ const matchResult = function (result, state) {
 
 module.exports = {
   getResult,
-  matchResult
+  getNewStateAndMessage
 }
