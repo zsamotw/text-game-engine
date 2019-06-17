@@ -1,5 +1,5 @@
 const R = require('ramda')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 
 const getActorsForCurrentStage = state =>
   R.filter(

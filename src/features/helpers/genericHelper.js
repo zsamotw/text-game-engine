@@ -1,5 +1,5 @@
 const R = require('ramda')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 
 const getRandomInt = max => Math.floor(Math.random() * Math.floor(max))
 

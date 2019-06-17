@@ -1,7 +1,7 @@
 const R = require('ramda')
 const GH = require('../helpers/genericHelper')
 const SF = require('./stagesFunctions')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 
 const getDoors = stage => R.view(L.doorsLens, stage)
 

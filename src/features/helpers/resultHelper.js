@@ -5,7 +5,7 @@ const CF = require('../domain/commandFunctions')
 const DF = require('../domain/doorFunctions')
 const AF = require('../domain/actorsFunctions')
 const GH = require('../helpers/genericHelper')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 
 const getLookResult = function (state) {
   const stage = SF.getCurrentStage(state)

@@ -1,7 +1,7 @@
 const R = require('ramda')
 const SF = require('./stagesFunctions')
 const GH = require('../helpers/genericHelper')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 
 const maxPocketSize = 2
 
