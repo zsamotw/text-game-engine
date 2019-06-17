@@ -10,7 +10,7 @@ const getCurrentStageId = R.view(L.currentStageIdLens)
 
 const getCurrentStage = state =>
   R.find(
-    R.propEq('id', R.view(L.currentStageIdLens, state)),
+    R.propEq('id', getCurrentStageId(state)),
     R.view(L.stagesLens, state)
   )
 
