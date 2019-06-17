@@ -15,18 +15,21 @@ const getLookResult = function (state) {
       message: 'Error. No stage defined as current. Contact with game owner.'
     }
   } else {
-    const elemsNames = SF.getElemsForCurrentStage(state).map(e => R.prop('name', e))
-    const actorNames = AF.getActorsForCurrentStage(state).map(a => R.prop('name', a))
-    const description = R.view(L.descriptionLens, stage)
+    const elemsNamesForCurrentStage = R.map(R.pluck('name'), SF.getElemsForCurrentStage)
+    const actorNamesForCurrentStage = R.map(R.pluck('name'), AF.getActorsForCurrentStage)
+    const descriptionOf = R.view(L.descriptionLens)
     return {
       type: 'noChange',
-      message: `${description} Elems: ${elemsNames} Actors: ${actorNames}`
+      message: `${descriptionOf(stage)}
+                Elems: ${elemsNamesForCurrentStage(state)}
+                Actors: ${actorNamesForCurrentStage(state)}`
     }
   }
 }
 
 const getLookAtResult = function (command, state) {
   const elem = CF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
+  const descriptionOf = R.view(L.descriptionLens)
 
   if (R.isNil(elem)) {
     return {
@@ -36,14 +39,19 @@ const getLookAtResult = function (command, state) {
   } else {
     return {
       type: 'noChange',
-      message: R.view(L.elemDescription, elem)
+      message: descriptionOf(elem)
     }
   }
 }
 
 const getGoResult = function (command, state) {
-  const nextStageId = R.prop(R.prop('rest', command))(DF.getDoorsForCurrentStage(state))
-  const nextStage = R.find(R.propEq('id', nextStageId), R.prop('stages', state))
+  const directionFrom = R.view(L.restLens)
+  const get = R.prop
+  const andFindDoorsInCurrenStage = DF.getDoorsForCurrentStage
+
+  const nextStageId = get(directionFrom(command))(andFindDoorsInCurrenStage(state))
+  const nextStage = R.find(R.propEq('id', nextStageId), R.view(L.stagesLens))
+  const nextStageName = R.compose(R.view(L.nameLens, nextStage))
 
   if (R.isNil(nextStageId)) {
     return {
@@ -54,7 +62,7 @@ const getGoResult = function (command, state) {
     return {
       type: 'changeNextStageId',
       nextStageId: nextStageId,
-      message: `You are in  ${R.prop('name', nextStage)}`
+      message: `You are in  ${nextStageName(state)}`
     }
   }
 }
@@ -100,11 +108,13 @@ const getPutResult = function (command, state) {
 }
 
 const getPocketResult = function (command, state) {
-  const elems = R.map((e) => e.name, PF.getPocket(state))
+  const getElemsFrom = R.map(R.pluck('name'))
+  const elemsInPocket = getElemsFrom(PF.getPocket(state))
+
   return {
     type: 'pocket',
-    elems: elems,
-    message: `In your pocket: ${elems}`
+    elems: elemsInPocket,
+    message: elemsInPocket.length > 0 ? `In your pocket: ${elemsInPocket}` : 'You pocket is empty'
   }
 }
 
