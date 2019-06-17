@@ -50,7 +50,11 @@ const getGoResult = function (command, state) {
   const andFindDoorsInCurrenStage = DF.getDoorsForCurrentStage
 
   const nextStageId = get(directionFrom(command))(andFindDoorsInCurrenStage(state))
-  const nextStage = R.find(R.propEq('id', nextStageId), R.view(L.stagesLens))
+  const nextStage =
+    R.find(
+      R.propEq('id', nextStageId),
+      R.view(L.stagesLens))
+
   const nextStageName = R.compose(R.view(L.nameLens, nextStage))
 
   if (R.isNil(nextStageId)) {
@@ -68,7 +72,10 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const elem = CF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
+  const getElemsEqualsTo = CF.getElemEqualsToCommand
+  const FromCurrentStage = SF.getElemsForCurrentStage(state)
+
+  const elem = getElemsEqualsTo(command)(FromCurrentStage)
   const isPlace = PF.isPlaceInPocket(state)
 
   switch (true) {
