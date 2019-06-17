@@ -1,12 +1,12 @@
 const R = require('ramda')
 const L = require('../elements/lenses')
 
-const getStages = state => R.view(L.stagesLens, state)
+const getStages = R.view(L.stagesLens)
 
-const getStage = (stageId, state) =>
-  R.find(R.propEq('id', stageId), getStages(state))
+const getStage = stageId =>
+  R.find(R.propEq('id', stageId), getStages)
 
-const getCurrentStageId = state => R.view(L.currentStageIdLens, state)
+const getCurrentStageId = R.view(L.currentStageIdLens)
 
 const getCurrentStage = state =>
   R.find(
@@ -14,7 +14,7 @@ const getCurrentStage = state =>
     R.view(L.stagesLens, state)
   )
 
-const getElemsForStage = stage => R.view(L.elemsLens, stage)
+const getElemsForStage = R.view(L.elemsLens)
 
 const getElemsForCurrentStage = R.compose(
   getElemsForStage,
