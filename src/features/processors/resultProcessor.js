@@ -6,7 +6,6 @@ const PF = require('../domain/pocketFunctions')
 
 // getResult :: String -> State -> Result
 const getResult = function (input, gameState) {
-  console.log('in get new state and message')
   const command = SMH.stringMatcher(input)
   return CP.processCommandAndGetResult(command, gameState)
 }
@@ -24,7 +23,7 @@ const getNewStateAndMessage = function (result, state) {
       }
     case 'changeNextStageId': {
       const nextStageId = R.prop('nextStageId', result)
-      const newState = R.set(L.stateCurrentStageIdLens, nextStageId, state)
+      const newState = R.set(L.currentStageIdLens, nextStageId, state)
       return {
         state: newState,
         message: message

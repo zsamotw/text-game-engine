@@ -1,8 +1,9 @@
 const R = require('ramda')
 const GH = require('../helpers/genericHelper')
 const SF = require('./stagesFunctions')
+const L = require('../elements/lenses')
 
-const getDoors = stage => R.prop('doors', stage)
+const getDoors = stage => R.view(L.doorsLens, stage)
 
 const getWayOut = doors => {
   if (doors.west !== undefined) {

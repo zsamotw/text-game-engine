@@ -12,20 +12,20 @@ const getActorsStream = state =>
         if ((interval * 1000) % actor.interval === 0) {
           const doors = DF.getOpenedDoorsForStage(actor.stageId, state)
           const newStageId = DF.getWayOut(doors)
-          const actors = R.clone(R.view(L.stateActorsLens, state))
+          const actors = R.clone(R.view(L.actorsLens, state))
           const newActors = GH.changePropertyOfIterable(
             actors,
             actor.id,
             'stageId',
             newStageId
           )
-          return R.set(L.stateActorsLens, newActors, state)
+          return R.set(L.actorsLens, newActors, state)
         } else {
           return R.clone(state)
         }
       }
 
-      const actors = R.view(L.stateActorsLens, state)
+      const actors = R.view(L.actorsLens, state)
       const newState = R.reduce(processActors, R.clone(state), R.clone(actors))
       return newState
     })

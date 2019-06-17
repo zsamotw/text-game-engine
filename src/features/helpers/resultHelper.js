@@ -4,6 +4,7 @@ const PF = require('../domain/pocketFunctions')
 const CF = require('../domain/commandFunctions')
 const DF = require('../domain/doorFunctions')
 const AF = require('../domain/actorsFunctions')
+const L = require('../elements/lenses')
 
 const getLookResult = function (state) {
   const stage = SF.getCurrentStage(state)
@@ -16,7 +17,7 @@ const getLookResult = function (state) {
   } else {
     const elemsNames = SF.getElemsForCurrentStage(state).map(e => R.prop('name', e))
     const actorNames = AF.getActorsForCurrentStage(state).map(a => R.prop('name', a))
-    const description = R.prop('description', stage)
+    const description = R.view(L.descriptionLens, stage)
     return {
       type: 'noChange',
       message: `${description} Elems: ${elemsNames} Actors: ${actorNames}`
@@ -35,7 +36,7 @@ const getLookAtResult = function (command, state) {
   } else {
     return {
       type: 'noChange',
-      message: R.prop('description', elem)
+      message: R.view(L.elemDescription, elem)
     }
   }
 }

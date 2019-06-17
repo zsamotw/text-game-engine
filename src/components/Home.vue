@@ -34,12 +34,10 @@ export default {
   },
   methods: {
     processCommand: function(command) {
-      console.log('in procees command in home')
       const result = getResult(command, clone(this.gameState));
-      console.log('after result')
       const { state, message } = getNewStateAndMessage(result, clone(this.gameState));
-      console.log(message)
       this.gameState = state;
+      console.log(this.gameState)
       this.messages.push(message);
     }
   },

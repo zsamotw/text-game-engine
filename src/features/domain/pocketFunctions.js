@@ -1,10 +1,11 @@
 const R = require('ramda')
 const SF = require('./stagesFunctions')
 const GH = require('../helpers/genericHelper')
+const L = require('../elements/lenses')
 
 const maxPocketSize = 2
 
-const getPocket = state => R.prop('pocket', state)
+const getPocket = state => R.view(L.pocketLens, state)
 
 const isPlaceInPocket = state => getPocket(state).length < maxPocketSize
 
@@ -22,8 +23,8 @@ const addElemToPocket = (elem, state) => {
   const pocketWithElem = R.append(elem, getPocket(state))
 
   const computeNewState = state => {
-    const tempState = R.assoc('stages', newStages, state)
-    return R.assoc('pocket', pocketWithElem, tempState)
+    const tempState = R.set(L.stagesLens, newStages, state)
+    return R.set(L.pocketLens, pocketWithElem, tempState)
   }
 
   const newState = computeNewState(state)
@@ -51,8 +52,8 @@ const putElemToStage = (elem, state) => {
   )
 
   const computeNewState = state => {
-    const tempState = R.assoc('stages', newStages, state)
-    return R.assoc('pocket', pocketWithOutElem, tempState)
+    const tempState = R.set(L.stagesLens, newStages, state)
+    return R.set(L.pocketLens, pocketWithOutElem, tempState)
   }
 
   const newState = computeNewState(state)
@@ -64,7 +65,6 @@ const putElemToStage = (elem, state) => {
 }
 
 module.exports = {
-  // getElemEqualsToCommand,
   getPocket,
   isPlaceInPocket,
   maxPocketSize,

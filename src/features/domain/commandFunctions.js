@@ -1,6 +1,7 @@
 const R = require('ramda')
+const L = require('../elements/lenses')
 
-const getRestOfCommand = command => R.prop('rest', command)
+const getRestOfCommand = command => R.view(L.restLens, command)
 
 const nameEq = name => R.propEq('name', name)
 

@@ -1,15 +1,28 @@
 const R = require('ramda')
 
-const stateStagesLens = R.lensProp('stages')
-const stateCurrentStageIdLens = R.lensProp('currentStageId')
-const statePocketLens = R.lensProp('pocket')
-const stateDoorsLens = R.lensProp('doors')
-const stateActorsLens = R.lensProp('actors')
+const stagesLens = R.lensProp('stages')
+const currentStageIdLens = R.lensProp('currentStageId')
+const pocketLens = R.lensProp('pocket')
+const doorsLens = R.lensProp('doors')
+const actorsLens = R.lensProp('actors')
+const systemMessages = R.lensProp('systemMessages')
+
+const elemsLens = R.lensProp('elems')
+
+const descriptionLens = R.lensProp('description')
+
+const restLens = R.lensProp('rest')
+const nameLens = R.lensProp('name')
 
 module.exports = {
-  stateStagesLens,
-  stateCurrentStageIdLens,
-  statePocketLens,
-  stateDoorsLens,
-  stateActorsLens
+  stagesLens,
+  currentStageIdLens,
+  pocketLens,
+  doorsLens,
+  actorsLens,
+  systemMessages,
+  elemsLens,
+  descriptionLens,
+  restLens,
+  nameLens
 }
