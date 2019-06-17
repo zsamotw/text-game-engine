@@ -10,8 +10,10 @@ const restCommandEqName = R.compose(
   getRestOfCommand
 )
 
-const getElemEqualsToCommand = (command, elems) =>
-  R.find(restCommandEqName(command), elems)
+const getElemEqualsToCommand = R.curry(
+  (command, elems) =>
+    R.find(restCommandEqName(command), elems)
+)
 
 module.exports = {
   restCommandEqName,
