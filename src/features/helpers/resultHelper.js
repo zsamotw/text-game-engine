@@ -72,10 +72,11 @@ const getGoResult = function (command, state) {
 }
 
 const getTakeResult = function (command, state) {
-  const getElemsEqualsTo = CF.getElemEqualsToCommand
-  const FromCurrentStage = SF.getElemsForCurrentStage(state)
+  const getElemEqualsTo = CF.getElemEqualsToCommand
+  const FromCurrentStageElems = SF.getElemsForCurrentStage(state)
 
-  const elem = getElemsEqualsTo(command)(FromCurrentStage)
+  const takenElem = getElemEqualsTo(command)(FromCurrentStageElems)
+  const nameOf = R.view(L.nameLens)
   const isPlace = PF.isPlaceInPocket(state)
 
   switch (true) {
@@ -85,12 +86,13 @@ const getTakeResult = function (command, state) {
         message: 'No place in pocket'
       }
     }
-    case isPlace && !R.isNil(elem):
+    case isPlace && !R.isNil(takenElem):
       return {
         type: 'addElemToPocket',
-        elem: elem
+        elem: takenElem,
+        message: `${nameOf(takenElem)} is taken`
       }
-    case isPlace && R.isNil(elem):
+    case isPlace && R.isNil(takenElem):
       return {
         type: 'noChange',
         message: 'No such elem in this stage'
@@ -99,9 +101,13 @@ const getTakeResult = function (command, state) {
 }
 
 const getPutResult = function (command, state) {
-  const elem = CF.getElemEqualsToCommand(command, PF.getPocket(state))
+  const getElemEqualsTo = CF.getElemEqualsToCommand
+  const fromPocket = PF.getPocket(state)
 
-  if (R.isNil(elem)) {
+  const elemFromPocket = getElemEqualsTo(command)(fromPocket)
+  const nameOf = R.view(L.nameLens)
+
+  if (R.isNil(elemFromPocket)) {
     return {
       type: 'noChange',
       message: 'No such elem in pocket'
@@ -109,7 +115,8 @@ const getPutResult = function (command, state) {
   } else {
     return {
       type: 'putElemToStage',
-      elem: elem
+      elem: elemFromPocket,
+      message: `${nameOf(elemFromPocket)} is now put to the ground.`
     }
   }
 }
