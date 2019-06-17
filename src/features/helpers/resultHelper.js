@@ -4,6 +4,7 @@ const PF = require('../domain/pocketFunctions')
 const CF = require('../domain/commandFunctions')
 const DF = require('../domain/doorFunctions')
 const AF = require('../domain/actorsFunctions')
+const GH = require('../helpers/genericHelper')
 const L = require('../elements/lenses')
 
 const getLookResult = function (state) {
@@ -17,10 +18,10 @@ const getLookResult = function (state) {
   } else {
     const elemsNamesForCurrentStage = R.map(R.pluck('name'), SF.getElemsForCurrentStage)
     const actorNamesForCurrentStage = R.map(R.pluck('name'), AF.getActorsForCurrentStage)
-    const descriptionOf = R.view(L.descriptionLens)
+
     return {
       type: 'noChange',
-      message: `${descriptionOf(stage)}
+      message: `${GH.descriptionOf(stage)}
                 Elems: ${elemsNamesForCurrentStage(state)}
                 Actors: ${actorNamesForCurrentStage(state)}`
     }
@@ -29,7 +30,6 @@ const getLookResult = function (state) {
 
 const getLookAtResult = function (command, state) {
   const elem = CF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
-  const descriptionOf = R.view(L.descriptionLens)
 
   if (R.isNil(elem)) {
     return {
@@ -39,7 +39,7 @@ const getLookAtResult = function (command, state) {
   } else {
     return {
       type: 'noChange',
-      message: descriptionOf(elem)
+      message: GH.descriptionOf(elem)
     }
   }
 }
@@ -55,7 +55,7 @@ const getGoResult = function (command, state) {
       R.propEq('id', nextStageId),
       R.view(L.stagesLens))
 
-  const nextStageName = R.compose(R.view(L.nameLens, nextStage))
+  const nextStageName = R.compose(GH.nameOf, nextStage)
 
   if (R.isNil(nextStageId)) {
     return {
@@ -76,7 +76,6 @@ const getTakeResult = function (command, state) {
   const FromCurrentStageElems = SF.getElemsForCurrentStage(state)
 
   const takenElem = getElemEqualsTo(command)(FromCurrentStageElems)
-  const nameOf = R.view(L.nameLens)
   const isPlace = PF.isPlaceInPocket(state)
 
   switch (true) {
@@ -90,7 +89,7 @@ const getTakeResult = function (command, state) {
       return {
         type: 'addElemToPocket',
         elem: takenElem,
-        message: `${nameOf(takenElem)} is taken`
+        message: `${GH.nameOf(takenElem)} is taken`
       }
     case isPlace && R.isNil(takenElem):
       return {
@@ -105,7 +104,6 @@ const getPutResult = function (command, state) {
   const fromPocket = PF.getPocket(state)
 
   const elemFromPocket = getElemEqualsTo(command)(fromPocket)
-  const nameOf = R.view(L.nameLens)
 
   if (R.isNil(elemFromPocket)) {
     return {
@@ -116,7 +114,7 @@ const getPutResult = function (command, state) {
     return {
       type: 'putElemToStage',
       elem: elemFromPocket,
-      message: `${nameOf(elemFromPocket)} is now put to the ground.`
+      message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
     }
   }
 }
