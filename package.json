@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "eslint": "^5.16.0",
+    "fantasy-land": "^4.0.1",
     "ramda": "^0.26.1",
     "rxjs": "^6.5.2",
+    "sanctuary": "^2.0.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
     "vuex": "^3.1.1",
