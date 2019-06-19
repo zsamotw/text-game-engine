@@ -7,7 +7,7 @@ const AF = require('../domain/actorsFunctions')
 const GH = require('../helpers/genericHelper')
 const L = require('../utils/lenses')
 
-const getLookResult = function (state) {
+const getOverviewResult = function (state) {
   const stage = SF.getCurrentStage(state)
 
   if (R.isNil(stage)) {
@@ -28,8 +28,11 @@ const getLookResult = function (state) {
   }
 }
 
-const getLookAtResult = function (command, state) {
-  const elem = CF.getElemEqualsToCommand(command, SF.getElemsForCurrentStage(state))
+const getDescriptionResult = function (command, state) {
+  const getElemEqualsTo = CF.getElemEqualsToCommand
+  const fromCurrentStage = SF.getElemsForCurrentStage(state)
+
+  const elem = getElemEqualsTo(command)(fromCurrentStage)
 
   if (R.isNil(elem)) {
     return {
@@ -44,7 +47,7 @@ const getLookAtResult = function (command, state) {
   }
 }
 
-const getGoResult = function (command, state) {
+const getTravelResult = function (command, state) {
   const directionFrom = R.view(L.restLens)
   const get = R.prop
   const andFindDoorsInCurrenStage = DF.getDoorsForCurrentStage
@@ -53,9 +56,9 @@ const getGoResult = function (command, state) {
   const nextStage =
     R.find(
       R.propEq('id', nextStageId),
-      R.view(L.stagesLens))
+      R.view(L.stagesLens, state))
 
-  const nextStageName = R.compose(GH.nameOf, nextStage)
+  const nextStageName = GH.nameOf(nextStage)
 
   if (R.isNil(nextStageId)) {
     return {
@@ -66,16 +69,16 @@ const getGoResult = function (command, state) {
     return {
       type: 'changeNextStageId',
       nextStageId: nextStageId,
-      message: `You are in  ${nextStageName(state)}`
+      message: `You are in  ${nextStageName}`
     }
   }
 }
 
-const getTakeResult = function (command, state) {
+const getTakenElemResult = function (command, state) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  const FromCurrentStageElems = SF.getElemsForCurrentStage(state)
+  const FromElemsOnCurrentStage = SF.getElemsForCurrentStage(state)
 
-  const takenElem = getElemEqualsTo(command)(FromCurrentStageElems)
+  const takenElem = getElemEqualsTo(command)(FromElemsOnCurrentStage)
   const isPlace = PF.isPlaceInPocket(state)
 
   switch (true) {
@@ -99,7 +102,7 @@ const getTakeResult = function (command, state) {
   }
 }
 
-const getPutResult = function (command, state) {
+const getPutElemResult = function (command, state) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
   const fromPocket = PF.getPocket(state)
 
@@ -138,11 +141,11 @@ const getUndefinedResult = function (command, state) {
 }
 
 module.exports = {
-  getLookResult,
-  getLookAtResult,
-  getGoResult,
-  getTakeResult,
-  getPutResult,
+  getOverviewResult,
+  getDescriptionResult,
+  getTravelResult,
+  getTakenElemResult,
+  getPutElemResult,
   getPocketResult,
   getUndefinedResult
 }
