@@ -3,7 +3,7 @@ const GH = require('../helpers/genericHelper')
 const SF = require('./stagesFunctions')
 const L = require('../utils/lenses')
 
-const getDoors = stage => R.view(L.doorsLens, stage)
+const getDoors = R.view(L.doorsLens)
 
 const getWayOut = doors => {
   if (doors.west !== undefined) {

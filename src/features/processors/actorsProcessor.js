@@ -1,7 +1,7 @@
 const Rx = require('rxjs')
 const { map } = require('rxjs/operators')
 const R = require('ramda')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 const DF = require('../domain/doorFunctions')
 const GH = require('../helpers/genericHelper')
 
@@ -13,7 +13,7 @@ const getActorsStream = state =>
           const doors = DF.getOpenedDoorsForStage(actor.stageId, state)
           const newStageId = DF.getWayOut(doors)
           const actors = R.clone(R.view(L.actorsLens, state))
-          const newActors = GH.changePropertyOfIterable(
+          const newActors = GH.updateIterable(
             actors,
             actor.id,
             'stageId',

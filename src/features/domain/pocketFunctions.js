@@ -5,63 +5,57 @@ const L = require('../utils/lenses')
 
 const maxPocketSize = 2
 
-const getPocket = state => R.view(L.pocketLens, state)
+const getPocket = R.view(L.pocketLens)
 
 const isPlaceInPocket = state => getPocket(state).length < maxPocketSize
 
 const addElemToPocket = (elem, state) => {
-  const elems = SF.getElemsForCurrentStage(state)
-  const elemsWithoutElem = R.filter(e => e.name !== elem.name, elems)
+  const elemsInCurrentStage = SF.getElemsForCurrentStage(state)
+  const elemsAfterTakeElem = R.filter(R.propEq('name', R.view(L.nameLens, elem)))(elemsInCurrentStage)
 
-  const newStages = GH.changePropertyOfIterable(
+  const stagesAfterTakeElem = GH.updateIterable(
     SF.getStages(state),
     SF.getCurrentStageId(state),
     'elems',
-    elemsWithoutElem
+    elemsAfterTakeElem
   )
 
-  const pocketWithElem = R.append(elem, getPocket(state))
+  const addElemToPocket = R.append(elem, getPocket(state))
 
-  const computeNewState = state => {
-    const tempState = R.set(L.stagesLens, newStages, state)
-    return R.set(L.pocketLens, pocketWithElem, tempState)
+  const swapElemFromStageToPocket = state => {
+    const stateAfterTakeElemFromStage = R.set(L.stagesLens, stagesAfterTakeElem, state)
+    const stateAfterPutElemInPocket = R.set(L.pocketLens, addElemToPocket, stateAfterTakeElemFromStage)
+    return stateAfterPutElemInPocket
   }
 
-  const newState = computeNewState(state)
-  const message = `${elem.name} was taken`
-  return {
-    newState: newState,
-    message: message
-  }
+  return swapElemFromStageToPocket(state)
 }
 
 const putElemToStage = (elem, state) => {
-  const elems = SF.getElemsForCurrentStage(state)
-  const elemsWithElem = R.append(elem, elems)
+  const addElemToElemsInCurrentStage = R.compose(
+    R.append(elem),
+    SF.getElemsForCurrentStage
+  )
 
-  const newStages = GH.changePropertyOfIterable(
+  const stagesAfterPutElem = GH.updateIterable(
     SF.getStages(state),
     SF.getCurrentStageId(state),
     'elems',
-    elemsWithElem
+    addElemToElemsInCurrentStage(state)
   )
 
-  const pocketWithOutElem = R.filter(
+  const takeElemFromPocket = R.filter(
     e => e.name !== elem.name,
-    getPocket(state)
+    getPocket
   )
 
-  const computeNewState = state => {
-    const tempState = R.set(L.stagesLens, newStages, state)
-    return R.set(L.pocketLens, pocketWithOutElem, tempState)
+  const swapElemFromPocketToStage = state => {
+    const stateAfterPutElemInStage = R.set(L.stagesLens, stagesAfterPutElem, state)
+    const stateAfterTakeElemFromPocket = R.set(L.pocketLens, takeElemFromPocket(state), stateAfterPutElemInStage)
+    return stateAfterTakeElemFromPocket
   }
 
-  const newState = computeNewState(state)
-  const message = `${elem.name} was put`
-  return {
-    newState: newState,
-    message: message
-  }
+  return swapElemFromPocketToStage(state)
 }
 
 module.exports = {

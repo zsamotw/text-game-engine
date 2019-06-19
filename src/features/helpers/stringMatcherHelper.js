@@ -1,6 +1,6 @@
 const R = require('ramda')
 const PMH = require('../helpers/patternMatcherHelper')
-const C = require('../elements/commands.js')
+const C = require('../utils/commands.js')
 
 const stringMatcher =
   R.cond([

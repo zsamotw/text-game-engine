@@ -1,5 +1,5 @@
 const R = require('ramda')
-const P = require('../elements/patterns')
+const P = require('../utils/patterns')
 
 const isLookPattern = (str) => R.test(P.lookPattern, str)
 const isLookAtPattern = (str) => R.test(P.lookAtPattern, str)

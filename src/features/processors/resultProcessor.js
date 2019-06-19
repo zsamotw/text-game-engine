@@ -1,5 +1,5 @@
 const R = require('ramda')
-const L = require('../elements/lenses')
+const L = require('../utils/lenses')
 const CP = require('./commandsProcessor')
 const SMH = require('../helpers/stringMatcherHelper')
 const PF = require('../domain/pocketFunctions')
@@ -23,37 +23,35 @@ const getNewStateAndMessage = function (result, state) {
       }
     case 'changeNextStageId': {
       const nextStageId = R.prop('nextStageId', result)
-      const newState = R.set(L.currentStageIdLens, nextStageId, state)
+      const stateWithNewCurrentStage = R.set(L.currentStageIdLens, nextStageId, state)
       return {
-        state: newState,
+        state: stateWithNewCurrentStage,
         message: message
       }
     }
     case 'addElemToPocket': {
       const elem = R.prop('elem', result)
-      const { newState, message } = PF.addElemToPocket(elem, state)
+      const stateWithNewElemInPocket = PF.addElemToPocket(elem, state)
       return {
-        state: newState,
+        state: stateWithNewElemInPocket,
         message: message
       }
     }
     case 'putElemToStage': {
       const elem = R.prop('elem', result)
-      const { newState, message } = PF.putElemToStage(elem, state)
+      const stateWithNewElemInStage = PF.putElemToStage(elem, state)
       return {
-        state: newState,
+        state: stateWithNewElemInStage,
         message: message
       }
     }
     case 'pocket': {
-      const message = R.prop('message', result)
       return {
         state: state,
         message: message
       }
     }
     case 'undefinedCommand': {
-      const message = R.prop('message', result)
       return {
         state: state,
         message: message
