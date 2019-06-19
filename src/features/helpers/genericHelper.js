@@ -10,6 +10,8 @@ const updateIterable = (iterable, id, propName, newValue) =>
 
 const nameOf = R.view(L.nameLens)
 
+const notEqualNameTo = R.complement(R.propEq('name'))
+
 const descriptionOf = R.view(L.descriptionLens)
 
 module.exports = {
@@ -17,5 +19,6 @@ module.exports = {
   mapToValues,
   updateIterable,
   nameOf,
+  notEqualNameTo,
   descriptionOf
 }

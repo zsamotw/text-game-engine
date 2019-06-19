@@ -11,7 +11,9 @@ const isPlaceInPocket = state => getPocket(state).length < maxPocketSize
 
 const addElemToPocket = (elem, state) => {
   const elemsInCurrentStage = SF.getElemsForCurrentStage(state)
-  const elemsAfterTakeElem = R.filter(R.propEq('name', R.view(L.nameLens, elem)))(elemsInCurrentStage)
+  const elemsAfterTakeElem = R.filter(GH.notEqualNameTo(GH.nameOf(elem)))(
+    elemsInCurrentStage
+  )
 
   const stagesAfterTakeElem = GH.updateIterable(
     SF.getStages(state),
@@ -20,11 +22,20 @@ const addElemToPocket = (elem, state) => {
     elemsAfterTakeElem
   )
 
-  const addElemToPocket = R.append(elem, getPocket(state))
+  const pocket = getPocket(state)
+  const addElemTo = R.append(elem)
 
   const swapElemFromStageToPocket = state => {
-    const stateAfterTakeElemFromStage = R.set(L.stagesLens, stagesAfterTakeElem, state)
-    const stateAfterPutElemInPocket = R.set(L.pocketLens, addElemToPocket, stateAfterTakeElemFromStage)
+    const stateAfterTakeElemFromStage = R.set(
+      L.stagesLens,
+      stagesAfterTakeElem,
+      state
+    )
+    const stateAfterPutElemInPocket = R.set(
+      L.pocketLens,
+      addElemTo(pocket),
+      stateAfterTakeElemFromStage
+    )
     return stateAfterPutElemInPocket
   }
 
@@ -44,14 +55,20 @@ const putElemToStage = (elem, state) => {
     addElemToElemsInCurrentStage(state)
   )
 
-  const takeElemFromPocket = R.filter(
-    e => e.name !== elem.name,
-    getPocket
-  )
+  const pocket = getPocket(state)
+  const takeElemFrom = R.filter(GH.notEqualNameTo(GH.nameOf(elem)))
 
   const swapElemFromPocketToStage = state => {
-    const stateAfterPutElemInStage = R.set(L.stagesLens, stagesAfterPutElem, state)
-    const stateAfterTakeElemFromPocket = R.set(L.pocketLens, takeElemFromPocket(state), stateAfterPutElemInStage)
+    const stateAfterPutElemInStage = R.set(
+      L.stagesLens,
+      stagesAfterPutElem,
+      state
+    )
+    const stateAfterTakeElemFromPocket = R.set(
+      L.pocketLens,
+      takeElemFrom(pocket),
+      stateAfterPutElemInStage
+    )
     return stateAfterTakeElemFromPocket
   }
 

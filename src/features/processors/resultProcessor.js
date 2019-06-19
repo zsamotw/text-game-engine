@@ -3,55 +3,56 @@ const L = require('../utils/lenses')
 const CP = require('./commandsProcessor')
 const SMH = require('../helpers/stringMatcherHelper')
 const PF = require('../domain/pocketFunctions')
+const RT = require('../utils/resultTypes')
 
 // getResult :: String -> State -> Result
-const getResult = function (input, gameState) {
+const getResult = function (input, state) {
   const command = SMH.stringMatcher(input)
-  return CP.processCommandAndGetResult(command, gameState)
+  return CP.processCommandAndGetResult(command, state)
 }
 
 // getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
 const getNewStateAndMessage = function (result, state) {
-  const type = R.prop('type', result)
-  const message = R.prop('message', result)
+  const type = R.view(L.typeLens, result)
+  const message = R.view(L.messageLens, result)
 
   switch (type) {
-    case 'noChange':
+    case RT.noStateChange:
       return {
         state: state,
         message: message
       }
-    case 'changeNextStageId': {
-      const nextStageId = R.prop('nextStageId', result)
+    case RT.changeNextStageId: {
+      const nextStageId = R.view(L.nextStageId, result)
       const stateWithNewCurrentStage = R.set(L.currentStageIdLens, nextStageId, state)
       return {
         state: stateWithNewCurrentStage,
         message: message
       }
     }
-    case 'addElemToPocket': {
-      const elem = R.prop('elem', result)
+    case RT.takeElem: {
+      const elem = R.view(L.elemLens, result)
       const stateWithNewElemInPocket = PF.addElemToPocket(elem, state)
       return {
         state: stateWithNewElemInPocket,
         message: message
       }
     }
-    case 'putElemToStage': {
-      const elem = R.prop('elem', result)
-      const stateWithNewElemInStage = PF.putElemToStage(elem, state)
+    case RT.putElem: {
+      const elem = R.view(L.elemLens, result)
+      const stateWithNewElemOnStage = PF.putElemToStage(elem, state)
       return {
-        state: stateWithNewElemInStage,
+        state: stateWithNewElemOnStage,
         message: message
       }
     }
-    case 'pocket': {
+    case RT.pocket: {
       return {
         state: state,
         message: message
       }
     }
-    case 'undefinedCommand': {
+    case RT.undefinedCommand: {
       return {
         state: state,
         message: message

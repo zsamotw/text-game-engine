@@ -1,15 +1,15 @@
 const noStateChange = 'noStateChange'
 const changeNextStageId = 'changeNextStageId'
-const addElemToPocket = 'addElemToPocket'
-const putElemToStage = 'putElemToStage'
+const takeElem = 'takeElem'
+const putElem = 'putElem'
 const pocket = 'pocket'
 const undefinedCommand = 'undefinedCommand'
 
 module.exports = {
   noStateChange,
   changeNextStageId,
-  addElemToPocket,
-  putElemToStage,
+  takeElem,
+  putElem,
   pocket,
   undefinedCommand
 }

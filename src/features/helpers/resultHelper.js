@@ -6,13 +6,14 @@ const DF = require('../domain/doorFunctions')
 const AF = require('../domain/actorsFunctions')
 const GH = require('../helpers/genericHelper')
 const L = require('../utils/lenses')
+const RT = require('../utils/resultTypes')
 
 const getOverviewResult = function (state) {
   const stage = SF.getCurrentStage(state)
 
   if (R.isNil(stage)) {
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: 'Error. No stage defined as current. Contact with game owner.'
     }
   } else {
@@ -20,7 +21,7 @@ const getOverviewResult = function (state) {
     const actorNamesForCurrentStage = R.map(R.pluck('name'), AF.getActorsForCurrentStage)
 
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: `${GH.descriptionOf(stage)}
                 Elems: ${elemsNamesForCurrentStage(state)}
                 Actors: ${actorNamesForCurrentStage(state)}`
@@ -36,18 +37,18 @@ const getDescriptionResult = function (command, state) {
 
   if (R.isNil(elem)) {
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: 'No such elem in this stage'
     }
   } else {
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: GH.descriptionOf(elem)
     }
   }
 }
 
-const getTravelResult = function (command, state) {
+const getChangeStageResult = function (command, state) {
   const directionFrom = R.view(L.restLens)
   const get = R.prop
   const andFindDoorsInCurrenStage = DF.getDoorsForCurrentStage
@@ -62,12 +63,12 @@ const getTravelResult = function (command, state) {
 
   if (R.isNil(nextStageId)) {
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: 'Oopps. Something wrong. You can not go this direction.'
     }
   } else {
     return {
-      type: 'changeNextStageId',
+      type: RT.changeNextStageId,
       nextStageId: nextStageId,
       message: `You are in  ${nextStageName}`
     }
@@ -84,19 +85,19 @@ const getTakenElemResult = function (command, state) {
   switch (true) {
     case !isPlace: {
       return {
-        type: 'noChange',
+        type: RT.noStateChange,
         message: 'No place in pocket'
       }
     }
     case isPlace && !R.isNil(takenElem):
       return {
-        type: 'addElemToPocket',
+        type: RT.takeElem,
         elem: takenElem,
         message: `${GH.nameOf(takenElem)} is taken`
       }
     case isPlace && R.isNil(takenElem):
       return {
-        type: 'noChange',
+        type: RT.noStateChange,
         message: 'No such elem in this stage'
       }
   }
@@ -110,12 +111,12 @@ const getPutElemResult = function (command, state) {
 
   if (R.isNil(elemFromPocket)) {
     return {
-      type: 'noChange',
+      type: RT.noStateChange,
       message: 'No such elem in pocket'
     }
   } else {
     return {
-      type: 'putElemToStage',
+      type: RT.putElem,
       elem: elemFromPocket,
       message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
     }
@@ -124,10 +125,12 @@ const getPutElemResult = function (command, state) {
 
 const getPocketResult = function (command, state) {
   const getElemsFrom = R.map(R.pluck('name'))
-  const elemsInPocket = getElemsFrom(PF.getPocket(state))
+  const pocket = PF.getPocket(state)
+
+  const elemsInPocket = getElemsFrom(pocket)
 
   return {
-    type: 'pocket',
+    type: RT.pocket,
     elems: elemsInPocket,
     message: elemsInPocket.length > 0 ? `In your pocket: ${elemsInPocket}` : 'You pocket is empty'
   }
@@ -135,7 +138,7 @@ const getPocketResult = function (command, state) {
 
 const getUndefinedResult = function (command, state) {
   return {
-    type: 'undefinedCommand',
+    type: RT.undefinedCommand,
     message: `ooops!! it is wrong command.`
   }
 }
@@ -143,7 +146,7 @@ const getUndefinedResult = function (command, state) {
 module.exports = {
   getOverviewResult,
   getDescriptionResult,
-  getTravelResult,
+  getChangeStageResult,
   getTakenElemResult,
   getPutElemResult,
   getPocketResult,
