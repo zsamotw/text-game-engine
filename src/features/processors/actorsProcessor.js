@@ -26,6 +26,7 @@ const getActorsStream = state =>
       }
 
       const actors = R.view(L.actorsLens, state)
+      console.log('before reduce')
       const newState = R.reduce(processActors, R.clone(state), R.clone(actors))
       return newState
     })

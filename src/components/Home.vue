@@ -37,13 +37,12 @@ export default {
       const result = getResult(command, clone(this.gameState));
       const { state, message } = getNewStateAndMessage(result, clone(this.gameState));
       this.gameState = state;
-      console.log(this.gameState)
       this.messages.push(message);
     }
   },
   created: function() {
     //getSystemMessagesStream(state).subscribe(m => this.messages.push(m));
-    //getActorsStream(this.gameState).subscribe(state => this.gameState = state);
+    getActorsStream(clone(this.gameState)).subscribe(state => this.gameState = state);
   }
 };
 </script>

@@ -3,8 +3,8 @@ const L = require('../utils/lenses')
 
 const getStages = R.view(L.stagesLens)
 
-const getStage = stageId =>
-  R.find(R.propEq('id', stageId), getStages)
+const getStage = (stageId, state) =>
+  R.find(R.propEq('id', stageId), getStages(state))
 
 const getCurrentStageId = R.view(L.currentStageIdLens)
 

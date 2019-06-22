@@ -10,11 +10,11 @@ const systemMessages = R.lensProp('systemMessages')
 const elemsLens = R.lensProp('elems')
 
 const descriptionLens = R.lensProp('description')
-
-const restLens = R.lensProp('rest')
 const nameLens = R.lensProp('name')
 
 const typeLens = R.lensProp('type')
+const restLens = R.lensProp('rest')
+
 const messageLens = R.lensProp('message')
 const nextStageId = R.lensProp('nextStageId')
 const elemLens = R.lensProp('elem')
