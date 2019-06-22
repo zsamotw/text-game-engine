@@ -19,12 +19,18 @@ const getOverviewResult = function (state) {
   } else {
     const elemsNamesForCurrentStage = R.map(R.pluck('name'), SF.getElemsForCurrentStage)
     const actorNamesForCurrentStage = R.map(R.pluck('name'), AF.getActorsForCurrentStage)
+    const elemsOnSTage = elemsNamesForCurrentStage(state).length > 0
+      ? `Things: ${elemsNamesForCurrentStage(state)}`
+      : 'No one thing here'
+    const actorsOnSTage = actorNamesForCurrentStage(state).length > 0
+      ? `Persons: ${actorNamesForCurrentStage(state)}`
+      : 'Nobody here'
 
     return {
       type: RT.noStateChange,
       message: `${GH.descriptionOf(stage)}
-                Elems: ${elemsNamesForCurrentStage(state)}
-                Actors: ${actorNamesForCurrentStage(state)}`
+                ${elemsOnSTage}
+                ${actorsOnSTage}`
     }
   }
 }
