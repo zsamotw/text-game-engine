@@ -1,14 +1,16 @@
-const Rx = require('rxjs')
-const { map } = require('rxjs/operators')
-const R = require('ramda')
-const L = require('../utils/lenses')
-const DF = require('../domain/doorFunctions')
-const GH = require('../helpers/genericHelper')
+import * as Rx from 'rxjs'
+import { map } from 'rxjs/operators'
+import * as R from 'ramda'
+import * as L from '../utils/lenses'
+import * as DF from '../domain/doorFunctions'
+import * as GH from '../helpers/genericHelper'
+import State from '../../models/state';
+import Actor from '../../models/actor';
 
-const getActorsStream = state =>
+const getActorsStream = (state: State) =>
   Rx.interval(3000).pipe(
     map(interval => {
-      const processActors = (state, actor) => {
+      const processActors = (state: State, actor: Actor) => {
         if ((interval * 1000) % actor.interval === 0) {
           const doors = DF.getOpenedDoorsForStage(actor.stageId, state)
           const newStageId = DF.getWayOut(doors)

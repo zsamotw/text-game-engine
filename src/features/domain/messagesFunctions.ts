@@ -1,9 +1,8 @@
-import R from 'ramda';
+import R from 'ramda'
 import * as L from '../utils/lenses'
-import State from '../../models/state';
+import State from '../../models/state'
 
-const getSystemMessages = (state: State) => R.view(L.systemMessages, state)
+const getSystemMessages: (state: State) => string[] = state =>
+  R.view(L.systemMessages, state)
 
-export {
-  getSystemMessages
-}
+export { getSystemMessages }

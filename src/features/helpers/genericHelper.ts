@@ -2,6 +2,7 @@ import * as L from '../utils/lenses'
 import * as R from 'ramda'
 import Elem from '../../models/elem'
 import State from '../../models/state'
+import Stage from '../../models/stage'
 
 const getRandomInt = (max: number) =>
   Math.floor(Math.random() * Math.floor(max))
@@ -21,6 +22,8 @@ const updateIterable = (
 
 const nameOf: (elem: Elem) => string = R.view(L.nameLens)
 
-const descriptionOf: (state: State) => string = R.view(L.descriptionLens)
+const descriptionOf: (state: State | Stage | Elem) => string = R.view(
+  L.descriptionLens
+)
 
 export { getRandomInt, mapToValues, updateIterable, nameOf, descriptionOf }

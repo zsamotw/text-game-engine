@@ -6,8 +6,10 @@ import * as DF from '../domain/doorFunctions'
 import * as AF from '../domain/actorsFunctions'
 import * as L from '../utils/lenses'
 import * as RT from '../utils/resultTypes'
-import State from '../../models/state'
+import * as GH from './genericHelper'
 import Command from '../../models/command'
+import State from '../../models/state'
+import Elem from '../../models/elem'
 
 const getOverviewResult = function(state: State) {
   const stage = SF.getCurrentStage(state)
@@ -66,12 +68,11 @@ const getDescriptionResult = function(command: Command, state: State) {
 
 const getChangeStageResult = function(command: Command, state: State) {
   const directionFrom: (command: Command) => string = R.view(L.restLens)
-  const get = R.prop
-  const andFindDoorsInCurrenStage = DF.getDoorsForCurrentStage
+  const doorsInCurrenStage = DF.getDoorsForCurrentStage(state)
+  const direction = directionFrom(command)
 
-  const nextStageId = get(directionFrom(command))(
-    andFindDoorsInCurrenStage(state)
-  )
+  const nextStageId = R.prop(direction as any, doorsInCurrenStage)
+
   const nextStage = R.find(
     R.propEq('id', nextStageId),
     R.view(L.stagesLens, state)
@@ -111,7 +112,7 @@ const getTakenElemResult = function(command: Command, state: State) {
       return {
         type: RT.takeElem,
         elem: takenElem,
-        message: `${GH.nameOf(takenElem)} is taken`
+        message: `${GH.nameOf(takenElem as Elem)} is taken`
       }
     case isPlace && R.isNil(takenElem):
       return {
