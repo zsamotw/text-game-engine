@@ -4,7 +4,6 @@ import * as PF from '../domain/pocketFunctions'
 import * as CF from '../domain/commandFunctions'
 import * as DF from '../domain/doorFunctions'
 import * as AF from '../domain/actorsFunctions'
-import * as GF from '../helpers/genericHelper'
 import * as L from '../utils/lenses'
 import * as RT from '../utils/resultTypes'
 import State from '../../models/state'
@@ -19,21 +18,22 @@ const getOverviewResult = function(state: State) {
       message: 'Error. No stage defined as current. Contact with game owner.'
     }
   } else {
+    const getName = R.prop('name')
     const elemsNamesForCurrentStage = R.map(
-      R.pluck('name'),
-      SF.getElemsForCurrentStage
+      getName,
+      SF.getElemsForCurrentStage(state)
     )
     const actorNamesForCurrentStage = R.map(
-      R.pluck('name'),
-      AF.getActorsForCurrentStage
+      getName,
+      AF.getActorsForCurrentStage(state)
     )
     const elemsOnSTage =
-      elemsNamesForCurrentStage(state).length > 0
-        ? `Things: ${elemsNamesForCurrentStage(state)}`
+      elemsNamesForCurrentStage.length > 0
+        ? `Things: ${elemsNamesForCurrentStage}`
         : 'No one thing here'
     const actorsOnSTage =
-      actorNamesForCurrentStage(state).length > 0
-        ? `Persons: ${actorNamesForCurrentStage(state)}`
+      actorNamesForCurrentStage.length > 0
+        ? `Persons: ${actorNamesForCurrentStage}`
         : 'Nobody here'
 
     return {
@@ -142,7 +142,7 @@ const getPutElemResult = function(command: Command, state: State) {
 }
 
 const getPocketResult = function(command: Command, state: State) {
-  const getElemsFrom = R.map(R.pluck('name'))
+  const getElemsFrom = R.map(R.prop('name'))
   const pocket = PF.viewPocket(state)
 
   const elemsInPocket = getElemsFrom(pocket)
