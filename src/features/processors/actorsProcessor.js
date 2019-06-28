@@ -4,13 +4,11 @@ import * as R from 'ramda'
 import * as L from '../utils/lenses'
 import * as DF from '../domain/doorFunctions'
 import * as GH from '../helpers/genericHelper'
-import State from '../../models/state';
-import Actor from '../../models/actor';
 
-const getActorsStream = (state: State) =>
+const getActorsStream = (state) =>
   Rx.interval(3000).pipe(
     map(interval => {
-      const processActors = (state: State, actor: Actor) => {
+      const processActors = (state, actor) => {
         if ((interval * 1000) % actor.interval === 0) {
           const doors = DF.getOpenedDoorsForStage(actor.stageId, state)
           const newStageId = DF.getWayOut(doors)
