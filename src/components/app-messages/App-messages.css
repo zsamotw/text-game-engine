@@ -1,0 +1,8 @@
+.messages-container {
+    overflow: auto;
+    margin: 20px 20px 20px
+}
+
+.message-container {
+    margin: 10px 0px 10px
+}

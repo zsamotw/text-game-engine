@@ -1,5 +1,5 @@
 import * as React from 'react'
-import './app-messages.css'
+import './App-messages.css'
 
 export interface IAppMessagesProps {
   messages: string[]

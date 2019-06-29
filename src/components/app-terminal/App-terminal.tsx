@@ -1,13 +1,16 @@
 import * as React from 'react'
-import './app-terminal.css'
+import './App-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 
 export interface IAppTerminalProps {}
+export interface IAppTerminalState {
+  command: string
+}
 
 export default class AppTerminal extends React.Component<
   IAppTerminalProps,
-  any
+  IAppTerminalProps
 > {
   state = {
     command: ''
