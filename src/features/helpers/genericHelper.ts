@@ -7,7 +7,7 @@ import Stage from '../../models/stage'
 const getRandomInt = (max: number) =>
   Math.floor(Math.random() * Math.floor(max))
 
-const mapToValues = (iterable: any[]) => R.filter(i => !R.isNil(i), iterable)
+const getOnlyWithValues = (iterable: any[]) => R.filter(i => !R.isNil(i), iterable)
 
 const updateIterable = (
   iterable: any[],
@@ -26,4 +26,4 @@ const descriptionOf: (state: State | Stage | Elem) => string = R.view(
   L.descriptionLens
 )
 
-export { getRandomInt, mapToValues, updateIterable, nameOf, descriptionOf }
+export { getRandomInt, getOnlyWithValues as mapToValues, updateIterable, nameOf, descriptionOf }

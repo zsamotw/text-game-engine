@@ -10,6 +10,7 @@ import * as GH from './genericHelper'
 import Command from '../../models/command'
 import State from '../../models/state'
 import Elem from '../../models/elem'
+import Stage from '../../models/stage'
 
 const getOverviewResult = function(state: State) {
   const stage = SF.getCurrentStage(state)
@@ -25,7 +26,7 @@ const getOverviewResult = function(state: State) {
       getName,
       SF.getElemsForCurrentStage(state)
     )
-    const actorNamesForCurrentStage = R.map(
+    const actorNamesForCurrentStage: string[] = R.map(
       getName,
       AF.getActorsForCurrentStage(state)
     )
@@ -76,7 +77,7 @@ const getChangeStageResult = function(command: Command, state: State) {
   const nextStage = R.find(
     R.propEq('id', nextStageId),
     R.view(L.stagesLens, state)
-  )
+  ) as Stage
 
   const nextStageName = GH.nameOf(nextStage)
 

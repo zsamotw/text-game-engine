@@ -1,23 +1,19 @@
 import * as L from '../utils/lenses'
 import * as R from 'ramda'
 import Command from '../../models/command'
-import Elem from '../../models/elem';
+import Elem from '../../models/elem'
 
-const getRestOfCommand = (command: Command) => R.view(L.restLens, command) as string
+const getRestOfCommand: (command: Command) => string = R.view(L.restLens)
 
-const nameEq = (name: string) => R.propEq('name', name)
+const isNameEqual: (name: string) => (object: any) => boolean = R.propEq('name')
 
-const restCommandEqName = R.compose(
-  nameEq,
+const isRestCommandEqualToNameOf = R.compose(
+  isNameEqual,
   getRestOfCommand
 )
 
-const getElemEqualsToCommand = R.curry(
-  (command: Command, elems: Elem[]) =>
-    R.find(restCommandEqName(command), elems)
+const getElemEqualsToCommand = R.curry((command: Command, elems: Elem[]) =>
+  R.find(isRestCommandEqualToNameOf(command), elems)
 )
 
-export {
-  restCommandEqName,
-  getElemEqualsToCommand
-}
+export { isRestCommandEqualToNameOf, getElemEqualsToCommand }

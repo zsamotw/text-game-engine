@@ -1,12 +1,11 @@
-import R from 'ramda'
+import * as R from 'ramda'
 import * as L from '../utils/lenses'
-import * as GH from '../helpers/genericHelper'
 import * as SF from './stagesFunctions'
 import Doors from '../../models/doors'
 import State from '../../models/state'
 import Stage from '../../models/stage'
 
-const viewDoors: (stage: Stage) => Doors = R.view(L.doorsLens)
+const getDoors: (stage: Stage) => Doors = R.view(L.doorsLens)
 
 const getWayOut = (doors: Doors) => {
   if (doors.west !== undefined) {
@@ -21,12 +20,12 @@ const getWayOut = (doors: Doors) => {
 }
 
 const getDoorsForCurrentStage: (state: State) => Doors = R.compose(
-  viewDoors,
+  getDoors,
   SF.getCurrentStage
 )
 
 const getDoorsForStage = R.compose(
-  viewDoors,
+  getDoors,
   SF.getStage
 )
 

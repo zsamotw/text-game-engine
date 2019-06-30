@@ -4,6 +4,7 @@ import * as CP from './commandsProcessor'
 import * as SMH from '../helpers/stringMatcherHelper'
 import * as PF from '../domain/pocketFunctions'
 import * as RT from '../utils/resultTypes'
+import * as RF from '../domain/resultFunctions'
 import State from '../../models/state'
 import Elem from '../../models/elem'
 import Result from '../../models/result'
@@ -16,8 +17,8 @@ const getResult = function(input: string, state: State) {
 
 // getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
 const getNewStateAndMessage = function(result: Result, state: State) {
-  const type = R.view(L.typeLens, result)
-  const message = R.view(L.messageLens, result)
+  const type = RF.getType(result)
+  const message = RF.getMessage(result)
 
   switch (type) {
     case RT.noStateChange:
@@ -26,7 +27,7 @@ const getNewStateAndMessage = function(result: Result, state: State) {
         message: message
       }
     case RT.changeNextStageId: {
-      const nextStageId = R.view(L.nextStageId, result)
+      const nextStageId = RF.getNextStatgeId(result)
       const stateWithNewCurrentStage = R.set(
         L.currentStageIdLens,
         nextStageId,
@@ -38,7 +39,7 @@ const getNewStateAndMessage = function(result: Result, state: State) {
       }
     }
     case RT.takeElem: {
-      const elem: Elem = R.view(L.elemLens, result)
+      const elem: Elem = RF.getElem(result)
       const stateWithNewElemInPocket = PF.addElemToPocket(elem, state)
       return {
         state: stateWithNewElemInPocket,
@@ -46,7 +47,7 @@ const getNewStateAndMessage = function(result: Result, state: State) {
       }
     }
     case RT.putElem: {
-      const elem: Elem = R.view(L.elemLens, result)
+      const elem: Elem = RF.getElem(result)
       const stateWithNewElemOnStage = PF.putElemToStage(elem, state)
       return {
         state: stateWithNewElemOnStage,
@@ -68,7 +69,4 @@ const getNewStateAndMessage = function(result: Result, state: State) {
   }
 }
 
-module.exports = {
-  getResult,
-  getNewStateAndMessage
-}
+export { getResult, getNewStateAndMessage }

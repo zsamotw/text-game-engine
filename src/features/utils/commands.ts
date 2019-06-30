@@ -1,13 +1,14 @@
 import * as P from './patterns'
+import Command from '../../models/command'
 
-const getLookCommand = function() {
+const getLookCommand = function(): Command {
   return {
     order: 'Look',
     rest: ''
   }
 }
 
-const getLookAtCommand = function(str: string) {
+const getLookAtCommand = function(str: string): Command {
   const rest = str.split(P.lookAtPattern)[1].trim()
   return {
     order: 'LookAt',
@@ -15,7 +16,7 @@ const getLookAtCommand = function(str: string) {
   }
 }
 
-const getGoCommand = function(str: string) {
+const getGoCommand = function(str: string): Command {
   const rest = str.split(P.goPattern)[1].trim()
   return {
     order: 'Go',
@@ -23,7 +24,7 @@ const getGoCommand = function(str: string) {
   }
 }
 
-const getTakeCommand = function(str: string) {
+const getTakeCommand = function(str: string): Command {
   const rest = str.split(P.takePattern)[1].trim()
   return {
     order: 'Take',
@@ -31,7 +32,7 @@ const getTakeCommand = function(str: string) {
   }
 }
 
-const getPutCommand = function(str: string) {
+const getPutCommand = function(str: string): Command {
   const rest = str.split(P.putPattern)[1].trim()
   return {
     order: 'Put',
@@ -39,14 +40,14 @@ const getPutCommand = function(str: string) {
   }
 }
 
-const getPocketCommand = function(str: string) {
+const getPocketCommand = function(str: string): Command {
   return {
     order: 'Pocket',
     rest: ''
   }
 }
 
-const getUndefinedCommand = function(str: string) {
+const getUndefinedCommand = function(str: string): Command {
   return {
     order: 'Undefined',
     rest: ''
