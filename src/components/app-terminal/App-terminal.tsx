@@ -1,16 +1,18 @@
 import * as React from 'react'
 import './App-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { faTerminal } from '@fortawesome/free-solid-svg-icons'
 
-export interface IAppTerminalProps {}
+export interface IAppTerminalProps {
+  onCommandChange: (command: string) => void
+}
 export interface IAppTerminalState {
   command: string
 }
 
 export default class AppTerminal extends React.Component<
   IAppTerminalProps,
-  IAppTerminalProps
+  IAppTerminalState
 > {
   state = {
     command: ''
@@ -24,14 +26,14 @@ export default class AppTerminal extends React.Component<
 
   handleKeyPress = (event: any) => {
     if (event.key === 'Enter') {
-      console.log(event.target.value)
+      this.props.onCommandChange(event.target.value)
       this.setState({
         command: ''
       })
     }
   }
 
-  icon = <FontAwesomeIcon icon={faCoffee} />
+  icon = <FontAwesomeIcon icon={faTerminal} />
 
   public render() {
     return (
