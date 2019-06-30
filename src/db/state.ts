@@ -53,8 +53,8 @@ const state = {
     } as Stage,
     {
       id: 3,
-      name: 'Bathroom.',
-      description: 'Just Bathroom',
+      name: 'Bathroom',
+      description: 'Just Bathroom.',
       elems: [
         {
           name: 'soap',

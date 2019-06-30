@@ -32,12 +32,12 @@ const getOverviewResult = function(state: State) {
     )
     const elemsOnSTage =
       elemsNamesForCurrentStage.length > 0
-        ? `Things: ${elemsNamesForCurrentStage}`
-        : 'No one thing here'
+        ? `Things: ${elemsNamesForCurrentStage}.`
+        : 'No one thing here.'
     const actorsOnSTage =
       actorNamesForCurrentStage.length > 0
-        ? `Persons: ${actorNamesForCurrentStage}`
-        : 'Nobody here'
+        ? `Persons: ${actorNamesForCurrentStage}.`
+        : 'Nobody here.'
 
     return {
       type: RT.noStateChange,
