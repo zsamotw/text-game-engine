@@ -9,7 +9,8 @@ const state = {
     {
       id: 1,
       name: 'kitchen.',
-      description: 'kitchen, kitchen, och kitchen...Dirty table, two chairs  and one door.',
+      description:
+        'kitchen, kitchen, och kitchen...Dirty table, two chairs  and one door.',
       elems: [
         {
           name: 'knife',
@@ -21,20 +22,22 @@ const state = {
         } as Elem
       ],
       doors: {
-        north: undefined,
+        north: 3,
         south: undefined,
         west: 2,
-        east: undefined 
+        east: undefined
       } as Doors
     } as Stage,
     {
       id: 2,
       name: 'living room',
-      description: 'Huge room with nothing. One sofa. There are one door to kichen. You can go there.',
+      description:
+        'Huge room with nothing. One sofa. There are one door to kichen. You can go there.',
       elems: [
         {
           name: 'newspaper',
-          description: 'It is Gazeta Wyborcza with articele about Tomasz is Great!!!'
+          description:
+            'It is Gazeta Wyborcza with articele about Tomasz is Great!!!'
         } as Elem,
         {
           name: 'hammer',
@@ -47,7 +50,24 @@ const state = {
         west: undefined,
         east: 1
       } as Doors
-    }
+    } as Stage,
+    {
+      id: 3,
+      name: 'Bathroom.',
+      description: 'Just Bathroom',
+      elems: [
+        {
+          name: 'soap',
+          description: 'Red soap.'
+        } as Elem
+      ],
+      doors: {
+        north: undefined,
+        south: 1,
+        west: undefined,
+        east: undefined
+      } as Doors
+    } as Stage
   ],
   currentStageId: 1,
   pocket: [],
