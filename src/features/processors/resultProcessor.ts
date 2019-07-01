@@ -40,17 +40,22 @@ const getNewStateAndMessage = function(result: Result, state: State) {
     }
     case RT.takeElem: {
       const elem: Elem = RF.getElem(result)
-      const stateWithNewElemInPocket = PF.addElemToPocket(elem, state)
+      const addAndRemoveElem = R.compose(
+        PF.removeElemFromStage,
+        PF.addElemToPocket
+      )
+      const stateAfterTakeElem = addAndRemoveElem(elem, state)
+
       return {
-        state: stateWithNewElemInPocket,
+        state: stateAfterTakeElem,
         message: message
       }
     }
     case RT.putElem: {
       const elem: Elem = RF.getElem(result)
-      const stateWithNewElemOnStage = PF.putElemToStage(elem, state)
+      const stateAfterPutElem = PF.putElemToStage(elem, state)
       return {
-        state: stateWithNewElemOnStage,
+        state: stateAfterPutElem,
         message: message
       }
     }
