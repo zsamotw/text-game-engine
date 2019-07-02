@@ -5,7 +5,7 @@ import * as CF from '../domain/commandFunctions'
 import * as DF from '../domain/doorFunctions'
 import * as AF from '../domain/actorFunctions'
 import * as L from '../utils/lenses'
-import * as RT from '../utils/effectDirections'
+import * as ED from '../utils/effectDirections'
 import * as GH from './genericHelper'
 import Command from '../../models/command'
 import State from '../../models/state'
@@ -17,7 +17,7 @@ const getOverviewEffect = function(state: State) {
 
   if (R.isNil(stage)) {
     return {
-      type: RT.noStateChange,
+      direction: ED.noStateChange,
       message: 'Error. No stage defined as current. Contact with game owner.'
     }
   } else {
@@ -40,7 +40,7 @@ const getOverviewEffect = function(state: State) {
         : 'Nobody here.'
 
     return {
-      type: RT.noStateChange,
+      direction: ED.noStateChange,
       message: `${GH.descriptionOf(stage)}
                 ${elemsOnSTage}
                 ${actorsOnSTage}`
@@ -56,12 +56,12 @@ const getDescriptionEffect = function(command: Command, state: State) {
 
   if (R.isNil(elem)) {
     return {
-      type: RT.noStateChange,
+      direction: ED.noStateChange,
       message: 'No such elem in this stage'
     }
   } else {
     return {
-      type: RT.noStateChange,
+      direction: ED.noStateChange,
       message: GH.descriptionOf(elem)
     }
   }
@@ -83,12 +83,12 @@ const getChangeStageEffect = function(command: Command, state: State) {
 
   if (R.isNil(nextStageId)) {
     return {
-      type: RT.noStateChange,
+      direction: ED.noStateChange,
       message: 'Oopps. Something wrong. You can not go this direction.'
     }
   } else {
     return {
-      type: RT.changeNextStageId,
+      direction: ED.changeNextStageId,
       nextStageId: nextStageId,
       message: `You are in  ${nextStageName}`
     }
@@ -105,19 +105,19 @@ const getTakenElemEffect = function(command: Command, state: State) {
   switch (true) {
     case !isPlace: {
       return {
-        type: RT.noStateChange,
+        type: ED.noStateChange,
         message: 'No place in pocket'
       }
     }
     case isPlace && !R.isNil(takenElem):
       return {
-        type: RT.takeElem,
+        type: ED.takeElem,
         elem: takenElem,
         message: `${GH.nameOf(takenElem as Elem)} is taken`
       }
     case isPlace && R.isNil(takenElem):
       return {
-        type: RT.noStateChange,
+        type: ED.noStateChange,
         message: 'No such elem in this stage'
       }
   }
@@ -131,12 +131,12 @@ const getPutElemEffect = function(command: Command, state: State) {
 
   if (R.isNil(elemFromPocket)) {
     return {
-      type: RT.noStateChange,
+      type: ED.noStateChange,
       message: 'No such elem in pocket'
     }
   } else {
     return {
-      type: RT.putElem,
+      type: ED.putElem,
       elem: elemFromPocket,
       message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
     }
@@ -150,7 +150,7 @@ const getPocketEffect = function(command: Command, state: State) {
   const elemsInPocket = getElemsFrom(pocket)
 
   return {
-    type: RT.pocket,
+    type: ED.pocket,
     elems: elemsInPocket,
     message:
       elemsInPocket.length > 0
@@ -161,7 +161,7 @@ const getPocketEffect = function(command: Command, state: State) {
 
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
-    type: RT.undefinedCommand,
+    type: ED.undefinedCommand,
     message: `ooops!! it is wrong command.`
   }
 }

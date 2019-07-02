@@ -1,7 +1,7 @@
 import Elem from './elem'
 
 export interface Effect {
-  effectType: string
+  direction: string
   message: string
 }
 

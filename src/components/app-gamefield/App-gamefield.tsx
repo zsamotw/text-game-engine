@@ -1,13 +1,13 @@
 import './App-gamefield.css'
 import { append, clone } from 'ramda'
 import {
-  getResult,
+  getEffect,
   getNewStateAndMessage
 } from '../../features/processors/effectProcessor'
 import * as React from 'react'
 import AppMessages from '../app-messages/App-messages'
 import AppTerminal from '../app-terminal/App-terminal'
-import state from '../../state/'
+// import state from '../../state/'
 import State from '../../models/state'
 
 export interface IAppGameFieldProps {}
@@ -26,7 +26,7 @@ export default class AppGameField extends React.Component<
   }
 
   handleCommand = (command: string) => {
-    const result = getResult(command, clone(this.state.gameState))
+    const result = getEffect(command, clone(this.state.gameState))
     const { state, message } = getNewStateAndMessage(
       result,
       clone(this.state.gameState)

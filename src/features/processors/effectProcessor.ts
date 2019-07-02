@@ -17,10 +17,10 @@ const getEffect = function(input: string, state: State) {
 
 // getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
 const getNewStateAndMessage = function(effect: Effect, state: State) {
-  const type = EF.getType(effect)
+  const direction = EF.getDirection(effect)
   const message = EF.getMessage(effect)
 
-  switch (type) {
+  switch (direction) {
     case ED.noStateChange:
       return {
         state: state,
@@ -74,4 +74,4 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
   }
 }
 
-export { getEffect as getResult, getNewStateAndMessage }
+export { getEffect, getNewStateAndMessage }
