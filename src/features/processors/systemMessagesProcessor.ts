@@ -1,6 +1,6 @@
 import { map } from 'rxjs/operators'
 import * as GH from '../helpers/genericHelper.js'
-import * as MF from '../domain/messagesFunctions'
+import * as MF from '../domain/messageFunctions'
 import * as R from 'ramda'
 import * as Rx from 'rxjs'
 

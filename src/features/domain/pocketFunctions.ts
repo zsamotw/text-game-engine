@@ -1,7 +1,7 @@
 import * as GH from '../helpers/genericHelper'
 import * as L from '../utils/lenses'
 import * as R from 'ramda'
-import * as SF from './stagesFunctions'
+import * as SF from './stageFunctions'
 import State from '../../models/state'
 import Elem from '../../models/elem'
 

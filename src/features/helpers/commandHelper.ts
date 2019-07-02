@@ -1,4 +1,4 @@
-import * as P from './patterns'
+import * as P from '../utils/patterns'
 import Command from '../../models/command'
 
 const getLookCommand = function(): Command {

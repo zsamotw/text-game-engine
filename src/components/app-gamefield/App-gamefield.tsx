@@ -3,11 +3,11 @@ import { append, clone } from 'ramda'
 import {
   getResult,
   getNewStateAndMessage
-} from '../../features/processors/resultProcessor'
+} from '../../features/processors/effectProcessor'
 import * as React from 'react'
 import AppMessages from '../app-messages/App-messages'
 import AppTerminal from '../app-terminal/App-terminal'
-import state from '../../db/state'
+import state from '../../state/'
 import State from '../../models/state'
 
 export interface IAppGameFieldProps {}

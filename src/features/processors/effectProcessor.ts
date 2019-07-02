@@ -3,31 +3,31 @@ import * as L from '../utils/lenses'
 import * as CP from './commandsProcessor'
 import * as SMH from '../helpers/stringMatcherHelper'
 import * as PF from '../domain/pocketFunctions'
-import * as RT from '../utils/resultTypes'
-import * as RF from '../domain/resultFunctions'
+import * as ED from '../utils/effectDirections'
+import * as EF from '../domain/effectFunctions'
 import State from '../../models/state'
 import Elem from '../../models/elem'
-import Result from '../../models/result'
+import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
 
-// getResult :: String -> State -> Result
-const getResult = function(input: string, state: State) {
+// getEffect :: String -> State -> Effect
+const getEffect = function(input: string, state: State) {
   const command = SMH.stringMatcher(input as never)
   return CP.processCommandAndGetResult(command, state)
 }
 
 // getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
-const getNewStateAndMessage = function(result: Result, state: State) {
-  const type = RF.getType(result)
-  const message = RF.getMessage(result)
+const getNewStateAndMessage = function(effect: Effect, state: State) {
+  const type = EF.getType(effect)
+  const message = EF.getMessage(effect)
 
   switch (type) {
-    case RT.noStateChange:
+    case ED.noStateChange:
       return {
         state: state,
         message: message
       }
-    case RT.changeNextStageId: {
-      const nextStageId = RF.getNextStatgeId(result)
+    case ED.changeNextStageId: {
+      const nextStageId = EF.getNextStatgeId(effect as NextStageEffect)
       const stateWithNewCurrentStage = R.set(
         L.currentStageIdLens,
         nextStageId,
@@ -38,8 +38,8 @@ const getNewStateAndMessage = function(result: Result, state: State) {
         message: message
       }
     }
-    case RT.takeElem: {
-      const elem: Elem = RF.getElem(result)
+    case ED.takeElem: {
+      const elem: Elem = EF.getElem(effect as ElemEffect)
       const addAndRemoveElem = R.compose(
         PF.removeElemFromStage,
         PF.addElemToPocket
@@ -51,21 +51,21 @@ const getNewStateAndMessage = function(result: Result, state: State) {
         message: message
       }
     }
-    case RT.putElem: {
-      const elem: Elem = RF.getElem(result)
+    case ED.putElem: {
+      const elem: Elem = EF.getElem(effect as ElemEffect)
       const stateAfterPutElem = PF.putElemToStage(elem, state)
       return {
         state: stateAfterPutElem,
         message: message
       }
     }
-    case RT.pocket: {
+    case ED.pocket: {
       return {
         state: state,
         message: message
       }
     }
-    case RT.undefinedCommand: {
+    case ED.undefinedCommand: {
       return {
         state: state,
         message: message
@@ -74,4 +74,4 @@ const getNewStateAndMessage = function(result: Result, state: State) {
   }
 }
 
-export { getResult, getNewStateAndMessage }
+export { getEffect as getResult, getNewStateAndMessage }

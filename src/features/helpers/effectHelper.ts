@@ -1,18 +1,18 @@
 import * as R from 'ramda'
-import * as SF from '../domain/stagesFunctions'
+import * as SF from '../domain/stageFunctions'
 import * as PF from '../domain/pocketFunctions'
 import * as CF from '../domain/commandFunctions'
 import * as DF from '../domain/doorFunctions'
-import * as AF from '../domain/actorsFunctions'
+import * as AF from '../domain/actorFunctions'
 import * as L from '../utils/lenses'
-import * as RT from '../utils/resultTypes'
+import * as RT from '../utils/effectDirections'
 import * as GH from './genericHelper'
 import Command from '../../models/command'
 import State from '../../models/state'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
 
-const getOverviewResult = function(state: State) {
+const getOverviewEffect = function(state: State) {
   const stage = SF.getCurrentStage(state)
 
   if (R.isNil(stage)) {
@@ -48,7 +48,7 @@ const getOverviewResult = function(state: State) {
   }
 }
 
-const getDescriptionResult = function(command: Command, state: State) {
+const getDescriptionEffect = function(command: Command, state: State) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
   const fromCurrentStage = SF.getElemsForCurrentStage(state)
 
@@ -67,7 +67,7 @@ const getDescriptionResult = function(command: Command, state: State) {
   }
 }
 
-const getChangeStageResult = function(command: Command, state: State) {
+const getChangeStageEffect = function(command: Command, state: State) {
   const directionFrom: (command: Command) => string = R.view(L.restLens)
   const doorsInCurrenStage = DF.getDoorsForCurrentStage(state)
   const direction = directionFrom(command)
@@ -95,7 +95,7 @@ const getChangeStageResult = function(command: Command, state: State) {
   }
 }
 
-const getTakenElemResult = function(command: Command, state: State) {
+const getTakenElemEffect = function(command: Command, state: State) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
   const FromElemsOnCurrentStage = SF.getElemsForCurrentStage(state)
 
@@ -123,7 +123,7 @@ const getTakenElemResult = function(command: Command, state: State) {
   }
 }
 
-const getPutElemResult = function(command: Command, state: State) {
+const getPutElemEffect = function(command: Command, state: State) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
   const fromPocket = PF.viewPocket(state)
 
@@ -143,7 +143,7 @@ const getPutElemResult = function(command: Command, state: State) {
   }
 }
 
-const getPocketResult = function(command: Command, state: State) {
+const getPocketEffect = function(command: Command, state: State) {
   const getElemsFrom = R.map(R.prop('name'))
   const pocket = PF.viewPocket(state)
 
@@ -159,7 +159,7 @@ const getPocketResult = function(command: Command, state: State) {
   }
 }
 
-const getUndefinedResult = function(command: Command, state: State) {
+const getUndefinedEffect = function(command: Command, state: State) {
   return {
     type: RT.undefinedCommand,
     message: `ooops!! it is wrong command.`
@@ -167,11 +167,11 @@ const getUndefinedResult = function(command: Command, state: State) {
 }
 
 export {
-  getOverviewResult,
-  getDescriptionResult,
-  getChangeStageResult,
-  getTakenElemResult,
-  getPutElemResult,
-  getPocketResult,
-  getUndefinedResult
+  getOverviewEffect,
+  getDescriptionEffect,
+  getChangeStageEffect,
+  getTakenElemEffect,
+  getPutElemEffect,
+  getPocketEffect,
+  getUndefinedEffect
 }
