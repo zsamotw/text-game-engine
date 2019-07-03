@@ -1,16 +1,25 @@
-import * as R from 'ramda'
-import * as SF from '../domain/stageFunctions'
-import * as PF from '../domain/pocketFunctions'
-import * as CF from '../domain/commandFunctions'
-import * as DF from '../domain/doorFunctions'
 import * as AF from '../domain/actorFunctions'
-import * as L from '../utils/lenses'
+import * as CF from '../domain/commandFunctions'
+import * as CP from '../processors/commandsProcessor'
+import * as DF from '../domain/doorFunctions'
 import * as ED from '../utils/effectDirections'
 import * as GH from './genericHelper'
+import * as L from '../utils/lenses'
+import * as PF from '../domain/pocketFunctions'
+import * as R from 'ramda'
+import * as SF from '../domain/stageFunctions'
+import * as SMH from '../helpers/stringMatcherHelper'
 import Command from '../../models/command'
-import State from '../../models/state'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
+import State from '../../models/state'
+import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
+
+// getEffect :: String -> State -> Effect
+const getEffect = function(input: string, state: State) {
+  const command = SMH.stringMatcher(input as never)
+  return CP.processCommandAndGetResult(command, state)
+}
 
 const getOverviewEffect = function(state: State) {
   const stage = SF.getCurrentStage(state)
@@ -19,7 +28,7 @@ const getOverviewEffect = function(state: State) {
     return {
       direction: ED.noStateChange,
       message: 'Error. No stage defined as current. Contact with game owner.'
-    }
+    } as Effect
   } else {
     const getName = R.prop('name')
     const elemsNamesForCurrentStage = R.map(
@@ -44,7 +53,7 @@ const getOverviewEffect = function(state: State) {
       message: `${GH.descriptionOf(stage)}
                 ${elemsOnSTage}
                 ${actorsOnSTage}`
-    }
+    } as Effect
   }
 }
 
@@ -58,12 +67,12 @@ const getDescriptionEffect = function(command: Command, state: State) {
     return {
       direction: ED.noStateChange,
       message: 'No such elem in this stage'
-    }
+    } as Effect
   } else {
     return {
       direction: ED.noStateChange,
       message: GH.descriptionOf(elem)
-    }
+    } as Effect
   }
 }
 
@@ -85,13 +94,13 @@ const getChangeStageEffect = function(command: Command, state: State) {
     return {
       direction: ED.noStateChange,
       message: 'Oopps. Something wrong. You can not go this direction.'
-    }
+    } as Effect
   } else {
     return {
       direction: ED.changeNextStageId,
       nextStageId: nextStageId,
       message: `You are in  ${nextStageName}`
-    }
+    } as NextStageEffect
   }
 }
 
@@ -105,68 +114,68 @@ const getTakenElemEffect = function(command: Command, state: State) {
   switch (true) {
     case !isPlace: {
       return {
-        type: ED.noStateChange,
+        direction: ED.noStateChange,
         message: 'No place in pocket'
-      }
+      } as Effect
     }
     case isPlace && !R.isNil(takenElem):
       return {
-        type: ED.takeElem,
+        direction: ED.takeElem,
         elem: takenElem,
         message: `${GH.nameOf(takenElem as Elem)} is taken`
-      }
+      } as ElemEffect
     case isPlace && R.isNil(takenElem):
       return {
-        type: ED.noStateChange,
+        direction: ED.noStateChange,
         message: 'No such elem in this stage'
-      }
+      } as Effect
   }
 }
 
 const getPutElemEffect = function(command: Command, state: State) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  const fromPocket = PF.viewPocket(state)
+  const fromPocket = PF.getPocket(state)
 
   const elemFromPocket = getElemEqualsTo(command)(fromPocket)
 
   if (R.isNil(elemFromPocket)) {
     return {
-      type: ED.noStateChange,
+      direction: ED.noStateChange,
       message: 'No such elem in pocket'
-    }
+    } as Effect
   } else {
     return {
-      type: ED.putElem,
+      direction: ED.putElem,
       elem: elemFromPocket,
       message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
-    }
+    } as ElemEffect
   }
 }
 
 const getPocketEffect = function(command: Command, state: State) {
-  const getElemsFrom = R.map(R.prop('name'))
-  const pocket = PF.viewPocket(state)
+  const getElemsNamesFrom = R.map(R.prop('name'))
+  const pocket = PF.getPocket(state)
 
-  const elemsInPocket = getElemsFrom(pocket)
+  const elemsInPocket = getElemsNamesFrom(pocket)
 
   return {
-    type: ED.pocket,
-    elems: elemsInPocket,
+    direction: ED.pocket,
     message:
       elemsInPocket.length > 0
         ? `In your pocket: ${elemsInPocket}`
         : 'You pocket is empty'
-  }
+  } as Effect
 }
 
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
-    type: ED.undefinedCommand,
+    direction: ED.undefinedCommand,
     message: `ooops!! it is wrong command.`
-  }
+  } as Effect
 }
 
 export {
+  getEffect,
   getOverviewEffect,
   getDescriptionEffect,
   getChangeStageEffect,

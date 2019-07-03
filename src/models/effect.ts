@@ -12,7 +12,3 @@ export interface NextStageEffect extends Effect {
 export interface ElemEffect extends Effect {
   elem: Elem
 }
-
-export interface ElemsEffect extends Effect {
-  elems: Elem[]
-}

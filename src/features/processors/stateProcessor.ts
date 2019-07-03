@@ -1,19 +1,11 @@
 import * as R from 'ramda'
 import * as L from '../utils/lenses'
-import * as CP from './commandsProcessor'
-import * as SMH from '../helpers/stringMatcherHelper'
 import * as PF from '../domain/pocketFunctions'
 import * as ED from '../utils/effectDirections'
 import * as EF from '../domain/effectFunctions'
 import State from '../../models/state'
 import Elem from '../../models/elem'
 import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
-
-// getEffect :: String -> State -> Effect
-const getEffect = function(input: string, state: State) {
-  const command = SMH.stringMatcher(input as never)
-  return CP.processCommandAndGetResult(command, state)
-}
 
 // getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
 const getNewStateAndMessage = function(effect: Effect, state: State) {
@@ -74,4 +66,4 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
   }
 }
 
-export { getEffect, getNewStateAndMessage }
+export { getNewStateAndMessage }
