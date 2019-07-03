@@ -86,7 +86,7 @@ const putElemToStage: (elem: Elem, state: State) => State = (elem, state) => {
 }
 
 export {
-  getPocket as viewPocket,
+  getPocket,
   isPlaceInPocket,
   maxPocketSize,
   addElemToPocket,
