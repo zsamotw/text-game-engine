@@ -1,13 +1,11 @@
+// import state from '../../state/'
 import './App-gamefield.css'
 import { append, clone } from 'ramda'
-import {
-  getEffect,
-  getNewStateAndMessage
-} from '../../features/processors/effectProcessor'
+import { getEffect } from '../../features/helpers/effectHelper'
+import { getNewStateAndMessage } from '../../features/processors/stateProcessor'
 import * as React from 'react'
 import AppMessages from '../app-messages/App-messages'
 import AppTerminal from '../app-terminal/App-terminal'
-// import state from '../../state/'
 import State from '../../models/state'
 
 export interface IAppGameFieldProps {}
