@@ -31,14 +31,17 @@ const getOverviewEffect = function(state: State) {
     } as Effect
   } else {
     const getName = R.prop('name')
+
     const elemsNamesForCurrentStage = R.map(
       getName,
       SF.getElemsForCurrentStage(state)
     )
+
     const actorNamesForCurrentStage: string[] = R.map(
       getName,
       AF.getActorsForCurrentStage(state)
     )
+
     const elemsOnSTage =
       elemsNamesForCurrentStage.length > 0
         ? `Things: ${elemsNamesForCurrentStage}.`
