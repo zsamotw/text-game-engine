@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as L from '../utils/lenses'
-import * as SF from './stageFunctions'
+import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import State from '../../models/state'
 import Stage from '../../models/stage'

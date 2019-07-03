@@ -1,5 +1,5 @@
 import * as React from 'react'
-import './App-terminal.css'
+import './app-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTerminal } from '@fortawesome/free-solid-svg-icons'
 

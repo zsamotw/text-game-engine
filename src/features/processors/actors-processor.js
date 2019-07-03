@@ -2,8 +2,8 @@ import * as Rx from 'rxjs'
 import { map } from 'rxjs/operators'
 import * as R from 'ramda'
 import * as L from '../utils/lenses'
-import * as DF from '../domain/doorFunctions'
-import * as GH from '../helpers/genericHelper'
+import * as DF from '../domain/door-functions'
+import * as GH from '../helpers/generic-helper'
 
 const getActorsStream = (state) =>
   Rx.interval(3000).pipe(

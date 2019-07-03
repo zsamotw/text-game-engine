@@ -1,6 +1,6 @@
 import * as R from 'ramda'
-import * as CH from './commandHelper'
-import * as PMH from '../helpers/patternMatcherHelper'
+import * as CH from './command-helper'
+import * as PMH from './pattern-matcher-helper'
 
 const stringMatcher = R.cond([
   [PMH.isLookPattern, R.always(CH.getLookCommand())],

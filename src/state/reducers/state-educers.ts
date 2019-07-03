@@ -1,4 +1,4 @@
-import { stages, currentStageId, pocket } from '../initialState'
+import { stages, currentStageId, pocket } from '../initial-state'
 import Stage from '../../models/stage'
 import Elem from '../../models/elem'
 import State from '../../models/state'

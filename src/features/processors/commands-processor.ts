@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import * as EH from '../helpers/effectHelper'
+import * as EH from '../helpers/effect-helper'
 import State from '../../models/state'
 import Command from '../../models/command'
 
