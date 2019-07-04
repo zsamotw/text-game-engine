@@ -7,7 +7,7 @@ import State from '../../models/state'
 import Elem from '../../models/elem'
 import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
 
-// getNewStateAndMessage :: Result -> State -> {state: State, message: Message}
+// getNewStateAndMessage :: Effect -> State -> {state: State, message: Message}
 const getNewStateAndMessage = function(effect: Effect, state: State) {
   const direction = EF.getDirection(effect)
   const message = EF.getMessage(effect)
@@ -18,6 +18,7 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
         state: state,
         message: message
       }
+
     case ED.changeNextStageId: {
       const nextStageId = EF.getNextStatgeId(effect as NextStageEffect)
       const stateWithNewCurrentStage = R.set(
@@ -30,6 +31,7 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
         message: message
       }
     }
+
     case ED.takeElem: {
       const elem: Elem = EF.getElem(effect as ElemEffect)
       const addAndRemoveElem = R.compose(
@@ -43,6 +45,7 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
         message: message
       }
     }
+
     case ED.putElem: {
       const elem: Elem = EF.getElem(effect as ElemEffect)
       const stateAfterPutElem = PF.putElemToStage(elem, state)
@@ -51,12 +54,14 @@ const getNewStateAndMessage = function(effect: Effect, state: State) {
         message: message
       }
     }
+
     case ED.pocket: {
       return {
         state: state,
         message: message
       }
     }
+
     case ED.undefinedCommand: {
       return {
         state: state,
