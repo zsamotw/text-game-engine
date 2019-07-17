@@ -6,25 +6,28 @@ import Elem from '../../models/elem'
 
 const getStages: (state: State) => Stage[] = R.view(L.stagesLens)
 
-const getStage: (stageId: number, state: State) => Stage = (stageId, state) =>
-  R.find(R.propEq('id', stageId), getStages(state)) as Stage
+// const getStage: (stageId: number, state: State) => Stage = (stageId, state) =>
+//   R.find(R.propEq('id', stageId), getStages(state)) as Stage
 
 const getCurrentStageId: (state: State) => number = R.view(L.currentStageIdLens)
 
-const getCurrentStage: (state: State) => Stage = state =>
-  R.find(R.propEq('id', getCurrentStageId(state)), R.view(L.stagesLens, state))
+const getStage: (stages: Stage[], stageId: number) => Stage = (
+  stages,
+  stageId
+) => R.find(R.propEq('id', stageId))(stages)
 
 const getElemsForStage: (stage: Stage) => Elem[] = R.view(L.elemsLens)
 
-const getElemsForCurrentStage: (state: State) => Elem[] = R.compose(
-  getElemsForStage,
-  getCurrentStage
-)
+// const getElemsForCurrentStage: (state: State) => Elem[] = R.compose(
+//   getElemsForStage,
+//   getStage
+// )
 
 export {
   getStages,
   getStage,
-  getCurrentStageId,
-  getCurrentStage,
-  getElemsForCurrentStage
+  // getCurrentStageId,
+  getStage as getCurrentStage,
+  getElemsForStage
+  // getElemsForCurrentStage
 }

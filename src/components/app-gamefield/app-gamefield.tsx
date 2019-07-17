@@ -2,7 +2,7 @@
 import './app-gamefield.css'
 import { append, clone } from 'ramda'
 import { getEffect } from '../../features/helpers/effect-helper'
-import { getNewStateAndMessage } from '../../features/processors/state-processor'
+import { getNewStateAndMessage } from '../../features/processors/effect-processor'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'

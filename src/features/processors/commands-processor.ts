@@ -10,11 +10,13 @@ const processCommandAndGetEffect: (
 ) => any = R.cond([
   [
     (command, state) => R.equals(R.prop('order', command), 'Look'),
-    (command, state) => EH.getOverviewEffect(state)
+    (command, state) =>
+      EH.getOverviewEffect(state.stages, state.actors, state.currentStageId)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'LookAt'),
-    (command, state) => EH.getDescriptionEffect(command, state)
+    (command, state) =>
+      EH.getDescriptionEffect(command, state.stages, state.currentStageId)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Go'),
@@ -22,11 +24,11 @@ const processCommandAndGetEffect: (
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Take'),
-    (command, state) => EH.getTakenElemEffect(command, state)
+    (command, state) => EH.getTakenElemEffect(command, state.stages, state.currentStageId, state.pocket)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Put'),
-    (command, state) => EH.getPutElemEffect(command, state)
+    (command, state) => EH.getPutElemEffect(command, state.stages, state.currentStageId, state.pocket)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Pocket'),
@@ -39,4 +41,4 @@ const processCommandAndGetEffect: (
   [R.T, (command, state) => 'Errorrrr!!!']
 ])
 
-export { processCommandAndGetEffect as processCommandAndGetResult }
+export { processCommandAndGetEffect }

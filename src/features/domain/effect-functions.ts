@@ -13,4 +13,8 @@ const getNextStatgeId: (effect: NextStageEffect) => number = R.view(
 
 const getElem: (effect: ElemEffect) => Elem = R.view(L.elemLens)
 
-export { getDirection, getMessage, getNextStatgeId, getElem }
+const getCurrentStageId: (effect: ElemEffect) => number = R.view(
+  L.currentStageIdLens
+)
+
+export { getDirection, getMessage, getNextStatgeId, getElem, getCurrentStageId }

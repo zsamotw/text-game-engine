@@ -1,12 +1,11 @@
 import * as R from 'ramda'
-import * as L from '../utils/lenses'
-import State from '../../models/state'
 import Actor from '../../models/actor'
 
-const getActorsForCurrentStage: (state: State) => Actor[] = state =>
-  R.filter(
-    R.propEq('stageId', R.view(L.currentStageIdLens, state)),
-    R.view(L.actorsLens, state)
-  )
+const getActorsForStage: (actors: Actor[], stageId: number) => Actor[] = (
+  actors,
+  stageId
+) => {
+  return R.filter(R.propEq('stageId', stageId))(actors)
+}
 
-export { getActorsForCurrentStage }
+export { getActorsForStage }

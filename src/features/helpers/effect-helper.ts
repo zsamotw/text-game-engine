@@ -14,17 +14,22 @@ import Elem from '../../models/elem'
 import Stage from '../../models/stage'
 import State from '../../models/state'
 import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
+import Actor from '../../models/actor'
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
   const command = SMH.stringMatcher(input as never)
-  return CP.processCommandAndGetResult(command, state)
+  return CP.processCommandAndGetEffect(command, state)
 }
 
-const getOverviewEffect = function(state: State) {
-  const stage = SF.getCurrentStage(state)
+const getOverviewEffect = function(
+  stages: Stage[],
+  actors: Actor[],
+  currentStageId: number
+) {
+  const currentStage = SF.getStage(stages, currentStageId)
 
-  if (R.isNil(stage)) {
+  if (R.isNil(currentStage)) {
     return {
       direction: ED.noStateChange,
       message: 'Error. No stage defined as current. Contact with game owner.'
@@ -34,12 +39,12 @@ const getOverviewEffect = function(state: State) {
 
     const elemsNamesForCurrentStage = R.map(
       getName,
-      SF.getElemsForCurrentStage(state)
+      SF.getElemsForStage(currentStage)
     )
 
     const actorNamesForCurrentStage: string[] = R.map(
       getName,
-      AF.getActorsForCurrentStage(state)
+      AF.getActorsForStage(actors, currentStageId)
     )
 
     const elemsOnSTage =
@@ -53,18 +58,27 @@ const getOverviewEffect = function(state: State) {
 
     return {
       direction: ED.noStateChange,
-      message: `${GH.descriptionOf(stage)}
+      message: `${GH.descriptionOf(currentStage)}
                 ${elemsOnSTage}
                 ${actorsOnSTage}`
     } as Effect
   }
 }
 
-const getDescriptionEffect = function(command: Command, state: State) {
+const getDescriptionEffect = function(
+  command: Command,
+  stages: Stage[],
+  currentStageId: number
+) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  const fromCurrentStage = SF.getElemsForCurrentStage(state)
+  const fromElemsInCurrentStage = R.compose(
+    SF.getElemsForStage,
+    SF.getStage
+  )
 
-  const elem = getElemEqualsTo(command)(fromCurrentStage)
+  const elem = getElemEqualsTo(command)(
+    fromElemsInCurrentStage(stages, currentStageId)
+  )
 
   if (R.isNil(elem)) {
     return {
@@ -107,12 +121,18 @@ const getChangeStageEffect = function(command: Command, state: State) {
   }
 }
 
-const getTakenElemEffect = function(command: Command, state: State) {
+const getTakenElemEffect = function(
+  command: Command,
+  stages: Stage[],
+  currentStageId: number,
+  pocket: Elem[]
+) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  const FromElemsOnCurrentStage = SF.getElemsForCurrentStage(state)
+  const currentStage = SF.getStage(stages, currentStageId)
+  const FromElemsOnCurrentStage = SF.getElemsForStage(currentStage)
 
   const takenElem = getElemEqualsTo(command)(FromElemsOnCurrentStage)
-  const isPlace = PF.isPlaceInPocket(state)
+  const isPlace = PF.isPlaceInPocket(pocket)
 
   switch (true) {
     case !isPlace: {
@@ -125,6 +145,7 @@ const getTakenElemEffect = function(command: Command, state: State) {
       return {
         direction: ED.takeElem,
         elem: takenElem,
+        currentStageId: currentStageId,
         message: `${GH.nameOf(takenElem as Elem)} is taken`
       } as ElemEffect
     case isPlace && R.isNil(takenElem):
@@ -135,11 +156,16 @@ const getTakenElemEffect = function(command: Command, state: State) {
   }
 }
 
-const getPutElemEffect = function(command: Command, state: State) {
+const getPutElemEffect = function(
+  command: Command,
+  stages: Stage[],
+  currentStageId: number,
+  pocket: Elem[]
+) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  const fromPocket = PF.getPocket(state)
+  // const fromPocket = PF.getPocket(state)
 
-  const elemFromPocket = getElemEqualsTo(command)(fromPocket)
+  const elemFromPocket = getElemEqualsTo(command)(pocket)
 
   if (R.isNil(elemFromPocket)) {
     return {
@@ -150,19 +176,20 @@ const getPutElemEffect = function(command: Command, state: State) {
     return {
       direction: ED.putElem,
       elem: elemFromPocket,
+      currentStageId: currentStageId,
       message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
     } as ElemEffect
   }
 }
 
-const getPocketEffect = function(command: Command, state: State) {
+const getPocketEffect = function(command: Command, pocket: Elem[]) {
   const getElemsNamesFrom = R.map(R.prop('name'))
-  const pocket = PF.getPocket(state)
+  // const pocket = PF.getPocket(state)
 
   const elemsInPocket = getElemsNamesFrom(pocket)
 
   return {
-    direction: ED.pocket,
+    direction: ED.noStateChange,
     message:
       elemsInPocket.length > 0
         ? `In your pocket: ${elemsInPocket}`

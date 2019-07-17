@@ -1,4 +1,5 @@
 import Elem from './elem'
+import { currentStageId } from '../state/initial-state'
 
 export interface Effect {
   direction: string
@@ -11,4 +12,5 @@ export interface NextStageEffect extends Effect {
 
 export interface ElemEffect extends Effect {
   elem: Elem
+  currentStageId: number
 }
