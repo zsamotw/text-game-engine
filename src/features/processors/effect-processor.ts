@@ -1,6 +1,5 @@
 import * as APT from '../../state/actions/pocket-actions'
 import * as AST from '../../state/actions/stages-actions'
-import * as PF from '../domain/pocket-functions'
 import * as ED from '../utils/effect-directions'
 import * as EF from '../domain/effect-functions'
 import State from '../../models/state'
