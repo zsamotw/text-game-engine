@@ -2,7 +2,7 @@ import Elem from './elem'
 import { currentStageId } from '../state/initial-state'
 
 export interface Effect {
-  direction: string
+  operation: string
   message: string
 }
 
