@@ -1,6 +1,6 @@
 ## Game
 
-Text game engine implemented with typescript.
+Text game engine implemented with Typescript, React and Redux.
 
 ### `npm start`
 
