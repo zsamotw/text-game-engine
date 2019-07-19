@@ -1,20 +1,20 @@
+import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
 import * as AF from '../domain/actor-functions'
 import * as CF from '../domain/command-functions'
 import * as CP from '../processors/commands-processor'
 import * as DF from '../domain/door-functions'
-import * as ED from '../utils/effect-directions'
+import * as EO from '../utils/effect-operations'
 import * as GH from './generic-helper'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as R from 'ramda'
 import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
+import Actor from '../../models/actor'
 import Command from '../../models/command'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
 import State from '../../models/state'
-import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
-import Actor from '../../models/actor'
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
@@ -31,7 +31,7 @@ const getOverviewEffect = function(
 
   if (R.isNil(currentStage)) {
     return {
-      direction: ED.noStateChange,
+      operation: EO.noStateChange,
       message: 'Error. No stage defined as current. Contact with game owner.'
     } as Effect
   } else {
@@ -57,7 +57,7 @@ const getOverviewEffect = function(
         : 'Nobody here.'
 
     return {
-      direction: ED.noStateChange,
+      operation: EO.noStateChange,
       message: `${GH.descriptionOf(currentStage)}
                 ${elemsOnSTage}
                 ${actorsOnSTage}`
@@ -82,12 +82,12 @@ const getDescriptionEffect = function(
 
   if (R.isNil(elem)) {
     return {
-      direction: ED.noStateChange,
+      operation: EO.noStateChange,
       message: 'No such elem in this stage'
     } as Effect
   } else {
     return {
-      direction: ED.noStateChange,
+      operation: EO.noStateChange,
       message: GH.descriptionOf(elem)
     } as Effect
   }
@@ -100,9 +100,9 @@ const getChangeStageEffect = function(
 ) {
   const directionFrom: (command: Command) => string = R.view(L.restLens)
   const doorsInCurrenStage = DF.getDoorsForStage(stages, currentStageId)
-  const direction = directionFrom(command)
+  const operation = directionFrom(command)
 
-  const nextStageId = R.prop(direction as any, doorsInCurrenStage)
+  const nextStageId = R.prop(operation as any, doorsInCurrenStage)
 
   const nextStage = R.find(R.propEq('id', nextStageId), stages) as Stage
 
@@ -110,12 +110,12 @@ const getChangeStageEffect = function(
 
   if (R.isNil(nextStageId)) {
     return {
-      direction: ED.noStateChange,
-      message: 'Oopps. Something wrong. You can not go this direction.'
+      operation: EO.noStateChange,
+      message: 'Oopps. Something wrong. You can not go this operation.'
     } as Effect
   } else {
     return {
-      direction: ED.changeNextStageId,
+      operation: EO.changeNextStageId,
       nextStageId: nextStageId,
       message: `You are in  ${nextStageName}`
     } as NextStageEffect
@@ -138,20 +138,20 @@ const getTakenElemEffect = function(
   switch (true) {
     case !isPlace: {
       return {
-        direction: ED.noStateChange,
+        operation: EO.noStateChange,
         message: 'No place in pocket'
       } as Effect
     }
     case isPlace && !R.isNil(takenElem):
       return {
-        direction: ED.takeElem,
+        operation: EO.takeElem,
         elem: takenElem,
         currentStageId: currentStageId,
         message: `${GH.nameOf(takenElem as Elem)} is taken`
       } as ElemEffect
     case isPlace && R.isNil(takenElem):
       return {
-        direction: ED.noStateChange,
+        operation: EO.noStateChange,
         message: 'No such elem in this stage'
       } as Effect
   }
@@ -170,12 +170,12 @@ const getPutElemEffect = function(
 
   if (R.isNil(elemFromPocket)) {
     return {
-      direction: ED.noStateChange,
+      operation: EO.noStateChange,
       message: 'No such elem in pocket'
     } as Effect
   } else {
     return {
-      direction: ED.putElem,
+      operation: EO.putElem,
       elem: elemFromPocket,
       currentStageId: currentStageId,
       message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
@@ -185,12 +185,10 @@ const getPutElemEffect = function(
 
 const getPocketEffect = function(command: Command, pocket: Elem[]) {
   const getElemsNamesFrom = R.map(R.prop('name'))
-  // const pocket = PF.getPocket(state)
-
   const elemsInPocket = getElemsNamesFrom(pocket)
 
   return {
-    direction: ED.noStateChange,
+    operation: EO.noStateChange,
     message:
       elemsInPocket.length > 0
         ? `In your pocket: ${elemsInPocket}`
@@ -200,7 +198,7 @@ const getPocketEffect = function(command: Command, pocket: Elem[]) {
 
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
-    direction: ED.undefinedCommand,
+    operation: EO.undefinedCommand,
     message: `ooops!! it is wrong command.`
   } as Effect
 }

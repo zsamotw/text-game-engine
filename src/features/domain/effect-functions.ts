@@ -7,7 +7,7 @@ const getDirection: (effect: Effect) => string = R.view(L.typeLens)
 
 const getMessage: (effect: Effect) => string = R.view(L.messageLens)
 
-const getNextStatgeId: (effect: NextStageEffect) => number = R.view(
+const getNextStageId: (effect: NextStageEffect) => number = R.view(
   L.nextStageId
 )
 
@@ -17,4 +17,4 @@ const getCurrentStageId: (effect: ElemEffect) => number = R.view(
   L.currentStageIdLens
 )
 
-export { getDirection, getMessage, getNextStatgeId, getElem, getCurrentStageId }
+export { getDirection, getMessage, getNextStageId, getElem, getCurrentStageId }

@@ -1,6 +1,6 @@
 import * as APT from '../../state/actions/pocket-actions'
 import * as AST from '../../state/actions/stages-actions'
-import * as ED from '../utils/effect-directions'
+import * as ED from '../utils/effect-operations'
 import * as EF from '../domain/effect-functions'
 import State from '../../models/state'
 import Elem from '../../models/elem'
@@ -20,10 +20,10 @@ const getActionsAndMessage = function(effect: Effect, state: State) {
       }
 
     case ED.changeNextStageId: {
-      const nextStageId = EF.getNextStatgeId(effect as NextStageEffect)
-      const changeNextStageIdaction = changeStage(nextStageId)
+      const nextStageId = EF.getNextStageId(effect as NextStageEffect)
+      const changeNextStageIdAction = changeStage(nextStageId)
       return {
-        actions: [changeNextStageIdaction],
+        actions: [changeNextStageIdAction],
         message: message
       }
     }
