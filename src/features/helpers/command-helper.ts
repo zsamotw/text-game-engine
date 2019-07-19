@@ -5,7 +5,7 @@ const getLookCommand = function(): Command {
   return {
     order: 'Look',
     rest: ''
-  }
+  } as Command
 }
 
 const getLookAtCommand = function(str: string): Command {
@@ -13,7 +13,7 @@ const getLookAtCommand = function(str: string): Command {
   return {
     order: 'LookAt',
     rest: rest
-  }
+  } as Command
 }
 
 const getGoCommand = function(str: string): Command {
@@ -21,7 +21,7 @@ const getGoCommand = function(str: string): Command {
   return {
     order: 'Go',
     rest: rest
-  }
+  } as Command
 }
 
 const getTakeCommand = function(str: string): Command {
@@ -29,7 +29,7 @@ const getTakeCommand = function(str: string): Command {
   return {
     order: 'Take',
     rest: rest
-  }
+  } as Command
 }
 
 const getPutCommand = function(str: string): Command {
@@ -37,21 +37,21 @@ const getPutCommand = function(str: string): Command {
   return {
     order: 'Put',
     rest: rest
-  }
+  } as Command
 }
 
 const getPocketCommand = function(str: string): Command {
   return {
     order: 'Pocket',
     rest: ''
-  }
+  } as Command
 }
 
 const getUndefinedCommand = function(str: string): Command {
   return {
     order: 'Undefined',
     rest: ''
-  }
+  } as Command
 }
 
 export {
