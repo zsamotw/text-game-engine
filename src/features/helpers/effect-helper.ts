@@ -93,17 +93,18 @@ const getDescriptionEffect = function(
   }
 }
 
-const getChangeStageEffect = function(command: Command, state: State) {
+const getChangeStageEffect = function(
+  command: Command,
+  stages: Stage[],
+  currentStageId: number
+) {
   const directionFrom: (command: Command) => string = R.view(L.restLens)
-  const doorsInCurrenStage = DF.getDoorsForCurrentStage(state)
+  const doorsInCurrenStage = DF.getDoorsForStage(stages, currentStageId)
   const direction = directionFrom(command)
 
   const nextStageId = R.prop(direction as any, doorsInCurrenStage)
 
-  const nextStage = R.find(
-    R.propEq('id', nextStageId),
-    R.view(L.stagesLens, state)
-  ) as Stage
+  const nextStage = R.find(R.propEq('id', nextStageId), stages) as Stage
 
   const nextStageName = GH.nameOf(nextStage)
 

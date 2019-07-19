@@ -19,7 +19,10 @@ const getWayOut = (doors: Doors) => {
   }
 }
 
-const getDoorsForCurrentStage: (state: State) => Doors = R.compose(
+const getDoorsForCurrentStage: (
+  stages: Stage[],
+  currentStageId: number
+) => Doors = R.compose(
   getDoors,
   SF.getCurrentStage
 )

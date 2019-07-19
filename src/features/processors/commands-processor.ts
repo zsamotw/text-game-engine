@@ -20,7 +20,7 @@ const processCommandAndGetEffect: (
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Go'),
-    (command, state) => EH.getChangeStageEffect(command, state)
+    (command, state) => EH.getChangeStageEffect(command, state.stages, state.currentStageId)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Take'),

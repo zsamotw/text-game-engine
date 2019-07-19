@@ -34,6 +34,9 @@ export default class AppGameField extends React.Component<
     this.setState({
       messages: newMessages
     })
+    for(let action of actions) {
+      appStore.dispatch(action)
+    }
   }
 
   public render() {
