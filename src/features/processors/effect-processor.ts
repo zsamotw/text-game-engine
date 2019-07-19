@@ -9,10 +9,10 @@ import { changeStage } from '../../state/actions/stages-actions'
 
 // getNewStateAndMessage :: Effect -> State -> {actions: Action[], message: Message}
 const getActionsAndMessage = function(effect: Effect, state: State) {
-  const direction = EF.getDirection(effect)
+  const operation = EF.getOperation(effect)
   const message = EF.getMessage(effect)
 
-  switch (direction) {
+  switch (operation) {
     case ED.noStateChange:
       return {
         actions: [],
@@ -66,4 +66,4 @@ const getActionsAndMessage = function(effect: Effect, state: State) {
   }
 }
 
-export { getActionsAndMessage as getNewStateAndMessage }
+export { getActionsAndMessage }

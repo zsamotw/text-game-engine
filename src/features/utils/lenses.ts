@@ -12,7 +12,7 @@ const elemsLens = R.lensProp('elems')
 const descriptionLens = R.lensProp('description')
 const nameLens = R.lensProp('name')
 
-const directionLens = R.lensProp('direction')
+const operationLens = R.lensProp('operation')
 const restLens = R.lensProp('rest')
 
 const messageLens = R.lensProp('message')
@@ -30,7 +30,7 @@ export {
   descriptionLens,
   restLens,
   nameLens,
-  directionLens as typeLens,
+  operationLens,
   messageLens,
   nextStageId,
   elemLens

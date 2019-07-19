@@ -39,7 +39,7 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   }
 }
 
-function reduceCurentStageId(
+function reduceCurrentStageId(
   state: number = currentStageId,
   action: any
 ): number {
@@ -82,10 +82,10 @@ function reduceSystemMessages(
   return state
 }
 
-function reduceState(state: any, action: any) {
+function reduceState(state: any = {}, action: any) {
   return {
     stages: reduceStages(state.stages, action),
-    currentStageId: reduceCurentStageId(state.currentStageId, action),
+    currentStageId: reduceCurrentStageId(state.currentStageId, action),
     pocket: reducePocket(state.pocket, action),
     actors: reduceActors(state.actors, action),
     systemMessages: reduceSystemMessages(state.systemMessages, action)

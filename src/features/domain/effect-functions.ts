@@ -3,7 +3,7 @@ import * as L from '../utils/lenses'
 import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
 import Elem from '../../models/elem'
 
-const getDirection: (effect: Effect) => string = R.view(L.typeLens)
+const getOperation: (effect: Effect) => string = R.view(L.operationLens)
 
 const getMessage: (effect: Effect) => string = R.view(L.messageLens)
 
@@ -17,4 +17,4 @@ const getCurrentStageId: (effect: ElemEffect) => number = R.view(
   L.currentStageIdLens
 )
 
-export { getDirection, getMessage, getNextStageId, getElem, getCurrentStageId }
+export { getOperation, getMessage, getNextStageId, getElem, getCurrentStageId }

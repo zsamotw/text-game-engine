@@ -1,11 +1,11 @@
 import './app-gamefield.css'
+import { append } from 'ramda'
+import { appStore } from '../../state/reducers/state-reducers'
+import { getActionsAndMessage } from '../../features/processors/effect-processor'
 import { getEffect } from '../../features/helpers/effect-helper'
-import { getNewStateAndMessage } from '../../features/processors/effect-processor'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
-import { appStore } from '../../state/reducers/state-reducers'
-import { append } from 'ramda'
 
 export interface IAppGameFieldProps {}
 export interface IAppGameFieldState {
@@ -23,7 +23,7 @@ export default class AppGameField extends React.Component<
   handleCommand = (command: string) => {
     const state = appStore.getState()
     const result = getEffect(command, state)
-    const { actions, message } = getNewStateAndMessage(result, state) as {
+    const { actions, message } = getActionsAndMessage(result, state) as {
       actions: any
       message: string
     }
@@ -34,7 +34,7 @@ export default class AppGameField extends React.Component<
     this.setState({
       messages: newMessages
     })
-    for(let action of actions) {
+    for (let action of actions) {
       appStore.dispatch(action)
     }
   }
