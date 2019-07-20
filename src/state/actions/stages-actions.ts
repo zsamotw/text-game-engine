@@ -36,6 +36,4 @@ const putElemInToStage = (elem: Elem, currentStageId: number) => {
   }
 }
 
-const putElemInToPocket = (elem: Elem) => {}
-
 export { nothingChange, changeStage, takeElemFromStage, putElemInToStage }

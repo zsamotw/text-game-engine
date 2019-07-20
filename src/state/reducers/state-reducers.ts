@@ -25,7 +25,7 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
         stagesState
       )
     }
-    case AT.PUT_ELEM_INTO_POCKET: {
+    case AT.PUT_ELEM_INTO_STAGE: {
       const { elem, currentStageId } = action
       const res = R.over(
         R.lensPath([currentStageId, 'elems']),

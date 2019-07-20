@@ -20,19 +20,32 @@ const processCommandAndGetEffect: (
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Go'),
-    (command, state) => EH.getChangeStageEffect(command, state.stages, state.currentStageId)
+    (command, state) =>
+      EH.getChangeStageEffect(command, state.stages, state.currentStageId)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Take'),
-    (command, state) => EH.getTakenElemEffect(command, state.stages, state.currentStageId, state.pocket)
+    (command, state) =>
+      EH.getTakenElemEffect(
+        command,
+        state.stages,
+        state.currentStageId,
+        state.pocket
+      )
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Put'),
-    (command, state) => EH.getPutElemEffect(command, state.stages, state.currentStageId, state.pocket)
+    (command, state) =>
+      EH.getPutElemEffect(
+        command,
+        state.stages,
+        state.currentStageId,
+        state.pocket
+      )
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Pocket'),
-    (command, state) => EH.getPocketEffect(command, state)
+    (command, state) => EH.getPocketEffect(command, state.pocket)
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Undefined'),

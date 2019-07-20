@@ -5,7 +5,7 @@ import Stage from '../models/stage'
 
 const stages: Stage[] = [
   {
-    id: 1,
+    id: 0,
     name: 'kitchen.',
     description:
       'kitchen, kitchen, och kitchen...Dirty table, two chairs  and one door.',
@@ -20,14 +20,14 @@ const stages: Stage[] = [
       } as Elem
     ],
     doors: {
-      north: 3,
+      north: 2,
       south: undefined,
-      west: 2,
+      west: 1,
       east: undefined
     } as Doors
   } as Stage,
   {
-    id: 2,
+    id: 1,
     name: 'living room',
     description:
       'Huge room with nothing. One sofa. There are one door to kichen. You can go there.',
@@ -46,11 +46,11 @@ const stages: Stage[] = [
       north: undefined,
       south: undefined,
       west: undefined,
-      east: 1
+      east: 0
     } as Doors
   } as Stage,
   {
-    id: 3,
+    id: 2,
     name: 'Bathroom',
     description: 'Just Bathroom.',
     elems: [
@@ -61,14 +61,14 @@ const stages: Stage[] = [
     ],
     doors: {
       north: undefined,
-      south: 1,
+      south: 0,
       west: undefined,
       east: undefined
     } as Doors
   } as Stage
 ]
 
-const currentStageId: number = 1
+const currentStageId: number = 0
 
 const pocket: Elem[] = []
 

@@ -2,7 +2,6 @@ import * as R from 'ramda'
 import * as L from '../utils/lenses'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
-import State from '../../models/state'
 import Stage from '../../models/stage'
 
 const getDoors: (stage: Stage) => Doors = R.view(L.doorsLens)
@@ -24,7 +23,7 @@ const getDoorsForCurrentStage: (
   currentStageId: number
 ) => Doors = R.compose(
   getDoors,
-  SF.getCurrentStage
+  SF.getStage
 )
 
 const getDoorsForStage = R.compose(

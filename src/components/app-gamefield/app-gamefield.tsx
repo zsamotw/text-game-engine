@@ -17,7 +17,7 @@ export default class AppGameField extends React.Component<
   IAppGameFieldState
 > {
   state = {
-    messages: ['halo', 'ooooo']
+    messages: ['Welcome in Game']
   }
 
   handleCommand = (command: string) => {
