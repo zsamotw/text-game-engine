@@ -89,19 +89,8 @@ const actors: Actor[] = [
   } as Actor
 ]
 
-const systemMessages: string[] = [
-  'Hello, Hello',
-  'Go to the next room. Somebody could wait for you.',
-  'What time it is ? It is too late...',
-  'Look at the clock. It is last hour!',
-  'It is last hour!',
-  'Are you sure...?',
-  'Game has started! You are in the game.',
-  'Run run run and run!',
-  'It is a place not for you!',
-  'Who knows you...?',
-  'Go left, go right.',
-  'Hello World'
+const messages: string[] = [
+  'Welcome in game'
 ]
 
-export { stages, currentStageId, pocket, actors, systemMessages }
+export { stages, currentStageId, pocket, actors, messages }

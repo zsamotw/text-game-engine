@@ -10,42 +10,45 @@ const processCommandAndGetEffect: (
 ) => any = R.cond([
   [
     (command, state) => R.equals(R.prop('order', command), 'Look'),
-    (command, state) =>
-      EH.getOverviewEffect(state.stages, state.actors, state.currentStageId)
+    (command, state) => {
+      const { stages, actors, currentStageId } = state
+      return EH.getOverviewEffect(stages, actors, currentStageId)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'LookAt'),
-    (command, state) =>
-      EH.getDescriptionEffect(command, state.stages, state.currentStageId)
+    (command, state) => {
+      const { stages, currentStageId } = state
+      return EH.getDescriptionEffect(command, stages, currentStageId)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Go'),
-    (command, state) =>
-      EH.getChangeStageEffect(command, state.stages, state.currentStageId)
+    (command, state) => {
+      const { stages, currentStageId } = state
+      return EH.getChangeStageEffect(command, stages, currentStageId)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Take'),
-    (command, state) =>
-      EH.getTakenElemEffect(
-        command,
-        state.stages,
-        state.currentStageId,
-        state.pocket
-      )
+    (command, state) => {
+      const { stages, currentStageId, pocket } = state
+      return EH.getTakenElemEffect(command, stages, currentStageId, pocket)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Put'),
-    (command, state) =>
-      EH.getPutElemEffect(
-        command,
-        state.stages,
-        state.currentStageId,
-        state.pocket
-      )
+    (command, state) => {
+      const { stages, currentStageId, pocket } = state
+      return EH.getPutElemEffect(command, stages, currentStageId, pocket)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Pocket'),
-    (command, state) => EH.getPocketEffect(command, state.pocket)
+    (command, state) => {
+      const { pocket } = state
+      return EH.getPocketEffect(command, pocket)
+    }
   ],
   [
     (command, state) => R.equals(R.prop('order', command), 'Undefined'),

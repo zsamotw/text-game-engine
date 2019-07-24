@@ -47,21 +47,22 @@ const getOverviewEffect = function(
       AF.getActorsForStage(actors, currentStageId)
     )
 
-    const elemsOnSTage =
+    const elemsOnStage =
       elemsNamesForCurrentStage.length > 0
         ? `Things: ${elemsNamesForCurrentStage}.`
         : 'No one thing here.'
-    const actorsOnSTage =
+    const actorsOnStage =
       actorNamesForCurrentStage.length > 0
         ? `Persons: ${actorNamesForCurrentStage}.`
         : 'Nobody here.'
 
-    return {
+    const res = {
       operation: EO.noStateChange,
       message: `${GH.descriptionOf(currentStage)}
-                ${elemsOnSTage}
-                ${actorsOnSTage}`
+                ${elemsOnStage}
+                ${actorsOnStage}`
     } as Effect
+    return res
   }
 }
 
@@ -164,7 +165,6 @@ const getPutElemEffect = function(
   pocket: Elem[]
 ) {
   const getElemEqualsTo = CF.getElemEqualsToCommand
-  // const fromPocket = PF.getPocket(state)
 
   const elemFromPocket = getElemEqualsTo(command)(pocket)
 

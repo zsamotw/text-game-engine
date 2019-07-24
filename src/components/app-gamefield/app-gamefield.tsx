@@ -1,11 +1,11 @@
 import './app-gamefield.css'
-import { append } from 'ramda'
 import { appStore } from '../../state/reducers/state-reducers'
-import { getActionsAndMessage } from '../../features/processors/effect-processor'
+import { getActions } from '../../features/processors/effect-processor'
 import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
+import { messages } from '../../state/initial-state'
 
 export interface IAppGameFieldProps {}
 export interface IAppGameFieldState {
@@ -17,23 +17,19 @@ export default class AppGameField extends React.Component<
   IAppGameFieldState
 > {
   state = {
-    messages: ['Welcome in Game']
+    messages: []
+  }
+
+  componentDidMount() {
+    appStore.subscribe(() =>
+      this.setState({ messages: appStore.getState().messages })
+    )
   }
 
   handleCommand = (command: string) => {
     const state = appStore.getState()
     const result = getEffect(command, state)
-    const { actions, message } = getActionsAndMessage(result, state) as {
-      actions: any
-      message: string
-    }
-
-    const messages = this.state.messages
-    const newMessages = append(message, messages)
-
-    this.setState({
-      messages: newMessages
-    })
+    const actions = getActions(result, state)
     for (let action of actions) {
       appStore.dispatch(action)
     }

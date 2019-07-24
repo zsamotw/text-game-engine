@@ -4,7 +4,7 @@ import {
   currentStageId,
   pocket,
   actors,
-  systemMessages
+  messages
 } from '../initial-state'
 import Stage from '../../models/stage'
 import Elem from '../../models/elem'
@@ -27,12 +27,12 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
     }
     case AT.PUT_ELEM_INTO_STAGE: {
       const { elem, currentStageId } = action
-      const res = R.over(
+      const stages = R.over(
         R.lensPath([currentStageId, 'elems']),
         R.append(elem),
         stagesState
       )
-      return res
+      return stages
     }
     default:
       return stagesState
@@ -75,11 +75,17 @@ function reduceActors(state: Actor[] = actors, action: any): Actor[] {
   return state
 }
 
-function reduceSystemMessages(
-  state: string[] = systemMessages,
+function reduceMessages(
+  messagesState: string[] = messages,
   action: any
 ): string[] {
-  return state
+  switch (action.type) {
+    case AT.ADD_MESSAGE:
+      const { message } = action
+      return R.append(message, messagesState)
+    default:
+      return messagesState
+  }
 }
 
 function reduceState(state: any = {}, action: any) {
@@ -88,7 +94,7 @@ function reduceState(state: any = {}, action: any) {
     currentStageId: reduceCurrentStageId(state.currentStageId, action),
     pocket: reducePocket(state.pocket, action),
     actors: reduceActors(state.actors, action),
-    systemMessages: reduceSystemMessages(state.systemMessages, action)
+    messages: reduceMessages(state.messages, action)
   }
 }
 

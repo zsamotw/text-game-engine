@@ -7,5 +7,5 @@ export default interface State {
   currentStageId: number
   pocket: Elem[]
   actors: Actor[]
-  systemMessages: string[]
+  messages: string[]
 }
