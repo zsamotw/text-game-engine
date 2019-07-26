@@ -100,10 +100,10 @@ const getChangeStageEffect = function(
   currentStageId: number
 ) {
   const directionFrom: (command: Command) => string = R.view(L.restLens)
-  const doorsInCurrenStage = DF.getDoorsForStage(stages, currentStageId)
-  const operation = directionFrom(command)
+  const doorsInCurrentStage = DF.getDoorsForStage(stages, currentStageId)
+  const direction = directionFrom(command)
 
-  const nextStageId = R.prop(operation as any, doorsInCurrenStage)
+  const nextStageId = R.prop(direction as any, doorsInCurrentStage)
 
   const nextStage = R.find(R.propEq('id', nextStageId), stages) as Stage
 
@@ -112,7 +112,7 @@ const getChangeStageEffect = function(
   if (R.isNil(nextStageId)) {
     return {
       operation: EO.noStateChange,
-      message: 'Oopps. Something wrong. You can not go this operation.'
+      message: 'Oops. Something wrong. You can not go this operation.'
     } as Effect
   } else {
     return {

@@ -5,7 +5,6 @@ import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
-import { messages } from '../../state/initial-state'
 
 export interface IAppGameFieldProps {}
 export interface IAppGameFieldState {
@@ -30,6 +29,7 @@ export default class AppGameField extends React.Component<
     const state = appStore.getState()
     const result = getEffect(command, state)
     const actions = getActions(result, state)
+
     for (let action of actions) {
       appStore.dispatch(action)
     }

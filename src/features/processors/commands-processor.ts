@@ -54,7 +54,7 @@ const processCommandAndGetEffect: (
     (command, state) => R.equals(R.prop('order', command), 'Undefined'),
     (command, state) => EH.getUndefinedEffect(command, state)
   ],
-  [R.T, (command, state) => 'Errorrrr!!!']
+  [R.T, (command, state) => 'Error!!!']
 ])
 
 export { processCommandAndGetEffect }
