@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators'
 import * as R from 'ramda'
 import * as L from '../utils/lenses'
 import * as DF from '../domain/door-functions'
-import * as GH from '../helpers/generic-helper'
+import * as GH from '../domain/general-usage-functions'
 
 //getActorStream :: State -> Observable<State>
 const getActorsStream = (state) =>
