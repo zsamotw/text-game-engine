@@ -10,6 +10,7 @@ const getRandomInt = (max: number) =>
 const getOnlyWithValues = (iterable: any[]) =>
   R.filter(i => !R.isNil(i), iterable)
 
+//same as Ramda adjust
 const updateIterable = (
   iterable: any[],
   id: number,

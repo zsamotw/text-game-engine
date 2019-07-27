@@ -1,7 +1,6 @@
 import {
   Action,
   NextStageAction,
-  ElemAction,
   ElemInStageAction
 } from '../../models/action'
 import Elem from '../../models/elem'

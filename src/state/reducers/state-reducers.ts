@@ -98,6 +98,8 @@ function reduceState(state: any = {}, action: any) {
   }
 }
 
-const appStore = createStore(reduceState)
+const appStore = createStore(reduceState,
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__())
 
 export { appStore }

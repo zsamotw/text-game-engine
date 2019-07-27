@@ -1,6 +1,5 @@
 import * as React from 'react'
 import './app-messages.css'
-import { appStore } from '../../state/reducers/state-reducers'
 
 export interface IAppMessagesProps {
   messages: string[]
