@@ -2,6 +2,8 @@ import * as React from 'react'
 import './app-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTerminal } from '@fortawesome/free-solid-svg-icons'
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { number } from 'prop-types';
 
 export interface IAppTerminalProps {
   onCommandChange: (command: string) => void

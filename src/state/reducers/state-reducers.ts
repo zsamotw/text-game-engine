@@ -17,6 +17,7 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   switch (action.type) {
     case AT.NOTHING_CHANGE:
       return stagesState
+
     case AT.TAKE_ELEM_FROM_STAGE: {
       const { elem, currentStageId } = action
       return R.over(
@@ -25,6 +26,7 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
         stagesState
       )
     }
+
     case AT.PUT_ELEM_INTO_STAGE: {
       const { elem, currentStageId } = action
       const stages = R.over(
@@ -34,6 +36,7 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
       )
       return stages
     }
+
     default:
       return stagesState
   }
@@ -47,6 +50,7 @@ function reduceCurrentStageId(
     case AT.CHANGE_STAGE:
       const { nextStageId } = action
       return nextStageId
+
     default:
       return state
   }
@@ -58,6 +62,7 @@ function reducePocket(pocketState: Elem[] = pocket, action: any): Elem[] {
       const { elem } = action
       const pocket = PF.addElemTo(elem, pocketState)
       return pocket
+
     case AT.TAKE_ELEM_FROM_POCKET: {
       const { elem } = action
       const elemsWithDifferentNameTo = R.curry(
@@ -66,6 +71,7 @@ function reducePocket(pocketState: Elem[] = pocket, action: any): Elem[] {
       const pocket = R.filter(elemsWithDifferentNameTo(elem.name), pocketState)
       return pocket
     }
+
     default:
       return pocketState
   }
@@ -83,6 +89,7 @@ function reduceMessages(
     case AT.ADD_MESSAGE:
       const { message } = action
       return R.append(message, messagesState)
+
     default:
       return messagesState
   }
