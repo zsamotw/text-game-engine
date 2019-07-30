@@ -78,14 +78,14 @@ const actors: Actor[] = [
     name: 'tomasz',
     description: 'It is tomasz',
     interval: 3000,
-    stageId: 1
+    stageId: 0
   } as Actor,
   {
     id: 2,
     name: 'antonina',
     description: 'It is antonina',
     interval: 3000,
-    stageId: 2
+    stageId: 1
   } as Actor
 ]
 

@@ -77,8 +77,19 @@ function reducePocket(pocketState: Elem[] = pocket, action: any): Elem[] {
   }
 }
 
-function reduceActors(state: Actor[] = actors, action: any): Actor[] {
-  return state
+function reduceActors(actorState: Actor[] = actors, action: any): Actor[] {
+  switch (action.type) {
+    case AT.CHANGE_ACTOR_STAGE:
+      const { actorId, stageId } = action
+      const actors = R.map((el: Actor) => {
+        if (el.id === actorId) return { ...el, stageId } //TODO use lens
+        else return el
+      }, actorState)
+      return actors
+
+    default:
+      return actorState
+  }
 }
 
 function reduceMessages(
@@ -105,8 +116,10 @@ function reduceState(state: any = {}, action: any) {
   }
 }
 
-const appStore = createStore(reduceState,
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__())
+const appStore = createStore(
+  reduceState,
+  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 export { appStore }

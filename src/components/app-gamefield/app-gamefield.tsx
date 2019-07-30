@@ -5,6 +5,7 @@ import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
+import { getActorsStream } from '../../features/processors/actors-processor'
 
 export interface IAppGameFieldProps {}
 export interface IAppGameFieldState {
@@ -23,6 +24,9 @@ export default class AppGameField extends React.Component<
     appStore.subscribe(() =>
       this.setState({ messages: appStore.getState().messages })
     )
+    getActorsStream().subscribe((actions) => {
+      actions.forEach(a => appStore.dispatch(a))
+    })
   }
 
   handleCommand = (command: string) => {

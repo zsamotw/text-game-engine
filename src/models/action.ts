@@ -18,3 +18,8 @@ export interface ElemInStageAction extends Action {
   elem: Elem
   currentStageId: number
 }
+
+export interface ActorAction extends Action {
+  actorId: number
+  stageId: number
+}

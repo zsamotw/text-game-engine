@@ -1,5 +1,6 @@
 const R = require('ramda')
 
+const idLens = R.lensProp('id')
 const stagesLens = R.lensProp('stages')
 const currentStageIdLens = R.lensProp('currentStageId')
 const pocketLens = R.lensProp('pocket')
@@ -19,7 +20,10 @@ const messageLens = R.lensProp('message')
 const nextStageId = R.lensProp('nextStageId')
 const elemLens = R.lensProp('elem')
 
+const stageIdLens = R.lensProp('stageId')
+
 export {
+  idLens,
   stagesLens,
   currentStageIdLens,
   pocketLens,
@@ -33,5 +37,6 @@ export {
   operationLens,
   messageLens,
   nextStageId,
-  elemLens
+  elemLens,
+  stageIdLens
 }
