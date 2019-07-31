@@ -19,7 +19,7 @@ export interface ElemInStageAction extends Action {
   currentStageId: number
 }
 
-export interface ActorAction extends Action {
+export interface ActorMoveAction extends Action {
   actorId: number
   stageId: number
 }

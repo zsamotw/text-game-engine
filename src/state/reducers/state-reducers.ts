@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import {
   stages,
   currentStageId,
@@ -6,12 +5,13 @@ import {
   actors,
   messages
 } from '../initial-state'
-import Stage from '../../models/stage'
-import Elem from '../../models/elem'
 import { createStore } from 'redux'
-import Actor from '../../models/actor'
-import * as PF from '../../features/domain/pocket-functions'
 import * as AT from '../actions/action-types'
+import * as PF from '../../features/domain/pocket-functions'
+import * as R from 'ramda'
+import Actor from '../../models/actor'
+import Elem from '../../models/elem'
+import Stage from '../../models/stage'
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   switch (action.type) {
@@ -80,7 +80,7 @@ function reducePocket(pocketState: Elem[] = pocket, action: any): Elem[] {
 function reduceActors(actorState: Actor[] = actors, action: any): Actor[] {
   switch (action.type) {
     case AT.CHANGE_ACTOR_STAGE:
-      const { actorId, stageId } = action
+      const { stageId, actorId } = action
       const actors = R.map((el: Actor) => {
         if (el.id === actorId) return R.assoc('stageId', stageId, el)
         else return el

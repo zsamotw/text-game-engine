@@ -1,27 +1,27 @@
-import * as Rx from 'rxjs'
 import { appStore } from '../../state/reducers/state-reducers'
-import { map } from 'rxjs/operators'
-import * as DF from '../domain/door-functions'
 import { changeActorStage } from '../../state/actions/actor-actions';
+import { map } from 'rxjs/operators'
 import { nothingChange } from '../../state/actions/generic-actions';
-import Stage from '../../models/stage';
+import * as AF from '../domain/actor-functions'
+import * as DF from '../domain/door-functions'
+import * as R from 'ramda'
+import * as Rx from 'rxjs'
 import Actor from '../../models/actor';
 import Doors from '../../models/doors';
-import * as L from '../utils/lenses'
-import * as R from 'ramda'
+import Stage from '../../models/stage';
 
-//getActorStream :: State -> Observable<ActorAction[]>
+//getActorStream :: State -> Observable<ActorMoveAction[]>
 const getActorsStream = () =>
   Rx.interval(3000).pipe(
     map(interval => {
       const getChangeStageAction = (stages: Stage[], actor: Actor) => {
-        const stageId = R.view(L.stageIdLens, actor) as number
-        const interval = R.view(L.intervalLens, actor) as number
+        const stageId = AF.getStageId(actor)
+        const interval = AF.getInterval(actor)
         
         if ((interval * 1000) % interval === 0) {
           const doors = DF.getDoorsForStage(stages, stageId)
           const newStageId = DF.getWayOut(doors as Doors) as number
-          const actorId = R.view(L.idLens, actor) as number
+          const actorId = AF.getId(actor)
 
           return changeActorStage(actorId, newStageId)
         }
