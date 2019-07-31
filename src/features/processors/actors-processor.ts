@@ -15,11 +15,14 @@ const getActorsStream = () =>
   Rx.interval(3000).pipe(
     map(interval => {
       const getChangeStageAction = (stages: Stage[], actor: Actor) => {
-        if ((interval * 1000) % actor.interval === 0) {
-          const stageId = R.view(L.stageIdLens, actor) as number
+        const stageId = R.view(L.stageIdLens, actor) as number
+        const interval = R.view(L.intervalLens, actor) as number
+        
+        if ((interval * 1000) % interval === 0) {
           const doors = DF.getDoorsForStage(stages, stageId)
           const newStageId = DF.getWayOut(doors as Doors) as number
           const actorId = R.view(L.idLens, actor) as number
+
           return changeActorStage(actorId, newStageId)
         }
         else {
@@ -29,7 +32,8 @@ const getActorsStream = () =>
 
       const actors = appStore.getState().actors
       const stages = appStore.getState().stages
-      const actions = actors.map(a => getChangeStageAction(stages, a))
+      const actions = R.map(a => getChangeStageAction(stages, a), actors)
+      
       return actions
     })
   )

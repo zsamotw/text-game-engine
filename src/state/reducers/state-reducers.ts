@@ -82,7 +82,7 @@ function reduceActors(actorState: Actor[] = actors, action: any): Actor[] {
     case AT.CHANGE_ACTOR_STAGE:
       const { actorId, stageId } = action
       const actors = R.map((el: Actor) => {
-        if (el.id === actorId) return { ...el, stageId } //TODO use lens
+        if (el.id === actorId) return R.assoc('stageId', stageId, el)
         else return el
       }, actorState)
       return actors

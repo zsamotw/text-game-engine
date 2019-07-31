@@ -11,12 +11,6 @@ import {
   PUT_ELEM_INTO_STAGE
 } from './action-types'
 
-const nothingChange = () => {
-  return {
-    type: NOTHING_CHANGE
-  } as Action
-}
-
 const changeStage = (nextStageId: number) => {
   return {
     type: CHANGE_STAGE,
@@ -40,4 +34,4 @@ const putElemInToStage = (elem: Elem, currentStageId: number) => {
   } as ElemInStageAction
 }
 
-export { nothingChange, changeStage, takeElemFromStage, putElemInToStage }
+export { changeStage, takeElemFromStage, putElemInToStage }

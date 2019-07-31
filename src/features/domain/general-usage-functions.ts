@@ -10,18 +10,6 @@ const getRandomInt = (max: number) =>
 const getOnlyWithValues = (iterable: any[]) =>
   R.filter(i => !R.isNil(i), iterable)
 
-//same as Ramda adjust
-const updateIterable = (
-  iterable: any[],
-  id: number,
-  propName: string,
-  newValue: any
-) =>
-  R.map(
-    elem => (elem.id === id ? R.assoc(propName, newValue, elem) : elem),
-    iterable
-  )
-
 const nameOf: (elem: Elem) => string = R.view(L.nameLens)
 
 const descriptionOf: (state: State | Stage | Elem) => string = R.view(
@@ -31,7 +19,6 @@ const descriptionOf: (state: State | Stage | Elem) => string = R.view(
 export {
   getRandomInt,
   getOnlyWithValues as mapToValues,
-  updateIterable,
   nameOf,
   descriptionOf
 }

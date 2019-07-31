@@ -21,10 +21,12 @@ export default class AppGameField extends React.Component<
   }
 
   componentDidMount() {
+    //subscribe to messages in store
     appStore.subscribe(() =>
       this.setState({ messages: appStore.getState().messages })
     )
-    getActorsStream().subscribe((actions) => {
+    //subscribe to actors stream. The stream change actors placement
+    getActorsStream().subscribe(actions => {
       actions.forEach(a => appStore.dispatch(a))
     })
   }
@@ -34,9 +36,7 @@ export default class AppGameField extends React.Component<
     const result = getEffect(command, state)
     const actions = getActions(result, state)
 
-    for (let action of actions) {
-      appStore.dispatch(action)
-    }
+    actions.forEach(a => appStore.dispatch(a))
   }
 
   public render() {
