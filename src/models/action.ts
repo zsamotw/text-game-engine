@@ -1,6 +1,4 @@
 import Elem from './elem'
-import { nextStageId } from '../features/utils/lenses'
-import { currentStageId } from '../state/initial-state'
 
 export interface Action {
   type: string
