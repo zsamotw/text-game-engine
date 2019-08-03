@@ -2,6 +2,7 @@ import Actor from '../models/actor'
 import Doors from '../models/doors'
 import Elem from '../models/elem'
 import Stage from '../models/stage'
+import CommandsHistory from '../models/commandsHIstory';
 
 const stages: Stage[] = [
   {
@@ -93,4 +94,9 @@ const messages: string[] = [
   'Welcome in game'
 ]
 
-export { stages, currentStageId, pocket, actors, messages }
+const commandsHistory = {
+  commands: [],
+  position: 0
+} as CommandsHistory
+
+export { stages, currentStageId, pocket, actors, messages, commandsHistory }

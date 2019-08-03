@@ -3,7 +3,8 @@ import {
   currentStageId,
   pocket,
   actors,
-  messages
+  messages,
+  commandsHistory
 } from '../initial-state'
 import { createStore } from 'redux'
 import * as AT from '../actions/action-types'
@@ -12,6 +13,7 @@ import * as R from 'ramda'
 import Actor from '../../models/actor'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
+import CommandsHistory from '../../models/commandsHIstory';
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   switch (action.type) {
@@ -106,13 +108,32 @@ function reduceMessages(
   }
 }
 
+function reduceCommandsHistory(
+  commandsHistoryState: CommandsHistory = commandsHistory,
+  action: any
+): CommandsHistory {
+  switch (action.type) {
+    case AT.ADD_COMMAND:
+      const { command } = action
+      const {commands } = commandsHistoryState
+      const newCommands = R.prepend(command, commands)
+      console.log(newCommands)
+      return {...commandsHistoryState, commands: newCommands}
+
+    default:
+      return commandsHistoryState
+  }
+}
+
+
 function reduceState(state: any = {}, action: any) {
   return {
     stages: reduceStages(state.stages, action),
     currentStageId: reduceCurrentStageId(state.currentStageId, action),
     pocket: reducePocket(state.pocket, action),
     actors: reduceActors(state.actors, action),
-    messages: reduceMessages(state.messages, action)
+    messages: reduceMessages(state.messages, action),
+    commandsHistory: reduceCommandsHistory(state.commandsHistory, action)
   }
 }
 
