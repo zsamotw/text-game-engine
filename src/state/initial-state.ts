@@ -78,14 +78,14 @@ const actors: Actor[] = [
     id: 1,
     name: 'tomasz',
     description: 'It is tomasz',
-    interval: 3000,
+    interval: 30000,
     stageId: 0
   } as Actor,
   {
     id: 2,
     name: 'antonina',
     description: 'It is antonina',
-    interval: 3000,
+    interval: 30000,
     stageId: 1
   } as Actor
 ]
@@ -95,6 +95,7 @@ const messages: string[] = [
 ]
 
 const commandsHistory = {
+  command: '',
   commands: [],
   position: 0
 } as CommandsHistory

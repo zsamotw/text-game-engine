@@ -1,4 +1,4 @@
-import { ADD_COMMAND } from './action-types'
+import { ADD_COMMAND, SET_NEXT_COMMAND_HISTORY_POSITION, SET_PREVIOUS_COMMAND_HISTORY_POSITION } from './action-types'
 
 const addCommand = (command: string) => {
   return {
@@ -7,5 +7,18 @@ const addCommand = (command: string) => {
   }
 }
 
-export { addCommand }
+const setNextCommandHistoryPosition = () => {
+  return {
+    type: SET_NEXT_COMMAND_HISTORY_POSITION 
+  }
+}
+
+const setPreviousCommandHistoryPosition = () => {
+  return {
+    type: SET_PREVIOUS_COMMAND_HISTORY_POSITION 
+  }
+}
+
+
+export { addCommand, setNextCommandHistoryPosition, setPreviousCommandHistoryPosition }
 

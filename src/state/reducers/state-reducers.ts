@@ -13,7 +13,8 @@ import * as R from 'ramda'
 import Actor from '../../models/actor'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
-import CommandsHistory from '../../models/commandsHIstory';
+import CommandsHistory from '../../models/commandsHIstory'
+import * as L from '../../features/utils/lenses'
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   switch (action.type) {
@@ -115,16 +116,41 @@ function reduceCommandsHistory(
   switch (action.type) {
     case AT.ADD_COMMAND:
       const { command } = action
-      const {commands } = commandsHistoryState
-      const newCommands = R.prepend(command, commands)
-      console.log(newCommands)
-      return {...commandsHistoryState, commands: newCommands}
+      const commands = R.view(L.commandsLens, commandsHistoryState) as string[]
+      const updatedCommands = R.prepend(command, commands)
+      const updatedCommandHistoryState = R.set(
+        L.commandsLens,
+        updatedCommands,
+        commandsHistoryState
+      )
+      return updatedCommandHistoryState
+
+    case AT.SET_NEXT_COMMAND_HISTORY_POSITION:
+      if (commandsHistoryState.position < commandsHistoryState.commands.length)
+        return R.over(
+          L.positionLens,
+          position => position + 1,
+          commandsHistoryState
+        )
+      else return R.over(L.positionLens, () => 0, commandsHistoryState)
+    case AT.SET_PREVIOUS_COMMAND_HISTORY_POSITION:
+      if (commandsHistoryState.position > 0)
+        return R.over(
+          L.positionLens,
+          position => position - 1,
+          commandsHistoryState
+        )
+      else
+        return R.over(
+          L.positionLens,
+          () => commandsHistoryState.commands.length - 1,
+          commandsHistory
+        )
 
     default:
       return commandsHistoryState
   }
 }
-
 
 function reduceState(state: any = {}, action: any) {
   return {

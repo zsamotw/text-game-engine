@@ -2,12 +2,15 @@ import * as React from 'react'
 import './app-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTerminal } from '@fortawesome/free-solid-svg-icons'
-import { findIconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { number } from 'prop-types';
+import { arrowUp, arrowDown } from '../../models/keyCode'
+import { Directions } from '../../models/direction'
 
 export interface IAppTerminalProps {
-  onCommandChange: (command: string) => void
+  lastCommand: string
+  onCommandEnter: (command: string) => void
+  onCommandFromHistory: (direction: Directions) => void
 }
+
 export interface IAppTerminalState {
   command: string
 }
@@ -28,10 +31,14 @@ export default class AppTerminal extends React.Component<
 
   handleKeyPress = (event: any) => {
     if (event.key === 'Enter') {
-      this.props.onCommandChange(event.target.value)
-      this.setState({
-        command: ''
-      })
+      this.props.onCommandEnter(event.target.value)
+      this.setState({ command: '' })
+    } else if (event.keyCode === arrowUp) {
+      this.props.onCommandFromHistory(Directions.next)
+      setTimeout(() => this.setState({ command: this.props.lastCommand }))
+    } else if (event.keyCode === arrowDown) {
+      this.props.onCommandFromHistory(Directions.previous)
+      setTimeout(() => this.setState({ command: this.props.lastCommand }))
     }
   }
 
@@ -46,7 +53,7 @@ export default class AppTerminal extends React.Component<
           name='terminal'
           value={this.state.command}
           onChange={event => this.handleChange(event)}
-          onKeyPress={event => this.handleKeyPress(event)}
+          onKeyDown={event => this.handleKeyPress(event)}
           autoFocus={true}
         />
       </div>

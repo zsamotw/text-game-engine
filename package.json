@@ -19,6 +19,8 @@
     "react-redux": "^7.1.0",
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
+    "tslint": "^5.19.0",
+    "tslint-react": "^4.0.0",
     "typescript": "3.5.2"
   },
   "scripts": {
