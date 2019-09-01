@@ -7,7 +7,7 @@ import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
 import { getActorsStream } from '../../features/processors/actors-processor'
 import { addCommand,setNextCommandHistoryPosition, setPreviousCommandHistoryPosition  } from '../../state/actions/commands-history-actions'
-import { Direction } from '../../models/direction';
+import { Directions } from '../../models/direction';
 
 
 export interface IAppGameFieldProps {}
@@ -50,11 +50,11 @@ export default class AppGameField extends React.Component<
     appStore.dispatch(addCommand(command))
   }
 
-  handleCommandFromHistory = (direction: Direction): void => {
-    if(direction === 'previous') {
+  handleCommandFromHistory = (direction: Directions): void => {
+    if(direction === Directions.previous) {
       appStore.dispatch(setPreviousCommandHistoryPosition())
       }
-    else if(direction === 'next') {
+    else if(direction === Directions.next) {
       appStore.dispatch(setNextCommandHistoryPosition())
     }
   }
@@ -66,7 +66,7 @@ export default class AppGameField extends React.Component<
         <AppTerminal
           lastCommand={this.state.lastCommand}
           onCommandEnter={command => this.handleCommandEnter(command)}
-          onCommandFromHistory={(direction: Direction) => this.handleCommandFromHistory(direction)}
+          onCommandFromHistory={(direction: Directions) => this.handleCommandFromHistory(direction)}
         />
       </div>
     )

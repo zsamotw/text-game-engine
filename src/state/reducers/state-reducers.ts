@@ -144,7 +144,7 @@ function reduceCommandsHistory(
         return R.over(
           L.positionLens,
           () => commandsHistoryState.commands.length - 1,
-          commandsHistory
+          commandsHistoryState
         )
 
     default:

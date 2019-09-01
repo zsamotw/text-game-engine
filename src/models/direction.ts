@@ -1,4 +1,4 @@
-export const enum Directions {
+export enum Directions {
     next,
     previous
 }
