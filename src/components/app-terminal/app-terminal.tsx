@@ -3,7 +3,7 @@ import './app-terminal.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTerminal } from '@fortawesome/free-solid-svg-icons'
 import { arrowUp, arrowDown } from '../../models/keyCode'
-import { Directions } from '../../models/direction'
+import { Directions } from '../../models/directions'
 
 export interface IAppTerminalProps {
   lastCommand: string

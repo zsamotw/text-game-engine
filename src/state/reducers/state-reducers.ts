@@ -13,7 +13,7 @@ import * as R from 'ramda'
 import Actor from '../../models/actor'
 import Elem from '../../models/elem'
 import Stage from '../../models/stage'
-import CommandsHistory from '../../models/commandsHIstory'
+import CommandsHistory from '../../models/commandsHistory'
 import * as L from '../../features/utils/lenses'
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {

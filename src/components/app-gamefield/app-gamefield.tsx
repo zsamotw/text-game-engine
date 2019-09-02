@@ -7,7 +7,7 @@ import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
 import { getActorsStream } from '../../features/processors/actors-processor'
 import { addCommand,setNextCommandHistoryPosition, setPreviousCommandHistoryPosition  } from '../../state/actions/commands-history-actions'
-import { Directions } from '../../models/direction';
+import { Directions } from '../../models/directions';
 
 
 export interface IAppGameFieldProps {}
@@ -26,13 +26,14 @@ export default class AppGameField extends React.Component<
   }
 
   componentDidMount() {
-    //subscribe to messages in store
+    //subscribe to messages and commands in store
     appStore.subscribe(() => {
       const commands = appStore.getState().commandsHistory.commands
       const position = appStore.getState().commandsHistory.position
+      const messages = appStore.getState().messages
       this.setState({
         lastCommand: commands[position],
-        messages: appStore.getState().messages
+        messages 
       })
     })
     //subscribe to actors stream. The stream change actors placement

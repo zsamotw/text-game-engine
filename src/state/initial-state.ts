@@ -2,7 +2,7 @@ import Actor from '../models/actor'
 import Doors from '../models/doors'
 import Elem from '../models/elem'
 import Stage from '../models/stage'
-import CommandsHistory from '../models/commandsHIstory';
+import CommandsHistory from '../models/commandsHistory';
 
 const stages: Stage[] = [
   {
