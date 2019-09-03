@@ -1,24 +1,24 @@
-import './app-gamefield.css'
+import './app-game-container.css'
+import { addCommand,setNextCommandHistoryPosition, setPreviousCommandHistoryPosition  } from '../../state/actions/commands-history-actions'
 import { appStore } from '../../state/reducers/state-reducers'
+import { Directions } from '../../models/directions';
 import { getActions } from '../../features/processors/effect-processor'
+import { getActorsStream } from '../../features/processors/actors-processor'
 import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
-import { getActorsStream } from '../../features/processors/actors-processor'
-import { addCommand,setNextCommandHistoryPosition, setPreviousCommandHistoryPosition  } from '../../state/actions/commands-history-actions'
-import { Directions } from '../../models/directions';
 
 
-export interface IAppGameFieldProps {}
-export interface IAppGameFieldState {
+export interface IAppGameContainerProps {}
+export interface IAppGameContainerState {
   lastCommand: string
   messages: string[]
 }
 
-export default class AppGameField extends React.Component<
-  IAppGameFieldProps,
-  IAppGameFieldState
+export default class AppGameContainer extends React.Component<
+  IAppGameContainerProps,
+  IAppGameContainerState
 > {
   state = {
     lastCommand: '',
@@ -62,7 +62,7 @@ export default class AppGameField extends React.Component<
 
   public render() {
     return (
-      <div className='game-field'>
+      <div className='game-container'>
         <AppMessages messages={this.state.messages} />
         <AppTerminal
           lastCommand={this.state.lastCommand}

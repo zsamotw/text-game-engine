@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import AppGamefield from '../app-gamefield/app-gamefield'
+import AppGameContainer from '../app-game-container/app-game-container'
 import AppTitle from '../app-title/app-title'
 
 const App: React.FC = () => {
@@ -8,7 +8,7 @@ const App: React.FC = () => {
     <div className='app'>
       {' '}
       <AppTitle/>
-      <AppGamefield />{' '}
+      <AppGameContainer />{' '}
     </div>
   )
 }
