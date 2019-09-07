@@ -201,29 +201,29 @@ const getTalkEffect = function(
   actors: Actor[]
 ) {
   const actorName = CF.getRestOfCommand(command)
-  const actorsForStage = R.filter(
+  const actorsOnStage = R.filter(
     R.whereEq({ stageId: stageId, name: actorName })
   ) as (actors: Actor[]) => Actor[]
-  const knowledge = R.compose(
+  const actorsKnowledge = R.compose(
     R.map((a: Actor) => a.knowledge),
-    actorsForStage
+    actorsOnStage
   )
   const noActorsOnStage = R.compose(
     R.isEmpty,
-    actorsForStage
+    actorsOnStage
   )
-  const isKnowledge = R.compose(
+  const isAnybodyHowKnowsSomething = R.compose(
     R.not,
     R.isEmpty,
-    knowledge
+    actorsKnowledge
   )
 
   return {
     operation: EO.undefinedCommand,
     message: noActorsOnStage(actors)
       ? 'No actor with that name'
-      : isKnowledge(actors)
-      ? knowledge(actors).toString()
+      : isAnybodyHowKnowsSomething(actors)
+      ? actorsKnowledge(actors).toString()
       : 'Actor have no knowledge'
   } as Effect
 }
