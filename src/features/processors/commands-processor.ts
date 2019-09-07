@@ -40,7 +40,7 @@ const processCommandAndGetEffect: (
     (command, state) => R.equals(R.prop('order', command), 'Put'),
     (command, state) => {
       const { stages, currentStageId, pocket } = state
-      return EH.getPutElemEffect(command, stages, currentStageId, pocket)
+      return EH.getPutElemEffect(command, currentStageId, pocket)
     }
   ],
   [
@@ -48,6 +48,13 @@ const processCommandAndGetEffect: (
     (command, state) => {
       const { pocket } = state
       return EH.getPocketEffect(command, pocket)
+    }
+  ],
+  [
+    (command, state) => R.equals(R.prop('order', command), 'Talk'),
+    (command, state) => {
+      const { actors, currentStageId } = state
+      return EH.getTalkEffect(command, currentStageId,  actors)
     }
   ],
   [

@@ -44,8 +44,8 @@ export default class AppGameContainer extends React.Component<
 
   handleCommandEnter = (command: string) => {
     const state = appStore.getState()
-    const result = getEffect(command, state)
-    const actions = getActions(result, state)
+    const effect = getEffect(command, state)
+    const actions = getActions(effect, state)
 
     actions.forEach(a => appStore.dispatch(a))
     appStore.dispatch(addCommand(command))

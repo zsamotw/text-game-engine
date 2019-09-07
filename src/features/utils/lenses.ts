@@ -22,6 +22,7 @@ const elemLens = R.lensProp('elem')
 
 const stageIdLens = R.lensProp('stageId')
 const intervalLens = R.lensProp('interval')
+const knowledgeLens = R.lensProp('knowledge')
 
 const commandsLens = R.lensProp('commands')
 const positionLens = R.lensProp('position')
@@ -44,6 +45,7 @@ export {
   elemLens,
   stageIdLens,
   intervalLens,
+  knowledgeLens,
   commandsLens,
   positionLens
 }

@@ -9,6 +9,7 @@ const stringMatcher = R.cond([
   [PMH.isTakePattern, str => CH.getTakeCommand(str)],
   [PMH.isPutPattern, str => CH.getPutCommand(str)],
   [PMH.isPocketPattern, str => CH.getPocketCommand(str)],
+  [PMH.isTalkPattern, str => CH.getTalkCommand(str)],
   [R.T, str => CH.getUndefinedCommand(str)]
 ])
 

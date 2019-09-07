@@ -160,7 +160,6 @@ const getTakenElemEffect = function(
 
 const getPutElemEffect = function(
   command: Command,
-  stages: Stage[],
   currentStageId: number,
   pocket: Elem[]
 ) {
@@ -196,6 +195,39 @@ const getPocketEffect = function(command: Command, pocket: Elem[]) {
   } as Effect
 }
 
+const getTalkEffect = function(
+  command: Command,
+  stageId: number,
+  actors: Actor[]
+) {
+  const actorName = CF.getRestOfCommand(command)
+  const actorsForStage = R.filter(
+    R.whereEq({ stageId: stageId, name: actorName })
+  ) as (actors: Actor[]) => Actor[]
+  const knowledge = R.compose(
+    R.map((a: Actor) => a.knowledge),
+    actorsForStage
+  )
+  const noActorsOnStage = R.compose(
+    R.isEmpty,
+    actorsForStage
+  )
+  const isKnowledge = R.compose(
+    R.not,
+    R.isEmpty,
+    knowledge
+  )
+
+  return {
+    operation: EO.undefinedCommand,
+    message: noActorsOnStage(actors)
+      ? 'No actor with that name'
+      : isKnowledge(actors)
+      ? knowledge(actors).toString()
+      : 'Actor have no knowledge'
+  } as Effect
+}
+
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
     operation: EO.undefinedCommand,
@@ -211,5 +243,6 @@ export {
   getTakenElemEffect,
   getPutElemEffect,
   getPocketEffect,
+  getTalkEffect,
   getUndefinedEffect
 }

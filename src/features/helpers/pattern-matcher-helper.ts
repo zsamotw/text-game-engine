@@ -7,6 +7,7 @@ const isGoPattern = (str: string) => R.test(P.goPattern, str)
 const isTakePattern = (str: string) => R.test(P.takePattern, str)
 const isPutPattern = (str: string) => R.test(P.putPattern, str)
 const isPocketPattern = (str: string) => R.test(P.pocketPattern, str)
+const isTalkPattern = (str: string) => R.test(P.talkPattern, str)
 
 export {
   isLookAtPattern,
@@ -14,5 +15,6 @@ export {
   isGoPattern,
   isTakePattern,
   isPutPattern,
-  isPocketPattern
+  isPocketPattern,
+  isTalkPattern
 }

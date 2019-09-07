@@ -47,6 +47,14 @@ const getPocketCommand = function(str: string): Command {
   } as Command
 }
 
+const getTalkCommand = function(str: string): Command {
+  const rest = str.split(P.talkPattern)[1].trim()
+  return {
+    order: 'Talk',
+    rest: rest
+  } as Command
+}
+
 const getUndefinedCommand = function(str: string): Command {
   return {
     order: 'Undefined',
@@ -61,5 +69,6 @@ export {
   getTakeCommand,
   getPutCommand,
   getPocketCommand,
+  getTalkCommand,
   getUndefinedCommand
 }

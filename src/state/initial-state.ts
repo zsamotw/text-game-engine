@@ -2,7 +2,7 @@ import Actor from '../models/actor'
 import Doors from '../models/doors'
 import Elem from '../models/elem'
 import Stage from '../models/stage'
-import CommandsHistory from '../models/commandsHistory';
+import CommandsHistory from '../models/commandsHistory'
 
 const stages: Stage[] = [
   {
@@ -78,21 +78,21 @@ const actors: Actor[] = [
     id: 1,
     name: 'tomasz',
     description: 'It is tomasz',
-    interval: 30000,
+    knowledge: 'halo it is Tomasz',
+    interval: 300000,
     stageId: 0
   } as Actor,
   {
-    id: 2,
+    id: 1,
     name: 'antonina',
     description: 'It is antonina',
-    interval: 30000,
+    knowledge: 'halo it is Antonina',
+    interval: 300000,
     stageId: 1
   } as Actor
 ]
 
-const messages: string[] = [
-  'Welcome in game'
-]
+const messages: string[] = ['Welcome in game']
 
 const commandsHistory = {
   command: '',

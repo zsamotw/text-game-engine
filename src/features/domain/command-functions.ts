@@ -16,4 +16,4 @@ const getElemEqualsToCommand = R.curry((command: Command, elems: Elem[]) =>
   R.find(isRestCommandEqualToNameOf(command), elems)
 )
 
-export { isRestCommandEqualToNameOf, getElemEqualsToCommand }
+export { getRestOfCommand, isRestCommandEqualToNameOf, getElemEqualsToCommand }
