@@ -4,8 +4,8 @@ import * as AMT from '../../state/actions/messages-actions'
 import * as ED from '../utils/effect-operations'
 import * as EF from '../domain/effect-functions'
 import State from '../../models/state'
-import Elem from '../../models/elem'
-import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
+import Element from '../../models/element'
+import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
 import { changeStage } from '../../state/actions/stages-actions'
 import { Action } from '../../models/action'
 
@@ -25,31 +25,31 @@ const getActions = function(effect: Effect, state: State): Action[] {
       return [changeNextStageIdAction, addMessageAction]
     }
 
-    case ED.takeElem: {
-      const elem: Elem = EF.getElem(effect as ElemEffect)
-      const currentStageId = EF.getCurrentStageId(effect as ElemEffect)
+    case ED.takeElement: {
+      const element: Element = EF.getElement(effect as ElementEffect)
+      const currentStageId = EF.getCurrentStageId(effect as ElementEffect)
 
-      const takeElemFromStageAction = AST.takeElemFromStage(
-        elem,
+      const takeElementFromStageAction = AST.takeElementFromStage(
+        element,
         currentStageId
       )
-      const putElemInToPocketAction = APT.putElemInToPocket(elem)
+      const putElementInToPocketAction = APT.putElementInToPocket(element)
 
       return [
-        putElemInToPocketAction,
-        takeElemFromStageAction,
+        putElementInToPocketAction,
+        takeElementFromStageAction,
         addMessageAction
       ]
     }
 
-    case ED.putElem: {
-      const elem: Elem = EF.getElem(effect as ElemEffect)
-      const currentStageId = EF.getCurrentStageId(effect as ElemEffect)
+    case ED.putElement: {
+      const element: Element = EF.getElement(effect as ElementEffect)
+      const currentStageId = EF.getCurrentStageId(effect as ElementEffect)
 
-      const takeElemFromPocketAction = APT.takeElemFromPocket(elem)
-      const putElemToStageAction = AST.putElemInToStage(elem, currentStageId)
+      const takeElementFromPocketAction = APT.takeElementFromPocket(element)
+      const putElementToStageAction = AST.putElementInToStage(element, currentStageId)
 
-      return [takeElemFromPocketAction, putElemToStageAction, addMessageAction]
+      return [takeElementFromPocketAction, putElementToStageAction, addMessageAction]
     }
 
     case ED.undefinedCommand: {

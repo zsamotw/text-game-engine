@@ -1,6 +1,6 @@
 import * as L from '../utils/lenses'
 import * as R from 'ramda'
-import Elem from '../../models/elem'
+import Element from '../../models/element'
 import State from '../../models/state'
 import Stage from '../../models/stage'
 
@@ -10,9 +10,9 @@ const getRandomInt = (max: number) =>
 const getOnlyWithValues = (iterable: any[]) =>
   R.filter(i => !R.isNil(i), iterable)
 
-const nameOf: (elem: Elem) => string = R.view(L.nameLens)
+const nameOf: (element: Element) => string = R.view(L.nameLens)
 
-const descriptionOf: (state: State | Stage | Elem) => string = R.view(
+const descriptionOf: (state: State | Stage | Element) => string = R.view(
   L.descriptionLens
 )
 

@@ -1,14 +1,14 @@
 import {
   Action,
   NextStageAction,
-  ElemInStageAction
+  ElementInStageAction
 } from '../../models/action'
-import Elem from '../../models/elem'
+import Element from '../../models/element'
 import {
   NOTHING_CHANGE,
   CHANGE_STAGE,
-  TAKE_ELEM_FROM_STAGE,
-  PUT_ELEM_INTO_STAGE
+  TAKE_ELEMENT_FROM_STAGE,
+  PUT_ELEMENT_INTO_STAGE
 } from './action-types'
 
 const changeStage = (nextStageId: number) => {
@@ -18,20 +18,20 @@ const changeStage = (nextStageId: number) => {
   } as NextStageAction
 }
 
-const takeElemFromStage = (elem: Elem, currentStageId: number) => {
+const takeElementFromStage = (element: Element, currentStageId: number) => {
   return {
-    type: TAKE_ELEM_FROM_STAGE,
-    elem: elem,
+    type: TAKE_ELEMENT_FROM_STAGE,
+    element: element,
     currentStageId: currentStageId
-  } as ElemInStageAction
+  } as ElementInStageAction
 }
 
-const putElemInToStage = (elem: Elem, currentStageId: number) => {
+const putElementInToStage = (element: Element, currentStageId: number) => {
   return {
-    type: PUT_ELEM_INTO_STAGE,
-    elem: elem,
+    type: PUT_ELEMENT_INTO_STAGE,
+    element: element,
     currentStageId: currentStageId
-  } as ElemInStageAction
+  } as ElementInStageAction
 }
 
-export { changeStage, takeElemFromStage, putElemInToStage }
+export { changeStage, takeElementFromStage, putElementInToStage }

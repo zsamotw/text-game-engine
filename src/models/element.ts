@@ -1,4 +1,4 @@
-  export default interface Elem {
+  export default interface Element {
     name: string
     description: string
   }

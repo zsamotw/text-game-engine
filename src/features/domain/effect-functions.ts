@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import * as L from '../utils/lenses'
-import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
-import Elem from '../../models/elem'
+import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
+import Element from '../../models/element'
 
 const getOperation: (effect: Effect) => string = R.view(L.operationLens)
 
@@ -11,10 +11,10 @@ const getNextStageId: (effect: NextStageEffect) => number = R.view(
   L.nextStageId
 )
 
-const getElem: (effect: ElemEffect) => Elem = R.view(L.elemLens)
+const getElement: (effect: ElementEffect) => Element = R.view(L.elementLens)
 
-const getCurrentStageId: (effect: ElemEffect) => number = R.view(
+const getCurrentStageId: (effect: ElementEffect) => number = R.view(
   L.currentStageIdLens
 )
 
-export { getOperation, getMessage, getNextStageId, getElem, getCurrentStageId }
+export { getOperation, getMessage, getNextStageId, getElement, getCurrentStageId }

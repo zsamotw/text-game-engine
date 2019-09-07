@@ -1,4 +1,4 @@
-import Elem from './elem'
+import Element from './element'
 import { currentStageId } from '../state/initial-state'
 
 export interface Effect {
@@ -10,7 +10,7 @@ export interface NextStageEffect extends Effect {
   nextStageId: number
 }
 
-export interface ElemEffect extends Effect {
-  elem: Elem
+export interface ElementEffect extends Effect {
+  element: Element
   currentStageId: number
 }

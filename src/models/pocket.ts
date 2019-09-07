@@ -1,5 +1,5 @@
-import Elem from './elem'
+import Element from './element'
 
 export default interface Pocket {
-  elems: Elem[]
+  elems: Element[]
 }

@@ -1,6 +1,6 @@
 import Actor from '../models/actor'
 import Doors from '../models/doors'
-import Elem from '../models/elem'
+import Element from '../models/element'
 import Stage from '../models/stage'
 import CommandsHistory from '../models/commandsHistory'
 
@@ -10,15 +10,15 @@ const stages: Stage[] = [
     name: 'kitchen.',
     description:
       'kitchen, kitchen, och kitchen...Dirty table, two chairs  and one door.',
-    elems: [
+    elements: [
       {
         name: 'knife',
         description: 'very sharp knife.'
-      } as Elem,
+      } as Element,
       {
         name: 'flower',
         description: 'green flower which needs water.'
-      } as Elem
+      } as Element
     ],
     doors: {
       north: 2,
@@ -32,16 +32,16 @@ const stages: Stage[] = [
     name: 'living room',
     description:
       'Huge room with nothing. One sofa. There are one door to kichen. You can go there.',
-    elems: [
+    elements: [
       {
         name: 'newspaper',
         description:
           'It is Gazeta Wyborcza with articele about Tomasz is Great!!!'
-      } as Elem,
+      } as Element,
       {
         name: 'hammer',
         description: 'black hammer'
-      } as Elem
+      } as Element
     ],
     doors: {
       north: undefined,
@@ -54,11 +54,11 @@ const stages: Stage[] = [
     id: 2,
     name: 'Bathroom',
     description: 'Just Bathroom.',
-    elems: [
+    elements: [
       {
         name: 'soap',
         description: 'Red soap.'
-      } as Elem
+      } as Element
     ],
     doors: {
       north: undefined,
@@ -71,7 +71,7 @@ const stages: Stage[] = [
 
 const currentStageId: number = 0
 
-const pocket: Elem[] = []
+const pocket: Element[] = []
 
 const actors: Actor[] = [
   {

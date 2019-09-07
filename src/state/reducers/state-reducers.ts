@@ -11,7 +11,7 @@ import * as AT from '../actions/action-types'
 import * as PF from '../../features/domain/pocket-functions'
 import * as R from 'ramda'
 import Actor from '../../models/actor'
-import Elem from '../../models/elem'
+import Element from '../../models/element'
 import Stage from '../../models/stage'
 import CommandsHistory from '../../models/commandsHistory'
 import * as L from '../../features/utils/lenses'
@@ -21,20 +21,20 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
     case AT.NOTHING_CHANGE:
       return stagesState
 
-    case AT.TAKE_ELEM_FROM_STAGE: {
-      const { elem, currentStageId } = action
+    case AT.TAKE_ELEMENT_FROM_STAGE: {
+      const { element, currentStageId } = action
       return R.over(
-        R.lensPath([currentStageId, 'elems']),
-        R.filter((e: Elem) => e.name !== elem.name),
+        R.lensPath([currentStageId, 'elements']),
+        R.filter((e: Element) => e.name !== element.name),
         stagesState
       )
     }
 
-    case AT.PUT_ELEM_INTO_STAGE: {
-      const { elem, currentStageId } = action
+    case AT.PUT_ELEMENT_INTO_STAGE: {
+      const { element, currentStageId } = action
       const stages = R.over(
-        R.lensPath([currentStageId, 'elems']),
-        R.append(elem),
+        R.lensPath([currentStageId, 'elements']),
+        R.append(element),
         stagesState
       )
       return stages
@@ -59,19 +59,19 @@ function reduceCurrentStageId(
   }
 }
 
-function reducePocket(pocketState: Elem[] = pocket, action: any): Elem[] {
+function reducePocket(pocketState: Element[] = pocket, action: any): Element[] {
   switch (action.type) {
-    case AT.PUT_ELEM_INTO_POCKET:
-      const { elem } = action
-      const pocket = PF.addElemTo(elem, pocketState)
+    case AT.PUT_ELEMENT_INTO_POCKET:
+      const { element } = action
+      const pocket = PF.addElementTo(element, pocketState)
       return pocket
 
-    case AT.TAKE_ELEM_FROM_POCKET: {
-      const { elem } = action
-      const elemsWithDifferentNameTo = R.curry(
-        (name: string, elem: Elem) => elem.name !== name
+    case AT.TAKE_ELEMENT_FROM_POCKET: {
+      const { element } = action
+      const elementsWithDifferentNameTo = R.curry(
+        (name: string, element: Element) => element.name !== name
       )
-      const pocket = R.filter(elemsWithDifferentNameTo(elem.name), pocketState)
+      const pocket = R.filter(elementsWithDifferentNameTo(element.name), pocketState)
       return pocket
     }
 

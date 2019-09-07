@@ -1,4 +1,4 @@
-import { Effect, NextStageEffect, ElemEffect } from '../../models/effect'
+import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
 import * as AF from '../domain/actor-functions'
 import * as CF from '../domain/command-functions'
 import * as CP from '../processors/commands-processor'
@@ -12,7 +12,7 @@ import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
 import Command from '../../models/command'
-import Elem from '../../models/elem'
+import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
 
@@ -37,9 +37,9 @@ const getOverviewEffect = function(
   } else {
     const getName = R.prop('name')
 
-    const elemsNamesForCurrentStage = R.map(
+    const elementsNamesForCurrentStage = R.map(
       getName,
-      SF.getElemsForStage(currentStage)
+      SF.getElementsForStage(currentStage)
     )
 
     const actorNamesForCurrentStage: string[] = R.map(
@@ -47,9 +47,9 @@ const getOverviewEffect = function(
       AF.getActorsForStage(actors, currentStageId)
     )
 
-    const elemsOnStage =
-      elemsNamesForCurrentStage.length > 0
-        ? `Things: ${elemsNamesForCurrentStage}.`
+    const elementsOnStage =
+      elementsNamesForCurrentStage.length > 0
+        ? `Things: ${elementsNamesForCurrentStage}.`
         : 'No one thing here.'
     const actorsOnStage =
       actorNamesForCurrentStage.length > 0
@@ -59,7 +59,7 @@ const getOverviewEffect = function(
     const res = {
       operation: EO.noStateChange,
       message: `${GH.descriptionOf(currentStage)}
-                ${elemsOnStage}
+                ${elementsOnStage}
                 ${actorsOnStage}`
     } as Effect
     return res
@@ -71,25 +71,25 @@ const getDescriptionEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const getElemEqualsTo = CF.getElemEqualsToCommand
-  const fromElemsInCurrentStage = R.compose(
-    SF.getElemsForStage,
+  const getElementEqualsTo = CF.getElementEqualsToCommand
+  const fromElementsInCurrentStage = R.compose(
+    SF.getElementsForStage,
     SF.getStage
   )
 
-  const elem = getElemEqualsTo(command)(
-    fromElemsInCurrentStage(stages, currentStageId)
+  const element = getElementEqualsTo(command)(
+    fromElementsInCurrentStage(stages, currentStageId)
   )
 
-  if (R.isNil(elem)) {
+  if (R.isNil(element)) {
     return {
       operation: EO.noStateChange,
-      message: 'No such elem in this stage'
+      message: 'No such thing in this stage'
     } as Effect
   } else {
     return {
       operation: EO.noStateChange,
-      message: GH.descriptionOf(elem)
+      message: GH.descriptionOf(element)
     } as Effect
   }
 }
@@ -123,17 +123,17 @@ const getChangeStageEffect = function(
   }
 }
 
-const getTakenElemEffect = function(
+const getTakenElementEffect = function(
   command: Command,
   stages: Stage[],
   currentStageId: number,
-  pocket: Elem[]
+  pocket: Element[]
 ) {
-  const getElemEqualsTo = CF.getElemEqualsToCommand
+  const getElementEqualsTo = CF.getElementEqualsToCommand
   const currentStage = SF.getStage(stages, currentStageId)
-  const FromElemsOnCurrentStage = SF.getElemsForStage(currentStage)
+  const FromElementsOnCurrentStage = SF.getElementsForStage(currentStage)
 
-  const takenElem = getElemEqualsTo(command)(FromElemsOnCurrentStage)
+  const takenElement = getElementEqualsTo(command)(FromElementsOnCurrentStage)
   const isPlace = PF.isPlaceInPocket(pocket)
 
   switch (true) {
@@ -143,54 +143,54 @@ const getTakenElemEffect = function(
         message: 'No place in pocket'
       } as Effect
     }
-    case isPlace && !R.isNil(takenElem):
+    case isPlace && !R.isNil(takenElement):
       return {
-        operation: EO.takeElem,
-        elem: takenElem,
+        operation: EO.takeElement,
+        element: takenElement,
         currentStageId: currentStageId,
-        message: `${GH.nameOf(takenElem as Elem)} is taken`
-      } as ElemEffect
-    case isPlace && R.isNil(takenElem):
+        message: `${GH.nameOf(takenElement as Element)} is taken`
+      } as ElementEffect
+    case isPlace && R.isNil(takenElement):
       return {
         operation: EO.noStateChange,
-        message: 'No such elem in this stage'
+        message: 'No such thing in this stage'
       } as Effect
   }
 }
 
-const getPutElemEffect = function(
+const getPutElementEffect = function(
   command: Command,
   currentStageId: number,
-  pocket: Elem[]
+  pocket: Element[]
 ) {
-  const getElemEqualsTo = CF.getElemEqualsToCommand
+  const getElementEqualsTo = CF.getElementEqualsToCommand
 
-  const elemFromPocket = getElemEqualsTo(command)(pocket)
+  const elementFromPocket = getElementEqualsTo(command)(pocket)
 
-  if (R.isNil(elemFromPocket)) {
+  if (R.isNil(elementFromPocket)) {
     return {
       operation: EO.noStateChange,
-      message: 'No such elem in pocket'
+      message: 'No such thing in pocket'
     } as Effect
   } else {
     return {
-      operation: EO.putElem,
-      elem: elemFromPocket,
+      operation: EO.putElement,
+      element: elementFromPocket,
       currentStageId: currentStageId,
-      message: `${GH.nameOf(elemFromPocket)} is now put to the ground.`
-    } as ElemEffect
+      message: `${GH.nameOf(elementFromPocket)} is now put to the ground.`
+    } as ElementEffect
   }
 }
 
-const getPocketEffect = function(command: Command, pocket: Elem[]) {
-  const getElemsNamesFrom = R.map(R.prop('name'))
-  const elemsInPocket = getElemsNamesFrom(pocket)
+const getPocketEffect = function(command: Command, pocket: Element[]) {
+  const getElementsNamesFrom = R.map(R.prop('name'))
+  const elementsInPocket = getElementsNamesFrom(pocket)
 
   return {
     operation: EO.noStateChange,
     message:
-      elemsInPocket.length > 0
-        ? `In your pocket: ${elemsInPocket}`
+      elementsInPocket.length > 0
+        ? `In your pocket: ${elementsInPocket}`
         : 'You pocket is empty'
   } as Effect
 }
@@ -221,17 +221,17 @@ const getTalkEffect = function(
   return {
     operation: EO.undefinedCommand,
     message: noActorsOnStage(actors)
-      ? 'No actor with that name'
+      ? 'There is no actor with that name'
       : isAnybodyHowKnowsSomething(actors)
       ? actorsKnowledge(actors).toString()
-      : 'Actor have no knowledge'
+      : 'Actors on this stage have no knowledge'
   } as Effect
 }
 
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
     operation: EO.undefinedCommand,
-    message: `ooops!! it is wrong command.`
+    message: `oops!! it is wrong command.`
   } as Effect
 }
 
@@ -240,8 +240,8 @@ export {
   getOverviewEffect,
   getDescriptionEffect,
   getChangeStageEffect,
-  getTakenElemEffect,
-  getPutElemEffect,
+  getTakenElementEffect,
+  getPutElementEffect,
   getPocketEffect,
   getTalkEffect,
   getUndefinedEffect

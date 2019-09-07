@@ -1,4 +1,4 @@
-import Elem from './elem'
+import Element from './element'
 
 export interface Action {
   type: string
@@ -8,12 +8,12 @@ export interface NextStageAction extends Action {
   nextStageId: number
 }
 
-export interface ElemAction extends Action {
-  elem: Elem
+export interface ElementAction extends Action {
+  element: Element
 }
 
-export interface ElemInStageAction extends Action {
-  elem: Elem
+export interface ElementInStageAction extends Action {
+  element: Element
   currentStageId: number
 }
 

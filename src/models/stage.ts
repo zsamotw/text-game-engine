@@ -1,10 +1,10 @@
-import Elem from './elem'
+import Element from './element'
 import Doors from './doors'
 
 export default interface Stage {
   id: number
   name: string
   description: string
-  elems: Elem[]
+  elements: Element[]
   doors: Doors
 }

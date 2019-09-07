@@ -8,7 +8,7 @@ const doorsLens = R.lensProp('doors')
 const actorsLens = R.lensProp('actors')
 const systemMessages = R.lensProp('systemMessages')
 
-const elemsLens = R.lensProp('elems')
+const elementsLens = R.lensProp('elements')
 
 const descriptionLens = R.lensProp('description')
 const nameLens = R.lensProp('name')
@@ -18,7 +18,7 @@ const restLens = R.lensProp('rest')
 
 const messageLens = R.lensProp('message')
 const nextStageId = R.lensProp('nextStageId')
-const elemLens = R.lensProp('elem')
+const elementLens = R.lensProp('element')
 
 const stageIdLens = R.lensProp('stageId')
 const intervalLens = R.lensProp('interval')
@@ -35,14 +35,14 @@ export {
   doorsLens,
   actorsLens,
   systemMessages,
-  elemsLens,
+  elementsLens,
   descriptionLens,
   restLens,
   nameLens,
   operationLens,
   messageLens,
   nextStageId,
-  elemLens,
+  elementLens,
   stageIdLens,
   intervalLens,
   knowledgeLens,

@@ -1,7 +1,7 @@
 import * as L from '../utils/lenses'
 import * as R from 'ramda'
 import Command from '../../models/command'
-import Elem from '../../models/elem'
+import Element from '../../models/element'
 
 const getRestOfCommand: (command: Command) => string = R.view(L.restLens)
 
@@ -12,8 +12,8 @@ const isRestCommandEqualToNameOf = R.compose(
   getRestOfCommand
 )
 
-const getElemEqualsToCommand = R.curry((command: Command, elems: Elem[]) =>
+const getElementEqualsToCommand = R.curry((command: Command, elems: Element[]) =>
   R.find(isRestCommandEqualToNameOf(command), elems)
 )
 
-export { getRestOfCommand, isRestCommandEqualToNameOf, getElemEqualsToCommand }
+export { getRestOfCommand, isRestCommandEqualToNameOf, getElementEqualsToCommand }
