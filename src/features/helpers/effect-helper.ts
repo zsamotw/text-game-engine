@@ -29,41 +29,49 @@ const getOverviewEffect = function(
 ) {
   const currentStage = SF.getStage(stages, currentStageId)
 
-  if (R.isNil(currentStage)) {
-    return {
-      operation: EO.noStateChange,
-      message: 'Error. No stage defined as current. Contact with game owner.'
-    } as Effect
-  } else {
+  const effectForStage = (stage: Stage) => {
     const getName = R.prop('name')
 
     const elementsNamesForCurrentStage = R.map(
       getName,
-      SF.getElementsForStage(currentStage)
+      SF.getElementsForStage(stage)
     )
 
-    const actorNamesForCurrentStage: string[] = R.map(
+    const actorNamesForCurrentStage = R.map(
       getName,
       AF.getActorsForStage(actors, currentStageId)
     )
 
-    const elementsOnStage =
-      elementsNamesForCurrentStage.length > 0
-        ? `Things: ${elementsNamesForCurrentStage}.`
-        : 'No one thing here.'
-    const actorsOnStage =
-      actorNamesForCurrentStage.length > 0
-        ? `Persons: ${actorNamesForCurrentStage}.`
-        : 'Nobody here.'
+    const elementsDescription = R.ifElse(
+      R.isEmpty,
+      R.always('No one thing here.'),
+      (elements: string) => `Things: ${elements}.`
+    )
 
-    const res = {
+    const actorsDescription = R.ifElse(
+      R.isEmpty,
+      R.always('Nobody here'),
+      (actors: string[]) => `Persons: ${actors}.`
+    )
+
+    return {
       operation: EO.noStateChange,
-      message: `${GH.descriptionOf(currentStage)}
-                ${elementsOnStage}
-                ${actorsOnStage}`
+      message: `${GH.descriptionOf(stage)}
+                ${elementsDescription(elementsNamesForCurrentStage)}
+                ${actorsDescription(actorNamesForCurrentStage)}`
     } as Effect
-    return res
   }
+
+  const effectFrom = R.ifElse(
+    R.isNil,
+    R.always({
+      operation: EO.noStateChange,
+      message: 'Error. No stage defined as current. Contact with game owner.'
+    } as Effect),
+    effectForStage
+  )
+
+  return effectFrom(currentStage)
 }
 
 const getDescriptionEffect = function(
@@ -81,17 +89,21 @@ const getDescriptionEffect = function(
     fromElementsInCurrentStage(stages, currentStageId)
   )
 
-  if (R.isNil(element)) {
-    return {
+  const effectFrom = R.ifElse(
+    R.isNil,
+    R.always({
       operation: EO.noStateChange,
       message: 'No such thing in this stage'
-    } as Effect
-  } else {
-    return {
-      operation: EO.noStateChange,
-      message: GH.descriptionOf(element)
-    } as Effect
-  }
+    } as Effect),
+    (element: Element) => {
+      return {
+        operation: EO.noStateChange,
+        message: GH.descriptionOf(element)
+      } as Effect
+    }
+  )
+
+  return effectFrom(element)
 }
 
 const getChangeStageEffect = function(
@@ -99,28 +111,34 @@ const getChangeStageEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const directionFrom: (command: Command) => string = R.view(L.restLens)
   const doorsInCurrentStage = DF.getDoorsForStage(stages, currentStageId)
-  const direction = directionFrom(command)
 
-  const nextStageId = R.prop(direction as any, doorsInCurrentStage)
+  const directionFrom: (command: Command) => string = R.view(L.restLens)
 
-  const nextStage = R.find(R.propEq('id', nextStageId), stages) as Stage
+  const nextStageId = R.prop(directionFrom(command) as any, doorsInCurrentStage)
+  const nextStage = R.find(R.propEq('id', nextStageId))
 
-  const nextStageName = GH.nameOf(nextStage)
+  const nextStageName = R.compose(
+    GH.nameOf,
+    nextStage
+  )(stages)
 
-  if (R.isNil(nextStageId)) {
-    return {
+  const effectFrom = R.ifElse(
+    R.isNil,
+    R.always({
       operation: EO.noStateChange,
       message: 'Oops. Something wrong. You can not go this operation.'
-    } as Effect
-  } else {
-    return {
-      operation: EO.changeNextStageId,
-      nextStageId: nextStageId,
-      message: `You are in  ${nextStageName}`
-    } as NextStageEffect
-  }
+    } as Effect),
+    (nextStageId: number) => {
+      return {
+        operation: EO.changeNextStageId,
+        nextStageId: nextStageId,
+        message: `You are in  ${nextStageName}`
+      } as NextStageEffect
+    }
+  )
+
+  return effectFrom(nextStageId)
 }
 
 const getTakenElementEffect = function(
@@ -135,7 +153,7 @@ const getTakenElementEffect = function(
 
   const takenElement = getElementEqualsTo(command)(FromElementsOnCurrentStage)
   const isPlace = PF.isPlaceInPocket(pocket)
-
+  //TODO use cond, and, not
   switch (true) {
     case !isPlace: {
       return {
@@ -167,31 +185,38 @@ const getPutElementEffect = function(
 
   const elementFromPocket = getElementEqualsTo(command)(pocket)
 
-  if (R.isNil(elementFromPocket)) {
-    return {
+  const effectFrom = R.ifElse(
+    R.isNil,
+    R.always({
       operation: EO.noStateChange,
       message: 'No such thing in pocket'
-    } as Effect
-  } else {
-    return {
-      operation: EO.putElement,
-      element: elementFromPocket,
-      currentStageId: currentStageId,
-      message: `${GH.nameOf(elementFromPocket)} is now put to the ground.`
-    } as ElementEffect
-  }
+    } as Effect),
+    elementFromPocket => {
+      return {
+        operation: EO.putElement,
+        element: elementFromPocket,
+        currentStageId: currentStageId,
+        message: `${GH.nameOf(elementFromPocket)} is now put to the ground.`
+      } as ElementEffect
+    }
+  )
+
+  return effectFrom(elementFromPocket)
 }
 
 const getPocketEffect = function(command: Command, pocket: Element[]) {
   const getElementsNamesFrom = R.map(R.prop('name'))
   const elementsInPocket = getElementsNamesFrom(pocket)
 
+  const messageFrom = R.ifElse(
+    R.isEmpty,
+    R.always('You pocket is empty'),
+    (elementsInPocket) => `In your pocket: ${elementsInPocket}`
+  )
+
   return {
     operation: EO.noStateChange,
-    message:
-      elementsInPocket.length > 0
-        ? `In your pocket: ${elementsInPocket}`
-        : 'You pocket is empty'
+    message: messageFrom(elementsInPocket)
   } as Effect
 }
 

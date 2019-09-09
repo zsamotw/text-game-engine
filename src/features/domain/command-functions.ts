@@ -12,8 +12,8 @@ const isRestCommandEqualToNameOf = R.compose(
   getRestOfCommand
 )
 
-const getElementEqualsToCommand = R.curry((command: Command, elems: Element[]) =>
-  R.find(isRestCommandEqualToNameOf(command), elems)
+const getElementEqualsToCommand = R.curry((command: Command, elements: Element[]) =>
+  R.find(isRestCommandEqualToNameOf(command), elements)
 )
 
 export { getRestOfCommand, isRestCommandEqualToNameOf, getElementEqualsToCommand }

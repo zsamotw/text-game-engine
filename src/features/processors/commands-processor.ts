@@ -39,7 +39,7 @@ const processCommandAndGetEffect: (
   [
     (command, state) => R.equals(R.prop('order', command), 'Put'),
     (command, state) => {
-      const { stages, currentStageId, pocket } = state
+      const { currentStageId, pocket } = state
       return EH.getPutElementEffect(command, currentStageId, pocket)
     }
   ],

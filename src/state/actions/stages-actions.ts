@@ -1,11 +1,9 @@
 import {
-  Action,
   NextStageAction,
   ElementInStageAction
 } from '../../models/action'
 import Element from '../../models/element'
 import {
-  NOTHING_CHANGE,
   CHANGE_STAGE,
   TAKE_ELEMENT_FROM_STAGE,
   PUT_ELEMENT_INTO_STAGE
