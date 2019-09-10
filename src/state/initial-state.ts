@@ -100,4 +100,8 @@ const commandsHistory = {
   position: 0
 } as CommandsHistory
 
-export { stages, currentStageId, pocket, actors, messages, commandsHistory }
+const settings = {
+  maxPocketSize: 2
+}
+
+export { stages, currentStageId, pocket, actors, messages, commandsHistory, settings }

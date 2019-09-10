@@ -15,13 +15,13 @@ const getActorsStream = () =>
   Rx.interval(3000).pipe(
     map(interval => {
       const getChangeStageAction = (stages: Stage[], actor: Actor) => {
-        const stageId = AF.getStageId(actor)
-        const interval = AF.getInterval(actor)
+        const stageId = AF.stageIdOf(actor)
+        const interval = AF.intervalOf(actor)
         
         if ((interval * 1000) % interval === 0) {
-          const doors = DF.getDoorsForStage(stages, stageId)
+          const doors = DF.doorsForStage(stages, stageId)
           const newStageId = DF.getWayOut(doors as Doors) as number
-          const actorId = AF.getId(actor)
+          const actorId = AF.idOf(actor)
 
           return changeActorStage(actorId, newStageId)
         }

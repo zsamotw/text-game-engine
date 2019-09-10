@@ -4,13 +4,13 @@ import State from '../../models/state'
 import Stage from '../../models/stage'
 import Element from '../../models/element'
 
-const getStages: (state: State) => Stage[] = R.view(L.stagesLens)
+const stagesOf: (state: State) => Stage[] = R.view(L.stagesLens)
 
-const getStage: (stages: Stage[], stageId: number) => Stage = (
+const stageFrom: (stages: Stage[], stageId: number) => Stage = (
   stages,
   stageId
 ) => R.find(R.propEq('id', stageId))(stages)
 
-const getElementsForStage: (stage: Stage) => Element[] = R.view(L.elementsLens)
+const elementsForStage: (stage: Stage) => Element[] = R.view(L.elementsLens)
 
-export { getStages, getStage, getElementsForStage }
+export { stagesOf, stageFrom, elementsForStage }

@@ -8,7 +8,7 @@ const getRandomInt = (max: number) =>
   Math.floor(Math.random() * Math.floor(max))
 
 const getOnlyWithValues = (iterable: any[]) =>
-  R.filter(i => !R.isNil(i), iterable)
+  R.filter(i => R.compose(R.not, R.isNil)(i), iterable)
 
 const nameOf: (element: Element) => string = R.view(L.nameLens)
 

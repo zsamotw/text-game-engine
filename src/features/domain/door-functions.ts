@@ -4,7 +4,7 @@ import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import Stage from '../../models/stage'
 
-const getDoors: (stage: Stage) => Doors = R.view(L.doorsLens)
+const doorsOf: (stage: Stage) => Doors = R.view(L.doorsLens)
 
 const getWayOut = (doors: Doors) => {
   if (doors.west !== undefined) {
@@ -18,34 +18,34 @@ const getWayOut = (doors: Doors) => {
   }
 }
 
-const getDoorsForCurrentStage: (
+const doorsForCurrentStage: (
   stages: Stage[],
   currentStageId: number
 ) => Doors = R.compose(
-  getDoors,
-  SF.getStage
+  doorsOf,
+  SF.stageFrom
 )
 
-const getDoorsForStage = R.compose(
-  getDoors,
-  SF.getStage
+const doorsForStage = R.compose(
+  doorsOf,
+  SF.stageFrom
 )
 
-const getOpenDoors = (doors: Doors | undefined) => {
+const openDoors = (doors: Doors | undefined) => {
   const getValues = (doors: Doors) => {
     return R.reject(R.isNil)(R.values(doors))
   }
   R.ifElse(R.isNil, R.always(undefined), getValues)
 }
 
-const getOpenedDoorsForStage = R.compose(
-  getOpenDoors,
-  getDoorsForStage
+const openedDoorsForStage = R.compose(
+  openDoors,
+  doorsForStage
 )
 
 export {
-  getDoorsForCurrentStage,
-  getDoorsForStage,
-  getOpenedDoorsForStage,
+  doorsForCurrentStage,
+  doorsForStage,
+  openedDoorsForStage,
   getWayOut
 }

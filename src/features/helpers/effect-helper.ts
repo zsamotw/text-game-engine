@@ -27,19 +27,19 @@ const getOverviewEffect = function(
   actors: Actor[],
   currentStageId: number
 ) {
-  const currentStage = SF.getStage(stages, currentStageId)
+  const currentStage = SF.stageFrom(stages, currentStageId)
 
   const effectForStage = (stage: Stage) => {
     const getName = R.prop('name')
 
     const elementsNamesForCurrentStage = R.map(
       getName,
-      SF.getElementsForStage(stage)
+      SF.elementsForStage(stage)
     )
 
     const actorNamesForCurrentStage = R.map(
       getName,
-      AF.getActorsForStage(actors, currentStageId)
+      AF.actorsForStage(actors, currentStageId)
     )
 
     const elementsDescription = R.ifElse(
@@ -79,10 +79,10 @@ const getDescriptionEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const getElementEqualsTo = CF.getElementEqualsToCommand
+  const getElementEqualsTo = CF.elementEqualsToCommand
   const fromElementsInCurrentStage = R.compose(
-    SF.getElementsForStage,
-    SF.getStage
+    SF.elementsForStage,
+    SF.stageFrom
   )
 
   const element = getElementEqualsTo(command)(
@@ -111,7 +111,7 @@ const getChangeStageEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const doorsInCurrentStage = DF.getDoorsForStage(stages, currentStageId)
+  const doorsInCurrentStage = DF.doorsForStage(stages, currentStageId)
 
   const directionFrom: (command: Command) => string = R.view(L.restLens)
 
@@ -147,12 +147,13 @@ const getTakenElementEffect = function(
   currentStageId: number,
   pocket: Element[]
 ) {
-  const getElementEqualsTo = CF.getElementEqualsToCommand
-  const currentStage = SF.getStage(stages, currentStageId)
-  const FromElementsOnCurrentStage = SF.getElementsForStage(currentStage)
+  const getElementEqualsTo = CF.elementEqualsToCommand
+  const currentStage = SF.stageFrom(stages, currentStageId)
+  const FromElementsOnCurrentStage = SF.elementsForStage(currentStage)
 
   const takenElement = getElementEqualsTo(command)(FromElementsOnCurrentStage)
   const isPlace = PF.isPlaceInPocket(pocket)
+
   //TODO use cond, and, not
   switch (true) {
     case !isPlace: {
@@ -181,7 +182,7 @@ const getPutElementEffect = function(
   currentStageId: number,
   pocket: Element[]
 ) {
-  const getElementEqualsTo = CF.getElementEqualsToCommand
+  const getElementEqualsTo = CF.elementEqualsToCommand
 
   const elementFromPocket = getElementEqualsTo(command)(pocket)
 
@@ -225,7 +226,7 @@ const getTalkEffect = function(
   stageId: number,
   actors: Actor[]
 ) {
-  const actorName = CF.getRestOfCommand(command)
+  const actorName = CF.restOfCommand(command)
   const actorsOnStage = R.filter(
     R.whereEq({ stageId: stageId, name: actorName })
   ) as (actors: Actor[]) => Actor[]
@@ -237,7 +238,7 @@ const getTalkEffect = function(
     R.isEmpty,
     actorsOnStage
   )
-  const isAnybodyHowKnowsSomething = R.compose(
+  const isAnybodyKnowsSomething = R.compose(
     R.not,
     R.isEmpty,
     actorsKnowledge
@@ -247,7 +248,7 @@ const getTalkEffect = function(
     operation: EO.undefinedCommand,
     message: noActorsOnStage(actors)
       ? 'There is no actor with that name'
-      : isAnybodyHowKnowsSomething(actors)
+      : isAnybodyKnowsSomething(actors)
       ? actorsKnowledge(actors).toString()
       : 'Actors on this stage have no knowledge'
   } as Effect

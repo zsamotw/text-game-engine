@@ -1,11 +1,13 @@
 import * as R from 'ramda'
 import Element from '../../models/element'
+import { settings } from '../../state/initial-state'
 
-const maxPocketSize = 2
+const { maxPocketSize } = settings
 
 const isPlaceInPocket: (pocket: Element[]) => boolean = pocket =>
-  pocket.length < maxPocketSize
+  R.lt(pocket.length, maxPocketSize)
 
-const addElementTo = (element: Element, pocket: Element[]) => R.append(element, pocket)
+const addElementTo = (element: Element, pocket: Element[]) =>
+  R.append(element, pocket)
 
 export { addElementTo, isPlaceInPocket, maxPocketSize }

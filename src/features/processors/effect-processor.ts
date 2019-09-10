@@ -11,8 +11,8 @@ import { Action } from '../../models/action'
 
 // getActions :: Effect -> State ->  Action[]
 const getActions = function(effect: Effect, state: State): Action[] {
-  const operation = EF.getOperation(effect)
-  const message = EF.getMessage(effect)
+  const operation = EF.operationOf(effect)
+  const message = EF.messageOf(effect)
   const addMessageAction = AMT.addMessage(message)
 
   switch (operation) {
@@ -20,14 +20,14 @@ const getActions = function(effect: Effect, state: State): Action[] {
       return [addMessageAction]
 
     case ED.changeNextStageId: {
-      const nextStageId = EF.getNextStageId(effect as NextStageEffect)
+      const nextStageId = EF.nextStageIdOf(effect as NextStageEffect)
       const changeNextStageIdAction = changeStage(nextStageId)
       return [changeNextStageIdAction, addMessageAction]
     }
 
     case ED.takeElement: {
-      const element: Element = EF.getElement(effect as ElementEffect)
-      const currentStageId = EF.getCurrentStageId(effect as ElementEffect)
+      const element: Element = EF.elementOf(effect as ElementEffect)
+      const currentStageId = EF.currentStageIdOf(effect as ElementEffect)
 
       const takeElementFromStageAction = AST.takeElementFromStage(
         element,
@@ -43,8 +43,8 @@ const getActions = function(effect: Effect, state: State): Action[] {
     }
 
     case ED.putElement: {
-      const element: Element = EF.getElement(effect as ElementEffect)
-      const currentStageId = EF.getCurrentStageId(effect as ElementEffect)
+      const element: Element = EF.elementOf(effect as ElementEffect)
+      const currentStageId = EF.currentStageIdOf(effect as ElementEffect)
 
       const takeElementFromPocketAction = APT.takeElementFromPocket(element)
       const putElementToStageAction = AST.putElementInToStage(element, currentStageId)
