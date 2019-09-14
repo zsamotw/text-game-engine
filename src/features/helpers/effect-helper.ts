@@ -8,6 +8,7 @@ import * as GH from '../domain/general-usage-functions'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as R from 'ramda'
+import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
@@ -15,6 +16,12 @@ import Command from '../../models/command'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
+
+interface Maybe<A> {
+  constructor: {
+    '@@type': 'sanctuary/Maybe'
+  }
+}
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
@@ -27,42 +34,34 @@ const getOverviewEffect = function(
   actors: Actor[],
   currentStageId: number
 ) {
-  const currentStage = SF.stageFrom(stages, currentStageId)
-
   const effectForStage = (stage: Stage) => {
-    const getName = R.prop('name')
+    const getName = S.prop('name')
 
-    const elementsNamesForCurrentStage = R.map(
-      getName,
-      SF.elementsForStage(stage)
+    const mapToNames = S.map(getName)
+
+    const joinedNames = S.ifElse(S.equals([]))(() => 'No one thing here.')(
+      names => `Things: ${names}.`
     )
 
-    const actorNamesForCurrentStage = R.map(
-      getName,
-      AF.actorsForStage(actors, currentStageId)
-    )
+    const elementsDescription = S.pipe([SF.elementsForStage, mapToNames, joinedNames])
 
-    const elementsDescription = R.ifElse(
-      R.isEmpty,
-      R.always('No one thing here.'),
-      (elements: string) => `Things: ${elements}.`
-    )
-
-    const actorsDescription = R.ifElse(
+    const joinedActorsNames = R.ifElse(
       R.isEmpty,
       R.always('Nobody here'),
       (actors: string[]) => `Persons: ${actors}.`
     )
 
+    const actorsDescription = S.pipe([AF.actorsForStage(actors), mapToNames, joinedActorsNames] )
+
     return {
       operation: EO.noStateChange,
       message: `${GH.descriptionOf(stage)}
-                ${elementsDescription(elementsNamesForCurrentStage)}
-                ${actorsDescription(actorNamesForCurrentStage)}`
+                ${elementsDescription(stage)}
+                ${actorsDescription(currentStageId)}`
     } as Effect
   }
 
-  const effectFrom = R.ifElse(
+  const overviewEffectOf = R.ifElse(
     R.isNil,
     R.always({
       operation: EO.noStateChange,
@@ -71,7 +70,8 @@ const getOverviewEffect = function(
     effectForStage
   )
 
-  return effectFrom(currentStage)
+  const currentStage = SF.stageFrom(stages, currentStageId)
+  return overviewEffectOf(currentStage)
 }
 
 const getDescriptionEffect = function(
@@ -85,17 +85,19 @@ const getDescriptionEffect = function(
     SF.stageFrom
   )
 
-  const element = getElementEqualsTo(command)(
+  const maybeElement = getElementEqualsTo(command)(
     fromElementsInCurrentStage(stages, currentStageId)
   )
 
   const effectFrom = R.ifElse(
-    R.isNil,
+    S.isNothing,
     R.always({
       operation: EO.noStateChange,
       message: 'No such thing in this stage'
     } as Effect),
-    (element: Element) => {
+    (maybeElement: Maybe<Element>) => {
+      const element = S.maybeToNullable(maybeElement) as Element
+
       return {
         operation: EO.noStateChange,
         message: GH.descriptionOf(element)
@@ -103,7 +105,7 @@ const getDescriptionEffect = function(
     }
   )
 
-  return effectFrom(element)
+  return effectFrom(maybeElement)
 }
 
 const getChangeStageEffect = function(
@@ -151,25 +153,30 @@ const getTakenElementEffect = function(
   const currentStage = SF.stageFrom(stages, currentStageId)
   const FromElementsOnCurrentStage = SF.elementsForStage(currentStage)
 
-  const takenElement = getElementEqualsTo(command)(FromElementsOnCurrentStage)
+  const maybeTakenElement = getElementEqualsTo(command)(
+    FromElementsOnCurrentStage
+  )
   const isPlace = PF.isPlaceInPocket(pocket)
 
-  //TODO use cond, and, not
   switch (true) {
-    case !isPlace: {
+    case S.not(isPlace): {
       return {
         operation: EO.noStateChange,
-        message: 'No place in pocket'
+        message: 'There is no place in pocket'
       } as Effect
     }
-    case isPlace && !R.isNil(takenElement):
+
+    case isPlace && S.isJust(maybeTakenElement):
+      const element = S.maybeToNullable(maybeTakenElement)
+
       return {
         operation: EO.takeElement,
-        element: takenElement,
+        element: element,
         currentStageId: currentStageId,
-        message: `${GH.nameOf(takenElement as Element)} is taken`
+        message: `${GH.nameOf(element as Element)} is taken`
       } as ElementEffect
-    case isPlace && R.isNil(takenElement):
+
+    case isPlace && S.isNothing(maybeTakenElement):
       return {
         operation: EO.noStateChange,
         message: 'No such thing in this stage'
@@ -182,17 +189,19 @@ const getPutElementEffect = function(
   currentStageId: number,
   pocket: Element[]
 ) {
-  const getElementEqualsTo = CF.elementEqualsToCommand
-
-  const elementFromPocket = getElementEqualsTo(command)(pocket)
+  const maybeElementFromPocket = CF.elementEqualsToCommand(command)(pocket)
 
   const effectFrom = R.ifElse(
-    R.isNil,
+    S.isNothing,
     R.always({
       operation: EO.noStateChange,
       message: 'No such thing in pocket'
     } as Effect),
-    elementFromPocket => {
+    (maybeElementFromPocket: Maybe<Element>) => {
+      const elementFromPocket = S.maybeToNullable(
+        maybeElementFromPocket
+      ) as Element
+
       return {
         operation: EO.putElement,
         element: elementFromPocket,
@@ -202,7 +211,7 @@ const getPutElementEffect = function(
     }
   )
 
-  return effectFrom(elementFromPocket)
+  return effectFrom(maybeElementFromPocket)
 }
 
 const getPocketEffect = function(command: Command, pocket: Element[]) {
@@ -212,7 +221,7 @@ const getPocketEffect = function(command: Command, pocket: Element[]) {
   const messageFrom = R.ifElse(
     R.isEmpty,
     R.always('You pocket is empty'),
-    (elementsInPocket) => `In your pocket: ${elementsInPocket}`
+    elementsInPocket => `In your pocket: ${elementsInPocket}`
   )
 
   return {
@@ -257,7 +266,7 @@ const getTalkEffect = function(
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
     operation: EO.undefinedCommand,
-    message: `oops!! it is wrong command.`
+    message: 'oops!! it is wrong command.'
   } as Effect
 }
 

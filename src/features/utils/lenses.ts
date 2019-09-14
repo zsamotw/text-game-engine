@@ -1,5 +1,14 @@
-const R = require('ramda')
+import { lens } from 'lens.ts'
+import Stage from '../../models/stage'
+import Command from '../../models/command'
+import * as R from 'ramda'
 
+const stageLens = lens<Stage>()
+const commandLens = lens<Command>()
+
+const commandRestLens = commandLens.rest.get()
+
+//ramda lenses
 const idLens = R.lensProp('id')
 const stagesLens = R.lensProp('stages')
 const currentStageIdLens = R.lensProp('currentStageId')
@@ -7,6 +16,7 @@ const pocketLens = R.lensProp('pocket')
 const doorsLens = R.lensProp('doors')
 const actorsLens = R.lensProp('actors')
 const systemMessages = R.lensProp('systemMessages')
+
 
 const elementsLens = R.lensProp('elements')
 
@@ -28,6 +38,11 @@ const commandsLens = R.lensProp('commands')
 const positionLens = R.lensProp('position')
 
 export {
+  stageLens,
+  commandLens,
+  commandRestLens, 
+
+//ramda lenses
   idLens,
   stagesLens,
   currentStageIdLens,
