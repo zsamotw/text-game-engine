@@ -27,20 +27,8 @@ const getOverviewEffect = function(
   actors: Actor[],
   currentStageId: number
 ) {
-  const currentStage = SF.stageFrom(stages, currentStageId)
-
   const effectForStage = (stage: Stage) => {
-    const getName = R.prop('name')
-
-    const elementsNamesForCurrentStage = R.map(
-      getName,
-      SF.elementsForStage(stage)
-    )
-
-    const actorNamesForCurrentStage = R.map(
-      getName,
-      AF.actorsForStage(actors, currentStageId)
-    )
+    const mapToName = R.map(R.prop('name'))
 
     const elementsDescription = R.ifElse(
       R.isEmpty,
@@ -54,11 +42,15 @@ const getOverviewEffect = function(
       (actors: string[]) => `Persons: ${actors}.`
     )
 
+    const joinedElementsNamesOf = R.compose(elementsDescription, mapToName, SF.elementsForStage)
+    const joinedActorsNamesOf = R.compose(actorsDescription, mapToName, AF.actorsForStage)
+
+
     return {
       operation: EO.noStateChange,
       message: `${GH.descriptionOf(stage)}
-                ${elementsDescription(elementsNamesForCurrentStage)}
-                ${actorsDescription(actorNamesForCurrentStage)}`
+                ${joinedElementsNamesOf(stage)}
+                ${joinedActorsNamesOf(actors, currentStageId)}`
     } as Effect
   }
 
@@ -71,6 +63,7 @@ const getOverviewEffect = function(
     effectForStage
   )
 
+  const currentStage = SF.stageFrom(stages, currentStageId)
   return effectFrom(currentStage)
 }
 
