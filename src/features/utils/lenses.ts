@@ -8,6 +8,8 @@ const stageLens = lens<Stage>()
 const commandLens = lens<Command>()
 const actorLens = lens<Actor>()
 
+const stageDoorsLens = stageLens.doors.get()
+
 const commandRestLens = commandLens.rest.get()
 
 const actorIdLens = actorLens.id.get()
@@ -48,6 +50,7 @@ const positionLens = R.lensProp('position')
 
 export {
   stageLens,
+  stageDoorsLens,
   commandLens,
   commandRestLens, 
   actorIdLens,

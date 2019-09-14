@@ -16,12 +16,8 @@ import Command from '../../models/command'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
+import {Maybe} from '../utils/types'
 
-interface Maybe<A> {
-  constructor: {
-    '@@type': 'sanctuary/Maybe'
-  }
-}
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
