@@ -2,11 +2,19 @@ import { lens } from 'lens.ts'
 import Stage from '../../models/stage'
 import Command from '../../models/command'
 import * as R from 'ramda'
+import Actor from '../../models/actor'
 
 const stageLens = lens<Stage>()
 const commandLens = lens<Command>()
+const actorLens = lens<Actor>()
 
 const commandRestLens = commandLens.rest.get()
+
+const actorIdLens = actorLens.id.get()
+const actorStageIdLens = actorLens.stageId.get()
+const actorIntervalLens = actorLens.interval.get()
+const actorKnowledgeLens = actorLens.knowledge.get()
+
 
 //ramda lenses
 const idLens = R.lensProp('id')
@@ -30,9 +38,10 @@ const messageLens = R.lensProp('message')
 const nextStageId = R.lensProp('nextStageId')
 const elementLens = R.lensProp('element')
 
-const stageIdLens = R.lensProp('stageId')
-const intervalLens = R.lensProp('interval')
-const knowledgeLens = R.lensProp('knowledge')
+// const stageIdLens = R.lensProp('stageId')
+// const intervalLens = R.lensProp('interval')
+// const knowledgeLens = R.lensProp('knowledge')
+
 
 const commandsLens = R.lensProp('commands')
 const positionLens = R.lensProp('position')
@@ -41,6 +50,10 @@ export {
   stageLens,
   commandLens,
   commandRestLens, 
+  actorIdLens,
+  actorStageIdLens,
+  actorIntervalLens,
+  actorKnowledgeLens,
 
 //ramda lenses
   idLens,
@@ -58,9 +71,9 @@ export {
   messageLens,
   nextStageId,
   elementLens,
-  stageIdLens,
-  intervalLens,
-  knowledgeLens,
+  // stageIdLens,
+  // intervalLens,
+  // knowledgeLens,
   commandsLens,
   positionLens
 }
