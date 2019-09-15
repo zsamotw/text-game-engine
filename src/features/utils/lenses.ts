@@ -77,6 +77,9 @@ export {
   elementEffectCurrentStageIdLens,
 
 //ramda lenses
+  nameLens,
+  descriptionLens,
+  
   idLens,
   stagesLens,
   currentStageIdLens,
@@ -85,9 +88,7 @@ export {
   actorsLens,
   systemMessages,
   elementsLens,
-  descriptionLens,
   restLens,
-  nameLens,
   operationLens,
   messageLens,
   nextStageId,

@@ -3,12 +3,13 @@ import * as R from 'ramda'
 import Element from '../../models/element'
 import State from '../../models/state'
 import Stage from '../../models/stage'
+import * as S from 'sanctuary'
 
 const getRandomInt = (max: number) =>
   Math.floor(Math.random() * Math.floor(max))
 
 const getOnlyWithValues = (iterable: any[]) =>
-  R.filter(i => R.compose(R.not, R.isNil)(i), iterable)
+  S.filter((el) => el  !== null || el !== undefined)(iterable)
 
 const nameOf: (element: Element) => string = R.view(L.nameLens)
 
