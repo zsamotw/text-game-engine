@@ -13,6 +13,7 @@ const nextStageEffectLens = lens<NextStageEffect>()
 const elementEffectLens = lens<ElementEffect>()
 
 const stageDoorsLens = stageLens.doors.get()
+const stageElementsLens = stageLens.elements.get()
 
 const commandRestLens = commandLens.rest.get()
 
@@ -62,6 +63,7 @@ const positionLens = R.lensProp('position')
 export {
   stageLens,
   stageDoorsLens,
+  stageElementsLens,
   commandLens,
   commandRestLens, 
   actorIdLens,
