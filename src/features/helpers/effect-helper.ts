@@ -8,7 +8,6 @@ import * as GH from '../domain/general-usage-functions'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as R from 'ramda'
-import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
@@ -16,8 +15,8 @@ import Command from '../../models/command'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
-import {Maybe} from '../utils/types'
-
+import { Maybe } from '../utils/types'
+const S = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
@@ -36,10 +35,14 @@ const getOverviewEffect = function(
     const mapToNames = S.map(getName)
 
     const joinedNames = S.ifElse(S.equals([]))(() => 'No one thing here.')(
-      names => `Things: ${names}.`
+      (names: any) => `Things: ${names}.`
     )
 
-    const elementsDescription = S.pipe([SF.elementsForStage, mapToNames, joinedNames])
+    const elementsDescription = S.pipe([
+      SF.elementsForStage,
+      mapToNames,
+      joinedNames
+    ])
 
     const joinedActorsNames = R.ifElse(
       R.isEmpty,
@@ -47,7 +50,11 @@ const getOverviewEffect = function(
       (actors: string[]) => `Persons: ${actors}.`
     )
 
-    const actorsDescription = S.pipe([AF.actorsForStage(actors), mapToNames, joinedActorsNames] )
+    const actorsDescription = S.pipe([
+      AF.actorsForStage(actors),
+      mapToNames,
+      joinedActorsNames
+    ])
 
     return {
       operation: EO.noStateChange,
@@ -66,7 +73,7 @@ const getOverviewEffect = function(
     effectForStage
   )
 
-  const currentStage = SF.stageFrom(stages, currentStageId)
+  const currentStage = SF.stageFrom(stages)(currentStageId)
   return overviewEffectOf(currentStage)
 }
 
@@ -76,13 +83,14 @@ const getDescriptionEffect = function(
   currentStageId: number
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
-  const fromElementsInCurrentStage = R.compose(
-    SF.elementsForStage,
-    SF.stageFrom
-  )
+  const fromElementsInCurrentStage = (stages: Stage[]) =>
+    R.compose(
+      SF.elementsForStage,
+      SF.stageFrom(stages)
+    )
 
   const maybeElement = getElementEqualsTo(command)(
-    fromElementsInCurrentStage(stages, currentStageId)
+    fromElementsInCurrentStage(stages)(currentStageId)
   )
 
   const effectFrom = R.ifElse(
@@ -109,25 +117,29 @@ const getChangeStageEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const doorsInCurrentStage = DF.doorsForStage(stages, currentStageId)
+  const doorsInCurrentStage = DF.doorsForStage(stages)(currentStageId)
 
   const directionFrom: (command: Command) => string = R.view(L.restLens)
 
-  const nextStageId = R.prop(directionFrom(command) as any, doorsInCurrentStage)
-  const nextStage = R.find(R.propEq('id', nextStageId))
-
-  const nextStageName = R.compose(
-    GH.nameOf,
-    nextStage
-  )(stages)
+  const maybeNextStageId = R.prop(
+    directionFrom(command) as any,
+    doorsInCurrentStage
+  )
 
   const effectFrom = R.ifElse(
-    R.isNil,
+    S.isNothing,
     R.always({
       operation: EO.noStateChange,
       message: 'Oops. Something wrong. You can not go this operation.'
     } as Effect),
-    (nextStageId: number) => {
+    (maybeNextStageId: Maybe<number>) => {
+      const nextStageId = S.maybeToNullable(maybeNextStageId)
+      const nextStage = R.find(R.propEq('id', nextStageId))
+      const nextStageName = R.compose(
+        GH.nameOf,
+        nextStage
+      )(stages)
+
       return {
         operation: EO.changeNextStageId,
         nextStageId: nextStageId,
@@ -136,7 +148,7 @@ const getChangeStageEffect = function(
     }
   )
 
-  return effectFrom(nextStageId)
+  return effectFrom(maybeNextStageId)
 }
 
 const getTakenElementEffect = function(
@@ -146,7 +158,7 @@ const getTakenElementEffect = function(
   pocket: Element[]
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
-  const currentStage = SF.stageFrom(stages, currentStageId)
+  const currentStage = SF.stageFrom(stages)(currentStageId)
   const FromElementsOnCurrentStage = SF.elementsForStage(currentStage)
 
   const maybeTakenElement = getElementEqualsTo(command)(

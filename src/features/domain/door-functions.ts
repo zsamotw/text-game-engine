@@ -1,44 +1,31 @@
-import * as R from 'ramda'
 import * as L from '../utils/lenses'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import Stage from '../../models/stage'
 import { getRandomInt } from './general-usage-functions'
+const S =  require('sanctuary')
 
-const doorsOf: (stage: Stage) => Doors = R.view(L.doorsLens)
+const doorsOf: (stage: Stage) => Doors = stage => L.stageDoorsLens(stage)
 
-const getWayOut = (doors: Doors) => {
-  const wayOut = R.compose(getRandomInt, R.length, openedDoors)
-  return wayOut(doors) 
+const getRandomWayOut = (doors: Doors) => {
+  const stageIdToGo = S.pipe([openedDoors, S.map(S.size), S.map(getRandomInt)])
+  return stageIdToGo(doors)
 }
 
-const doorsForCurrentStage: (
-  stages: Stage[],
-  currentStageId: number
-) => Doors = R.compose(
-  doorsOf,
-  SF.stageFrom
-)
+const doorsForStage = (stages: Stage[]) =>
+  S.compose(doorsOf)(SF.stageFrom(stages))
 
-const doorsForStage = R.compose(
-  doorsOf,
-  SF.stageFrom
-)
-
-const openedDoors = (doors: Doors | undefined) => {
-  const getValues = (doors: Doors) =>  R.reject(R.isNil)(R.values(doors))
-  return  R.ifElse(R.isNil, R.always(undefined), getValues)(doors)
+const openedDoors = (doors: Doors) => {
+  const stagesIds = S.values(doors)
+  const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
+  return justStagesIds(stagesIds)
 }
 
-const openedDoorsForStage = R.compose(
-  openedDoors,
-  doorsForStage
-)
+const openedDoorsForStage = (stages: Stage[]) => S.compose(openedDoors)(doorsForStage(stages))
 
 export {
   openedDoors,
-  doorsForCurrentStage,
   doorsForStage,
   openedDoorsForStage,
-  getWayOut
+  getRandomWayOut 
 }

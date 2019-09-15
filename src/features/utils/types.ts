@@ -3,3 +3,9 @@ export interface Maybe<A> {
     '@@type': 'sanctuary/Maybe'
   }
 }
+
+export interface StrMap<A> {
+  constructor: {
+    '@@type': 'sanctuary/StrMap'
+  }
+}
