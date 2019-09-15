@@ -3,10 +3,14 @@ import Stage from '../../models/stage'
 import Command from '../../models/command'
 import * as R from 'ramda'
 import Actor from '../../models/actor'
+import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
 
 const stageLens = lens<Stage>()
 const commandLens = lens<Command>()
 const actorLens = lens<Actor>()
+const effectLens = lens<Effect>()
+const nextStageEffectLens = lens<NextStageEffect>()
+const elementEffectLens = lens<ElementEffect>()
 
 const stageDoorsLens = stageLens.doors.get()
 
@@ -17,6 +21,13 @@ const actorStageIdLens = actorLens.stageId.get()
 const actorIntervalLens = actorLens.interval.get()
 const actorKnowledgeLens = actorLens.knowledge.get()
 
+const effectOperationLens = effectLens.operation.get()
+const effectMessageLens = effectLens.message.get()
+
+const nextStageEffecNextStageIdLens = nextStageEffectLens.nextStageId.get()
+
+const elementEffectLensEffectLens = elementEffectLens.element.get()
+const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId.get()
 
 //ramda lenses
 const idLens = R.lensProp('id')
@@ -57,6 +68,11 @@ export {
   actorStageIdLens,
   actorIntervalLens,
   actorKnowledgeLens,
+  effectOperationLens,
+  effectMessageLens,
+  nextStageEffecNextStageIdLens,
+  elementEffectLensEffectLens,
+  elementEffectCurrentStageIdLens,
 
 //ramda lenses
   idLens,

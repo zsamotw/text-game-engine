@@ -8,6 +8,7 @@ import * as GH from '../domain/general-usage-functions'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as R from 'ramda'
+import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
@@ -16,7 +17,8 @@ import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
 import { Maybe } from '../utils/types'
-const S = require('sanctuary')
+import { equal } from 'assert'
+const { equals, $ } = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
@@ -34,7 +36,7 @@ const getOverviewEffect = function(
 
     const mapToNames = S.map(getName)
 
-    const joinedNames = S.ifElse(S.equals([]))(() => 'No one thing here.')(
+    const joinedNames = S.ifElse(equals([]))(() => 'No one thing here.')(
       (names: any) => `Things: ${names}.`
     )
 
@@ -121,16 +123,15 @@ const getChangeStageEffect = function(
 
   const directionFrom: (command: Command) => string = R.view(L.restLens)
 
-  const maybeNextStageId = R.prop(
-    directionFrom(command) as any,
-    doorsInCurrentStage
-  )
+  const maybeNextStageId = S.get((dir: any) => equals(typeof dir)('string'))(
+    directionFrom(command) as any
+  )(doorsInCurrentStage)
 
   const effectFrom = R.ifElse(
     S.isNothing,
     R.always({
       operation: EO.noStateChange,
-      message: 'Oops. Something wrong. You can not go this operation.'
+      message: 'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
     } as Effect),
     (maybeNextStageId: Maybe<number>) => {
       const nextStageId = S.maybeToNullable(maybeNextStageId)

@@ -1,14 +1,16 @@
 import * as L from '../utils/lenses'
+import  * as S from 'sanctuary'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import Stage from '../../models/stage'
 import { getRandomInt } from './general-usage-functions'
-const S =  require('sanctuary')
+const { size } =  require('sanctuary')
 
 const doorsOf: (stage: Stage) => Doors = stage => L.stageDoorsLens(stage)
 
+// public api
 const getRandomWayOut = (doors: Doors) => {
-  const stageIdToGo = S.pipe([openedDoors, S.map(S.size), S.map(getRandomInt)])
+  const stageIdToGo = S.pipe([openedDoors, S.map(size), S.map(getRandomInt)])
   return stageIdToGo(doors)
 }
 
@@ -16,7 +18,7 @@ const doorsForStage = (stages: Stage[]) =>
   S.compose(doorsOf)(SF.stageFrom(stages))
 
 const openedDoors = (doors: Doors) => {
-  const stagesIds = S.values(doors)
+  const stagesIds = S.values(doors as any)
   const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
   return justStagesIds(stagesIds)
 }
