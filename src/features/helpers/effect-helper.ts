@@ -17,8 +17,7 @@ import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
 import { Maybe } from '../utils/types'
-import { equal } from 'assert'
-const { equals, $ } = require('sanctuary')
+const { equals } = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {

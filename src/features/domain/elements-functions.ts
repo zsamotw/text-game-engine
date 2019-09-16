@@ -4,7 +4,7 @@ import * as L from '../utils/lenses'
 
 const elementsFrom = (i: number) => (stages: Stage[]) => {
   const stage = SF.stageFrom(stages)(i)
-  L.stageElementsLens(stage)
+  L.stageElementsLens.get()(stage)
 }
 
 export {

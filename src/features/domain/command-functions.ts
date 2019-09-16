@@ -9,9 +9,9 @@ const isNameEqual = S.curry2((name: string, object: any) => {
 })
 
 //public api
-const restOfCommand: (command: Command) => string = command =>  L.commandRestLens(command)
+const restOfCommand: (command: Command) => string = command =>  L.commandRestLens.get()(command)
 
-const isRestOfCommandEqualsToNameOf = S.compose(isNameEqual)(L.commandRestLens)
+const isRestOfCommandEqualsToNameOf = S.compose(isNameEqual)(L.commandRestLens.get())
 
 const elementEqualsToCommand = S.curry2(
   (command: Command, elements: Element[]) => {

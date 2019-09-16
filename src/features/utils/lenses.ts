@@ -4,6 +4,7 @@ import Command from '../../models/command'
 import * as R from 'ramda'
 import Actor from '../../models/actor'
 import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
+import State from '../../models/state'
 
 const stageLens = lens<Stage>()
 const commandLens = lens<Command>()
@@ -11,24 +12,27 @@ const actorLens = lens<Actor>()
 const effectLens = lens<Effect>()
 const nextStageEffectLens = lens<NextStageEffect>()
 const elementEffectLens = lens<ElementEffect>()
+const stateLens = lens<State>()
 
-const stageDoorsLens = stageLens.doors.get()
-const stageElementsLens = stageLens.elements.get()
+const stageDoorsLens = stageLens.doors
+const stageElementsLens = stageLens.elements
 
-const commandRestLens = commandLens.rest.get()
+const commandRestLens = commandLens.rest
 
-const actorIdLens = actorLens.id.get()
-const actorStageIdLens = actorLens.stageId.get()
-const actorIntervalLens = actorLens.interval.get()
-const actorKnowledgeLens = actorLens.knowledge.get()
+const actorIdLens = actorLens.id
+const actorStageIdLens = actorLens.stageId
+const actorIntervalLens = actorLens.interval
+const actorKnowledgeLens = actorLens.knowledge
 
-const effectOperationLens = effectLens.operation.get()
-const effectMessageLens = effectLens.message.get()
+const effectOperationLens = effectLens.operation
+const effectMessageLens = effectLens.message
 
-const nextStageEffecNextStageIdLens = nextStageEffectLens.nextStageId.get()
+const nextStageEffecNextStageIdLens = nextStageEffectLens.nextStageId
 
-const elementEffectLensEffectLens = elementEffectLens.element.get()
-const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId.get()
+const elementEffectLensEffectLens = elementEffectLens.element
+const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId
+
+const stateSystemMessagesLens = stateLens.messages
 
 //ramda lenses
 const idLens = R.lensProp('id')
@@ -75,11 +79,12 @@ export {
   nextStageEffecNextStageIdLens,
   elementEffectLensEffectLens,
   elementEffectCurrentStageIdLens,
+  stateSystemMessagesLens,
 
 //ramda lenses
   nameLens,
   descriptionLens,
-  
+
   idLens,
   stagesLens,
   currentStageIdLens,

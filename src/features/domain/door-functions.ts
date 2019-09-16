@@ -6,7 +6,7 @@ import Stage from '../../models/stage'
 import { getRandomInt } from './general-usage-functions'
 const { size } =  require('sanctuary')
 
-const doorsOf: (stage: Stage) => Doors = stage => L.stageDoorsLens(stage)
+const doorsOf: (stage: Stage) => Doors = stage => L.stageDoorsLens.get()(stage)
 
 // public api
 const getRandomWayOut = (doors: Doors) => {
