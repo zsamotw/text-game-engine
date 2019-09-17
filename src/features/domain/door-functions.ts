@@ -7,9 +7,8 @@ import { getRandomInt } from './general-usage-functions'
 import { Maybe } from '../../features/utils/types'
 const { size } = require('sanctuary')
 
-const doorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage => {
+const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage => {
   const maybeDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(maybeStage => {
-    // S.map((stage: Stage) => L.stageDoorsLens.get()(stage))
     const stage = S.maybeToNullable(maybeStage)
     return S.Just(L.stageDoorsLens.get()(stage))
   })
@@ -33,7 +32,7 @@ const getRandomWayOut = (maybeDoors: Maybe<Doors>) => {
 }
 
 const maybeDoorsForStage = (stages: Stage[]) =>
-  S.compose(doorsOf)(SF.stageFrom(stages))
+  S.compose(maybeDoorsOf)(SF.maybeStage(stages))
 
 const openedDoors = (maybeDoors: Maybe<Doors>) => {
   const openedDoorsOf = S.ifElse(S.isNothing)(() => [])(justDoors => {

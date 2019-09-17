@@ -61,7 +61,8 @@ const getOverviewEffect = function(
       operation: EO.noStateChange,
       message: `${SF.descriptionOfMaybeStage(maybeStage)}
                 ${elementsDescription(maybeStage)}
-                ${actorsDescription(currentStageId)}` } as Effect
+                ${actorsDescription(currentStageId)}`
+    } as Effect
   }
 
   const overviewEffectOf = R.ifElse(
@@ -73,7 +74,7 @@ const getOverviewEffect = function(
     effectForStage
   )
 
-  const currentStage = SF.stageFrom(stages)(currentStageId)
+  const currentStage = SF.maybeStage(stages)(currentStageId)
   return overviewEffectOf(currentStage)
 }
 
@@ -86,7 +87,7 @@ const getDescriptionEffect = function(
   const fromElementsInCurrentStage = (stages: Stage[]) =>
     R.compose(
       SF.elementsForMaybeStage,
-      SF.stageFrom(stages)
+      SF.maybeStage(stages)
     )
 
   const maybeElement = getElementEqualsTo(command)(
@@ -122,19 +123,24 @@ const getChangeStageEffect = function(
 
   const directionFrom: (command: Command) => string = R.view(L.restLens)
 
-  const maybeNextStageId = S.get(() => true)(
-    directionFrom(command) as any
-  )(doors)
+  const maybeNextStageId = S.get(() => true)(directionFrom(command) as any)(
+    doors
+  )
 
   const effectFrom = R.ifElse(
     S.isNothing,
     R.always({
       operation: EO.noStateChange,
-      message: 'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
+      message:
+        'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
     } as Effect),
     (maybeNextStageId: Maybe<number>) => {
-      const justNextStageId = S.maybeToNullable(maybeNextStageId) as Maybe<number>
-      const nextStage = R.find(R.propEq('id', S.maybeToNullable(justNextStageId)))
+      const justNextStageId = S.maybeToNullable(maybeNextStageId) as Maybe<
+        number
+      >
+      const nextStage = R.find(
+        R.propEq('id', S.maybeToNullable(justNextStageId))
+      )
       const nextStageName = R.compose(
         GH.nameOf,
         nextStage
@@ -158,7 +164,7 @@ const getTakenElementEffect = function(
   pocket: Element[]
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
-  const currentStage = SF.stageFrom(stages)(currentStageId)
+  const currentStage = SF.maybeStage(stages)(currentStageId)
   const FromElementsOnCurrentStage = SF.elementsForMaybeStage(currentStage)
 
   const maybeTakenElement = getElementEqualsTo(command)(

@@ -4,7 +4,7 @@ import * as L from '../utils/lenses'
 import * as S from 'sanctuary'
 
 const elementsFrom = (i: number) => (stages: Stage[]) => {
-  const maybeStage = SF.stageFrom(stages)(i)
+  const maybeStage = SF.maybeStage(stages)(i)
   if (S.isNothing(maybeStage))
     return []
   else {

@@ -9,7 +9,7 @@ const { equals } = require('sanctuary')
 
 const stagesOf: (state: State) => Stage[] = R.view(L.stagesLens)
 
-const stageFrom: (
+const maybeStage: (
   stages: Stage[]
 ) => (stageId: number) => Maybe<Stage> = stages => stageId =>
   S.find(s => equals(S.prop('id')(s))(stageId))(stages)
@@ -32,4 +32,4 @@ const descriptionOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage
   }
 }
 
-export { stagesOf, stageFrom, elementsForMaybeStage, descriptionOfMaybeStage }
+export { stagesOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage }
