@@ -37,9 +37,9 @@ export default class AppGameContainer extends React.Component<
       })
     })
     //subscribe to actors stream. The stream change actors placement
-    getActorsStream().subscribe(actions => {
-      actions.forEach(a => appStore.dispatch(a))
-    })
+    // getActorsStream().subscribe(actions => {
+    //   actions.forEach(a => appStore.dispatch(a))
+    // })
   }
 
   handleCommandEnter = (command: string) => {

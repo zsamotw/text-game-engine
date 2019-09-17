@@ -30,7 +30,7 @@ const getOverviewEffect = function(
   actors: Actor[],
   currentStageId: number
 ) {
-  const effectForStage = (stage: Stage) => {
+  const effectForStage = (maybeStage: Maybe<Stage>) => {
     const getName = S.prop('name')
 
     const mapToNames = S.map(getName)
@@ -40,7 +40,7 @@ const getOverviewEffect = function(
     )
 
     const elementsDescription = S.pipe([
-      SF.elementsForStage,
+      SF.elementsForMaybeStage,
       mapToNames,
       joinedNames
     ])
@@ -59,10 +59,9 @@ const getOverviewEffect = function(
 
     return {
       operation: EO.noStateChange,
-      message: `${GH.descriptionOf(stage)}
-                ${elementsDescription(stage)}
-                ${actorsDescription(currentStageId)}`
-    } as Effect
+      message: `${SF.descriptionOfMaybeStage(maybeStage)}
+                ${elementsDescription(maybeStage)}
+                ${actorsDescription(currentStageId)}` } as Effect
   }
 
   const overviewEffectOf = R.ifElse(
@@ -86,7 +85,7 @@ const getDescriptionEffect = function(
   const getElementEqualsTo = CF.elementEqualsToCommand
   const fromElementsInCurrentStage = (stages: Stage[]) =>
     R.compose(
-      SF.elementsForStage,
+      SF.elementsForMaybeStage,
       SF.stageFrom(stages)
     )
 
@@ -118,13 +117,14 @@ const getChangeStageEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const doorsInCurrentStage = DF.doorsForStage(stages)(currentStageId)
+  const maybeDoorsInCurrentStage = DF.maybeDoorsForStage(stages)(currentStageId)
+  const doors = S.maybeToNullable(maybeDoorsInCurrentStage)
 
   const directionFrom: (command: Command) => string = R.view(L.restLens)
 
-  const maybeNextStageId = S.get((dir: any) => equals(typeof dir)('string'))(
+  const maybeNextStageId = S.get(() => true)(
     directionFrom(command) as any
-  )(doorsInCurrentStage)
+  )(doors)
 
   const effectFrom = R.ifElse(
     S.isNothing,
@@ -133,8 +133,8 @@ const getChangeStageEffect = function(
       message: 'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
     } as Effect),
     (maybeNextStageId: Maybe<number>) => {
-      const nextStageId = S.maybeToNullable(maybeNextStageId)
-      const nextStage = R.find(R.propEq('id', nextStageId))
+      const justNextStageId = S.maybeToNullable(maybeNextStageId) as Maybe<number>
+      const nextStage = R.find(R.propEq('id', S.maybeToNullable(justNextStageId)))
       const nextStageName = R.compose(
         GH.nameOf,
         nextStage
@@ -142,7 +142,7 @@ const getChangeStageEffect = function(
 
       return {
         operation: EO.changeNextStageId,
-        nextStageId: nextStageId,
+        nextStageId: S.maybeToNullable(justNextStageId),
         message: `You are in  ${nextStageName}`
       } as NextStageEffect
     }
@@ -159,7 +159,7 @@ const getTakenElementEffect = function(
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
   const currentStage = SF.stageFrom(stages)(currentStageId)
-  const FromElementsOnCurrentStage = SF.elementsForStage(currentStage)
+  const FromElementsOnCurrentStage = SF.elementsForMaybeStage(currentStage)
 
   const maybeTakenElement = getElementEqualsTo(command)(
     FromElementsOnCurrentStage

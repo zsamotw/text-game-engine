@@ -15,6 +15,7 @@ const elementEffectLens = lens<ElementEffect>()
 const stateLens = lens<State>()
 
 const stageDoorsLens = stageLens.doors
+const stageDescriptionLens = stageLens.description
 const stageElementsLens = stageLens.elements
 
 const commandRestLens = commandLens.rest
@@ -67,6 +68,7 @@ const positionLens = R.lensProp('position')
 export {
   stageLens,
   stageDoorsLens,
+  stageDescriptionLens,
   stageElementsLens,
   commandLens,
   commandRestLens, 

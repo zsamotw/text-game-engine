@@ -1,33 +1,51 @@
 import * as L from '../utils/lenses'
-import  * as S from 'sanctuary'
+import * as S from 'sanctuary'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import Stage from '../../models/stage'
 import { getRandomInt } from './general-usage-functions'
-const { size } =  require('sanctuary')
+import { Maybe } from '../../features/utils/types'
+const { size } = require('sanctuary')
 
-const doorsOf: (stage: Stage) => Doors = stage => L.stageDoorsLens.get()(stage)
+const doorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage => {
+  const maybeDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(maybeStage => {
+    // S.map((stage: Stage) => L.stageDoorsLens.get()(stage))
+    const stage = S.maybeToNullable(maybeStage)
+    return S.Just(L.stageDoorsLens.get()(stage))
+  })
+
+  return maybeDoorsOf(maybeStage) as Maybe<Doors>
+}
 
 // public api
-const getRandomWayOut = (doors: Doors) => {
-  const stageIdToGo = S.pipe([openedDoors, S.map(size), S.map(getRandomInt)])
-  return stageIdToGo(doors)
+const getRandomWayOut = (maybeDoors: Maybe<Doors>) => {
+  const maybeIdOfNextStageFrom = S.ifElse(S.isNothing)(() => S.isNothing)(
+    justDoors => {
+      const stageIdToGo = S.pipe([
+        openedDoors,
+        S.map(size),
+        S.map(getRandomInt)
+      ])
+      return S.Just(stageIdToGo(justDoors))
+    }
+  )
+  return maybeIdOfNextStageFrom(maybeDoors)
 }
 
-const doorsForStage = (stages: Stage[]) =>
+const maybeDoorsForStage = (stages: Stage[]) =>
   S.compose(doorsOf)(SF.stageFrom(stages))
 
-const openedDoors = (doors: Doors) => {
-  const stagesIds = S.values(doors as any)
-  const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
-  return justStagesIds(stagesIds)
+const openedDoors = (maybeDoors: Maybe<Doors>) => {
+  const openedDoorsOf = S.ifElse(S.isNothing)(() => [])(justDoors => {
+    const doors = S.maybeToNullable(justDoors)
+    const stagesIds = S.values(doors as any)
+    const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
+    return justStagesIds(stagesIds)
+  })
+  return openedDoorsOf(maybeDoors)
 }
 
-const openedDoorsForStage = (stages: Stage[]) => S.compose(openedDoors)(doorsForStage(stages))
+const openedDoorsForStage = (stages: Stage[]) =>
+  S.compose(openedDoors)(maybeDoorsForStage(stages))
 
-export {
-  openedDoors,
-  doorsForStage,
-  openedDoorsForStage,
-  getRandomWayOut 
-}
+export { openedDoors, maybeDoorsForStage, openedDoorsForStage, getRandomWayOut }

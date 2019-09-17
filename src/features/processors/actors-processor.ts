@@ -20,8 +20,8 @@ const getActorsStream = () =>
         const interval = AF.intervalOf(actor)
         
         if ((interval * 1000) % interval === 0) {
-          const doors = DF.doorsForStage(stages)(stageId)
-          const maybeNewStageId = DF.getRandomWayOut(doors as Doors) 
+          const maybeDoors = DF.maybeDoorsForStage(stages)(stageId)
+          const maybeNewStageId = DF.getRandomWayOut(maybeDoors) 
           const actorId = AF.idOf(actor)
 
           return changeActorStage(actorId, S.maybeToNullable(maybeNewStageId))
