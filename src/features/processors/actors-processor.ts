@@ -9,6 +9,7 @@ import * as Rx from 'rxjs'
 import Actor from '../../models/actor';
 import Doors from '../../models/doors';
 import Stage from '../../models/stage';
+const S =  require('sanctuary')
 
 //getActorStream :: State -> Observable<ActorMoveAction[]>
 const getActorsStream = () =>
@@ -19,11 +20,11 @@ const getActorsStream = () =>
         const interval = AF.intervalOf(actor)
         
         if ((interval * 1000) % interval === 0) {
-          const doors = DF.doorsForStage(stages, stageId)
-          const newStageId = DF.getWayOut(doors as Doors) as number
+          const maybeDoors = DF.maybeDoorsForStage(stages)(stageId)
+          const maybeNewStageId = DF.getRandomWayOut(maybeDoors) 
           const actorId = AF.idOf(actor)
 
-          return changeActorStage(actorId, newStageId)
+          return changeActorStage(actorId, S.maybeToNullable(maybeNewStageId))
         }
         else {
           return nothingChange()

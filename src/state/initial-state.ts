@@ -3,6 +3,7 @@ import Doors from '../models/doors'
 import Element from '../models/element'
 import Stage from '../models/stage'
 import CommandsHistory from '../models/commandsHistory'
+import * as S from 'sanctuary'
 
 const stages: Stage[] = [
   {
@@ -21,10 +22,10 @@ const stages: Stage[] = [
       } as Element
     ],
     doors: {
-      north: 2,
-      south: undefined,
-      west: 1,
-      east: undefined
+      north: S.Just(2),
+      south: S.Nothing,
+      west: S.Just(1),
+      east: S.Nothing
     } as Doors
   } as Stage,
   {
@@ -44,10 +45,10 @@ const stages: Stage[] = [
       } as Element
     ],
     doors: {
-      north: undefined,
-      south: undefined,
-      west: undefined,
-      east: 0
+      north: S.Nothing,
+      south: S.Nothing,
+      west: S.Nothing,
+      east: S.Just(0)
     } as Doors
   } as Stage,
   {
@@ -61,10 +62,10 @@ const stages: Stage[] = [
       } as Element
     ],
     doors: {
-      north: undefined,
-      south: 0,
-      west: undefined,
-      east: undefined
+      north: S.Nothing,
+      south: S.Just(0),
+      west: S.Nothing,
+      east: S.Nothing
     } as Doors
   } as Stage
 ]

@@ -1,16 +1,45 @@
-import * as R from 'ramda'
+import * as S from 'sanctuary'
 import * as L from '../utils/lenses'
 import State from '../../models/state'
 import Stage from '../../models/stage'
 import Element from '../../models/element'
+import{Maybe} from '../../features/utils/types'
+import Doors from '../../models/doors'
 
-const stagesOf: (state: State) => Stage[] = R.view(L.stagesLens)
+const stagesOf: (state: State) => Stage[] = L.stateStagesLens.get()
 
-const stageFrom: (stages: Stage[], stageId: number) => Stage = (
-  stages,
-  stageId
-) => R.find(R.propEq('id', stageId))(stages)
+const doorsOf: (stage: Stage) => Doors = L.stageDoorsLens.get()
 
-const elementsForStage: (stage: Stage) => Element[] = R.view(L.elementsLens)
+const maybeStage: (
+  stages: Stage[]
+) => (stageId: number) => Maybe<Stage> = stages => stageId =>
+  S.find(stage => S.equals(S.prop('id')(stage))(stageId))(stages)
 
-export { stagesOf, stageFrom, elementsForStage }
+const elementsForMaybeStage: (maybeStage: Maybe<Stage>) => Element[] = maybeStage => {
+  if (S.isNothing(maybeStage)) 
+    return []
+  else {
+    const stage = S.maybeToNullable(maybeStage) as Stage
+    return L.stageElementsLens.get()(stage)
+  }
+}
+
+const descriptionOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage => {
+  if (S.isNothing(maybeStage)) 
+    return 'Oops you try to find not existing stage'
+  else {
+    const stage = S.maybeToNullable(maybeStage) as Stage
+    return L.stageDescriptionLens.get()(stage)
+  }
+}
+
+const nameOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage => {
+  if (S.isNothing(maybeStage)) 
+    return 'Oops you try to find not existing stage'
+  else {
+    const stage = S.maybeToNullable(maybeStage) as Stage
+    return L.stageNameLens.get()(stage)
+  }
+}
+
+export { stagesOf, doorsOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage, nameOfMaybeStage }

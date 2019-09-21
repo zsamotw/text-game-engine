@@ -1,6 +1,7 @@
+import{Maybe} from '../features/utils/types'
 export default interface Doors {
-  north?: number
-  south?: number
-  west?: number
-  east?: number
+  north: Maybe<number>
+  south: Maybe<number>
+  west: Maybe<number>
+  east: Maybe<number>
 }

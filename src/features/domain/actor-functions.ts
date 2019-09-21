@@ -1,24 +1,24 @@
 import * as L from '../utils/lenses'
-import * as R from 'ramda'
+import * as S from 'sanctuary'
 import Actor from '../../models/actor'
 
-const actorsForStage: (actors: Actor[], stageId: number) => Actor[] = (
-  actors,
-  stageId
-) => {
-  return R.filter(R.propEq('stageId', stageId))(actors)
-}
+const actorsForStage: (actors: Actor[]) => (stageId: number) => Actor[] = 
+  actors =>
+  stageId => S.filter((a: Actor) => S.equals(stageId)(S.prop('stageId')(a)))(actors)
 
-const stageIdOf = (actor: Actor) => R.view(L.stageIdLens, actor) as number
+const nameOf: (actor: Actor) => string = L.actorNameLens.get()
 
-const intervalOf = (actor: Actor) => R.view(L.intervalLens, actor) as number
+const stageIdOf: (actor: Actor) => number = L.actorStageIdLens.get()
 
-const idOf = (actor: Actor) => R.view(L.idLens, actor) as number
+const intervalOf: (actor: Actor) => number = L.actorIntervalLens.get()
 
-const knowledgeOf = (actor: Actor) => R.view(L.knowledgeLens, actor) as string
+const idOf: (actor: Actor) => number = L.actorIdLens.get()
+
+const knowledgeOf: (actor: Actor) => string = L.actorKnowledgeLens.get()
 
 export {
   actorsForStage,
+  nameOf,
   stageIdOf,
   intervalOf,
   idOf,

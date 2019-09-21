@@ -1,13 +1,14 @@
 import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
+import { Maybe } from '../utils/types'
 import * as AF from '../domain/actor-functions'
 import * as CF from '../domain/command-functions'
 import * as CP from '../processors/commands-processor'
 import * as DF from '../domain/door-functions'
 import * as EO from '../utils/effect-operations'
-import * as GH from '../domain/general-usage-functions'
+import * as EF from '../domain/elements-functions'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
-import * as R from 'ramda'
+import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
@@ -15,6 +16,7 @@ import Command from '../../models/command'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
+const { equals } = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
@@ -27,44 +29,48 @@ const getOverviewEffect = function(
   actors: Actor[],
   currentStageId: number
 ) {
-  const effectForStage = (stage: Stage) => {
-    const mapToName = R.map(R.prop('name'))
+  const effectForStage = (maybeStage: Maybe<Stage>) => {
+    const getName = S.prop('name')
 
-    const elementsDescription = R.ifElse(
-      R.isEmpty,
-      R.always('No one thing here.'),
-      (elements: string) => `Things: ${elements}.`
+    const mapToNames = S.map(getName)
+
+    const joinedNames = S.ifElse(equals([]))(() => 'No one thing here.')(
+      names => `Things: ${names}.`
     )
 
-    const actorsDescription = R.ifElse(
-      R.isEmpty,
-      R.always('Nobody here'),
-      (actors: string[]) => `Persons: ${actors}.`
+    const elementsDescription = S.pipe([
+      SF.elementsForMaybeStage,
+      mapToNames,
+      joinedNames
+    ])
+
+    const joinedActorsNames = S.ifElse(S.equals([])) (() => 'Nobody here')(
+      actors => `Persons: ${actors}.`
     )
 
-    const joinedElementsNamesOf = R.compose(elementsDescription, mapToName, SF.elementsForStage)
-    const joinedActorsNamesOf = R.compose(actorsDescription, mapToName, AF.actorsForStage)
-
+    const actorsDescription = S.pipe([
+      AF.actorsForStage(actors),
+      mapToNames,
+      joinedActorsNames
+    ])
 
     return {
       operation: EO.noStateChange,
-      message: `${GH.descriptionOf(stage)}
-                ${joinedElementsNamesOf(stage)}
-                ${joinedActorsNamesOf(actors, currentStageId)}`
+      message: `${SF.descriptionOfMaybeStage(maybeStage)}
+                ${elementsDescription(maybeStage)}
+                ${actorsDescription(currentStageId)}`
     } as Effect
   }
 
-  const effectFrom = R.ifElse(
-    R.isNil,
-    R.always({
+  const overviewEffectOf = S.ifElse(S.isNothing)(() => {
+    return {
       operation: EO.noStateChange,
-      message: 'Error. No stage defined as current. Contact with game owner.'
-    } as Effect),
-    effectForStage
-  )
+      message: 'Error. No stage defined. Contact with game owner.'
+    } as Effect
+  })(effectForStage)
 
-  const currentStage = SF.stageFrom(stages, currentStageId)
-  return effectFrom(currentStage)
+  const maybeCurrentStage = SF.maybeStage(stages)(currentStageId)
+  return overviewEffectOf(maybeCurrentStage)
 }
 
 const getDescriptionEffect = function(
@@ -73,30 +79,27 @@ const getDescriptionEffect = function(
   currentStageId: number
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
-  const fromElementsInCurrentStage = R.compose(
-    SF.elementsForStage,
-    SF.stageFrom
+  const fromElementsInCurrentStage = (stages: Stage[]) =>
+    S.compose(SF.elementsForMaybeStage)(SF.maybeStage(stages))
+
+  const maybeElement = getElementEqualsTo(command)(
+    fromElementsInCurrentStage(stages)(currentStageId)
   )
 
-  const element = getElementEqualsTo(command)(
-    fromElementsInCurrentStage(stages, currentStageId)
-  )
-
-  const effectFrom = R.ifElse(
-    R.isNil,
-    R.always({
+  const descriptionEffectFrom = S.ifElse(S.isNothing)(() => {
+    return {
       operation: EO.noStateChange,
       message: 'No such thing in this stage'
-    } as Effect),
-    (element: Element) => {
-      return {
-        operation: EO.noStateChange,
-        message: GH.descriptionOf(element)
-      } as Effect
-    }
-  )
+    } as Effect
+  })(maybeElement => {
+    const element = S.maybeToNullable(maybeElement) as Element
+    return {
+      operation: EO.noStateChange,
+      message: EF.descriptionOf(element)
+    } as Effect
+  })
 
-  return effectFrom(element)
+  return descriptionEffectFrom(maybeElement)
 }
 
 const getChangeStageEffect = function(
@@ -104,34 +107,47 @@ const getChangeStageEffect = function(
   stages: Stage[],
   currentStageId: number
 ) {
-  const doorsInCurrentStage = DF.doorsForStage(stages, currentStageId)
+  const maybeDoorsInCurrentStage = DF.maybeDoorsForStage(stages)(currentStageId)
+  const doors = S.maybeToNullable(maybeDoorsInCurrentStage)
 
-  const directionFrom: (command: Command) => string = R.view(L.restLens)
+  const directionFrom: (command: Command) => string = L.commandRestLens.get()
 
-  const nextStageId = R.prop(directionFrom(command) as any, doorsInCurrentStage)
-  const nextStage = R.find(R.propEq('id', nextStageId))
-
-  const nextStageName = R.compose(
-    GH.nameOf,
-    nextStage
-  )(stages)
-
-  const effectFrom = R.ifElse(
-    R.isNil,
-    R.always({
-      operation: EO.noStateChange,
-      message: 'Oops. Something wrong. You can not go this operation.'
-    } as Effect),
-    (nextStageId: number) => {
-      return {
-        operation: EO.changeNextStageId,
-        nextStageId: nextStageId,
-        message: `You are in  ${nextStageName}`
-      } as NextStageEffect
-    }
+  const maybeNextStageId = S.get(() => true)(directionFrom(command) as any)(
+    doors
   )
 
-  return effectFrom(nextStageId)
+  const changeStageEffectFrom = S.ifElse(S.isNothing)(() => {
+    return {
+      operation: EO.noStateChange,
+      message:
+        'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
+    } as Effect
+  })(maybeOfMaybeNextStageId => {
+    const maybeNextStageId = S.join(maybeOfMaybeNextStageId)
+    const maybeNextStage = S.chain((id: number) => SF.maybeStage(stages)(id))(
+      maybeNextStageId
+    )
+
+    const openDoorOrStay = S.ifElse(S.isJust)(() => {
+      const name = SF.nameOfMaybeStage(maybeNextStage as Maybe<Stage>)
+      return {
+        operation: EO.changeNextStageId,
+        nextStageId: S.maybeToNullable(maybeNextStageId),
+        message: `You are in stage. It is ${name}`
+      } as NextStageEffect
+    })(() => {
+      return {
+        operation: EO.noStateChange,
+        message: `There are no way from this stage in ${directionFrom(
+          command
+        )} direction`
+      } as NextStageEffect
+    })
+
+    return openDoorOrStay(maybeNextStage as Maybe<Stage>)
+  })
+
+  return changeStageEffectFrom(maybeNextStageId)
 }
 
 const getTakenElementEffect = function(
@@ -141,28 +157,33 @@ const getTakenElementEffect = function(
   pocket: Element[]
 ) {
   const getElementEqualsTo = CF.elementEqualsToCommand
-  const currentStage = SF.stageFrom(stages, currentStageId)
-  const FromElementsOnCurrentStage = SF.elementsForStage(currentStage)
+  const currentStage = SF.maybeStage(stages)(currentStageId)
+  const FromElementsOnCurrentStage = SF.elementsForMaybeStage(currentStage)
 
-  const takenElement = getElementEqualsTo(command)(FromElementsOnCurrentStage)
+  const maybeTakenElement = getElementEqualsTo(command)(
+    FromElementsOnCurrentStage
+  )
   const isPlace = PF.isPlaceInPocket(pocket)
 
-  //TODO use cond, and, not
   switch (true) {
-    case !isPlace: {
+    case S.not(isPlace): {
       return {
         operation: EO.noStateChange,
-        message: 'No place in pocket'
+        message: 'There is no place in pocket. Your pocket is full. You can put unused things to the ground'
       } as Effect
     }
-    case isPlace && !R.isNil(takenElement):
+
+    case isPlace && S.isJust(maybeTakenElement):
+      const element = S.maybeToNullable(maybeTakenElement)
+
       return {
         operation: EO.takeElement,
-        element: takenElement,
+        element: element,
         currentStageId: currentStageId,
-        message: `${GH.nameOf(takenElement as Element)} is taken`
+        message: `${EF.nameOf(element as Element)} is taken`
       } as ElementEffect
-    case isPlace && R.isNil(takenElement):
+
+    case isPlace && S.isNothing(maybeTakenElement):
       return {
         operation: EO.noStateChange,
         message: 'No such thing in this stage'
@@ -175,37 +196,35 @@ const getPutElementEffect = function(
   currentStageId: number,
   pocket: Element[]
 ) {
-  const getElementEqualsTo = CF.elementEqualsToCommand
+  const maybeElementFromPocket = CF.elementEqualsToCommand(command)(pocket)
 
-  const elementFromPocket = getElementEqualsTo(command)(pocket)
-
-  const effectFrom = R.ifElse(
-    R.isNil,
-    R.always({
+  const putEffectFrom = S.ifElse(S.isNothing)(() => {
+    return {
       operation: EO.noStateChange,
       message: 'No such thing in pocket'
-    } as Effect),
-    elementFromPocket => {
-      return {
-        operation: EO.putElement,
-        element: elementFromPocket,
-        currentStageId: currentStageId,
-        message: `${GH.nameOf(elementFromPocket)} is now put to the ground.`
-      } as ElementEffect
-    }
-  )
+    } as Effect
+  })(maybeElementFromPocket => {
+    const elementFromPocket = S.maybeToNullable(
+      maybeElementFromPocket
+    ) as Element
 
-  return effectFrom(elementFromPocket)
+    return {
+      operation: EO.putElement,
+      element: elementFromPocket,
+      currentStageId: currentStageId,
+      message: `${EF.nameOf(elementFromPocket)} is now put to the ground.`
+    } as ElementEffect
+  })
+
+  return putEffectFrom(maybeElementFromPocket)
 }
 
 const getPocketEffect = function(command: Command, pocket: Element[]) {
-  const getElementsNamesFrom = R.map(R.prop('name'))
+  const getElementsNamesFrom = S.map(S.prop('name'))
   const elementsInPocket = getElementsNamesFrom(pocket)
 
-  const messageFrom = R.ifElse(
-    R.isEmpty,
-    R.always('You pocket is empty'),
-    (elementsInPocket) => `In your pocket: ${elementsInPocket}`
+  const messageFrom = S.ifElse(S.equals([]))(() => 'You pocket is empty')(
+    elementsInPocket => `You have these things in your pocket: ${elementsInPocket}`
   )
 
   return {
@@ -220,37 +239,31 @@ const getTalkEffect = function(
   actors: Actor[]
 ) {
   const actorName = CF.restOfCommand(command)
-  const actorsOnStage = R.filter(
-    R.whereEq({ stageId: stageId, name: actorName })
-  ) as (actors: Actor[]) => Actor[]
-  const actorsKnowledge = R.compose(
-    R.map((a: Actor) => a.knowledge),
+  const stageIdEqualsTo = S.equals(stageId)
+  const nameEqualsTo = S.equals(actorName)
+  const actorsOnStage = S.filter((actor: Actor) =>
+    S.and(nameEqualsTo(AF.nameOf(actor)))(stageIdEqualsTo(AF.stageIdOf(actor)))
+  )
+  const actorsKnowledge = S.compose(S.map((actor: Actor) => L.actorKnowledgeLens.get()(actor)))(
     actorsOnStage
   )
-  const noActorsOnStage = R.compose(
-    R.isEmpty,
-    actorsOnStage
-  )
-  const isAnybodyKnowsSomething = R.compose(
-    R.not,
-    R.isEmpty,
-    actorsKnowledge
-  )
+  const noActorsOnStage = S.compose(S.equals([]))(actorsOnStage)
+  const isAnybodyKnowsSomething = S.pipe([actorsKnowledge, S.equals([]), S.not])
 
   return {
     operation: EO.undefinedCommand,
     message: noActorsOnStage(actors)
       ? 'There is no actor with that name'
       : isAnybodyKnowsSomething(actors)
-      ? actorsKnowledge(actors).toString()
-      : 'Actors on this stage have no knowledge'
+      ? S.joinWith(' & ')(actorsKnowledge(actors) as string[])
+      : 'That person has nothing to say'
   } as Effect
 }
 
 const getUndefinedEffect = function(command: Command, state: State) {
   return {
     operation: EO.undefinedCommand,
-    message: `oops!! it is wrong command.`
+    message: 'oops!! it is wrong command.'
   } as Effect
 }
 

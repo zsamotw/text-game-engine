@@ -1,13 +1,14 @@
-import * as R from 'ramda'
+import * as S from 'sanctuary'
 import Element from '../../models/element'
 import { settings } from '../../state/initial-state'
+const { size } = require('sanctuary')
 
 const { maxPocketSize } = settings
 
 const isPlaceInPocket: (pocket: Element[]) => boolean = pocket =>
-  R.lt(pocket.length, maxPocketSize)
+  S.lte(maxPocketSize)(size(pocket))
 
 const addElementTo = (element: Element, pocket: Element[]) =>
-  R.append(element, pocket)
+  S.append(element)(pocket)
 
 export { addElementTo, isPlaceInPocket, maxPocketSize }

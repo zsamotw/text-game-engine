@@ -1,44 +1,49 @@
-import * as R from 'ramda'
-import * as L from '../utils/lenses'
+import * as S from 'sanctuary'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
 import Stage from '../../models/stage'
 import { getRandomInt } from './general-usage-functions'
+import { Maybe } from '../../features/utils/types'
+const { size } = require('sanctuary')
 
-const doorsOf: (stage: Stage) => Doors = R.view(L.doorsLens)
+const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage =>
+  S.map((stage: Stage) => SF.doorsOf(stage))(maybeStage) as Maybe<Doors>
 
-const getWayOut = (doors: Doors) => {
-  const wayOut = R.compose(getRandomInt, R.length, openedDoors)
-  return wayOut(doors) 
+const getRandomWayOut = (maybeDoors: Maybe<Doors>) => {
+  const maybeIdOfNextStageFrom = S.ifElse(S.isNothing)(() => S.isNothing)(
+    justDoors => {
+      const stageIdToGo = S.pipe([
+        openedDoors,
+        S.map(size),
+        S.map(getRandomInt)
+      ])
+      return S.Just(stageIdToGo(justDoors))
+    }
+  )
+  return maybeIdOfNextStageFrom(maybeDoors)
 }
 
-const doorsForCurrentStage: (
-  stages: Stage[],
-  currentStageId: number
-) => Doors = R.compose(
-  doorsOf,
-  SF.stageFrom
-)
+const maybeDoorsForStage = (stages: Stage[]) =>
+  S.compose(maybeDoorsOf)(SF.maybeStage(stages))
 
-const doorsForStage = R.compose(
-  doorsOf,
-  SF.stageFrom
-)
+const openedDoors = (maybeDoors: Maybe<Doors>) => {
+  const openedDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(justDoors => {
+    const doors = S.maybeToNullable(justDoors)
+    const stagesIds = S.values(doors as any)
+    const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
 
-const openedDoors = (doors: Doors | undefined) => {
-  const getValues = (doors: Doors) =>  R.reject(R.isNil)(R.values(doors))
-  return  R.ifElse(R.isNil, R.always(undefined), getValues)(doors)
+    return justStagesIds(stagesIds)
+  })
+  return openedDoorsOf(maybeDoors)
 }
 
-const openedDoorsForStage = R.compose(
-  openedDoors,
-  doorsForStage
-)
+const openedDoorsForStage = (stages: Stage[]) =>
+  S.compose(openedDoors)(maybeDoorsForStage(stages))
 
 export {
+  maybeDoorsOf,
   openedDoors,
-  doorsForCurrentStage,
-  doorsForStage,
+  maybeDoorsForStage,
   openedDoorsForStage,
-  getWayOut
+  getRandomWayOut
 }
