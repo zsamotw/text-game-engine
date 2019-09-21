@@ -1,4 +1,3 @@
-import * as L from '../utils/lenses'
 import * as S from 'sanctuary'
 import * as SF from './stage-functions'
 import Doors from '../../models/doors'
@@ -8,16 +7,9 @@ import { Maybe } from '../../features/utils/types'
 const { size } = require('sanctuary')
 
 //TODO make functions easier
-const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage => {
-  const maybeDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(maybeStage => {
-    const stage = S.maybeToNullable(maybeStage)
-    return S.Just(L.stageDoorsLens.get()(stage))
-  })
+const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage =>
+  S.map((stage: Stage) => SF.doorsOf(stage))(maybeStage) as Maybe<Doors>
 
-  return maybeDoorsOf(maybeStage) as Maybe<Doors>
-}
-
-// public api
 const getRandomWayOut = (maybeDoors: Maybe<Doors>) => {
   const maybeIdOfNextStageFrom = S.ifElse(S.isNothing)(() => S.isNothing)(
     justDoors => {
@@ -36,10 +28,11 @@ const maybeDoorsForStage = (stages: Stage[]) =>
   S.compose(maybeDoorsOf)(SF.maybeStage(stages))
 
 const openedDoors = (maybeDoors: Maybe<Doors>) => {
-  const openedDoorsOf = S.ifElse(S.isNothing)(() => [])(justDoors => {
+  const openedDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(justDoors => {
     const doors = S.maybeToNullable(justDoors)
     const stagesIds = S.values(doors as any)
     const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
+
     return justStagesIds(stagesIds)
   })
   return openedDoorsOf(maybeDoors)
@@ -48,4 +41,10 @@ const openedDoors = (maybeDoors: Maybe<Doors>) => {
 const openedDoorsForStage = (stages: Stage[]) =>
   S.compose(openedDoors)(maybeDoorsForStage(stages))
 
-export { openedDoors, maybeDoorsForStage, openedDoorsForStage, getRandomWayOut }
+export {
+  maybeDoorsOf,
+  openedDoors,
+  maybeDoorsForStage,
+  openedDoorsForStage,
+  getRandomWayOut
+}
