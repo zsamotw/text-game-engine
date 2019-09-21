@@ -2,7 +2,6 @@ import * as DF from '../../../features/domain/door-functions'
 import * as S from 'sanctuary'
 import Stage from '../../../models/stage'
 
-//TODO fix tests
 it('Should return Just doors for Just stage', () => {
     const doors = {north: S.Just(1), south: S.Just(2), west: S.Just(3), east: S.Nothing}
     const justStage = S.Just({id: 1, doors } as Stage)

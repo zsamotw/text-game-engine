@@ -4,14 +4,16 @@ import State from '../../models/state'
 import Stage from '../../models/stage'
 import Element from '../../models/element'
 import{Maybe} from '../../features/utils/types'
+import Doors from '../../models/doors'
 
 const stagesOf: (state: State) => Stage[] = L.stateStagesLens.get()
 
-//TODO make functions easier
+const doorsOf: (stage: Stage) => Doors = L.stageDoorsLens.get()
+
 const maybeStage: (
   stages: Stage[]
 ) => (stageId: number) => Maybe<Stage> = stages => stageId =>
-  S.find(s => S.equals(S.prop('id')(s))(stageId))(stages)
+  S.find(stage => S.equals(S.prop('id')(stage))(stageId))(stages)
 
 const elementsForMaybeStage: (maybeStage: Maybe<Stage>) => Element[] = maybeStage => {
   if (S.isNothing(maybeStage)) 
@@ -24,7 +26,7 @@ const elementsForMaybeStage: (maybeStage: Maybe<Stage>) => Element[] = maybeStag
 
 const descriptionOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage => {
   if (S.isNothing(maybeStage)) 
-    return 'No description for this stage'
+    return 'Oops you try to find not existing stage'
   else {
     const stage = S.maybeToNullable(maybeStage) as Stage
     return L.stageDescriptionLens.get()(stage)
@@ -33,11 +35,11 @@ const descriptionOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage
 
 const nameOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage => {
   if (S.isNothing(maybeStage)) 
-    return 'This stage has no name'
+    return 'Oops you try to find not existing stage'
   else {
     const stage = S.maybeToNullable(maybeStage) as Stage
     return L.stageNameLens.get()(stage)
   }
 }
 
-export { stagesOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage, nameOfMaybeStage }
+export { stagesOf, doorsOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage, nameOfMaybeStage }

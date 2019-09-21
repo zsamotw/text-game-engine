@@ -6,7 +6,6 @@ import { getRandomInt } from './general-usage-functions'
 import { Maybe } from '../../features/utils/types'
 const { size } = require('sanctuary')
 
-//TODO make functions easier
 const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage =>
   S.map((stage: Stage) => SF.doorsOf(stage))(maybeStage) as Maybe<Doors>
 
