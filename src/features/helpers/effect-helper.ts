@@ -35,7 +35,7 @@ const getOverviewEffect = function(
     const mapToNames = S.map(getName)
 
     const joinedNames = S.ifElse(equals([]))(() => 'No one thing here.')(
-      names => `Things: ${names}.`
+      names => `Things: ${S.joinWith(', ')(names as string[])}.`
     )
 
     const elementsDescription = S.pipe([
@@ -45,7 +45,7 @@ const getOverviewEffect = function(
     ])
 
     const joinedActorsNames = S.ifElse(S.equals([])) (() => 'Nobody here')(
-      actors => `Persons: ${actors}.`
+      actorsNames => `Persons: ${S.joinWith(', ')(actorsNames as string[])}.`
     )
 
     const actorsDescription = S.pipe([
@@ -224,7 +224,7 @@ const getPocketEffect = function(command: Command, pocket: Element[]) {
   const elementsInPocket = getElementsNamesFrom(pocket)
 
   const messageFrom = S.ifElse(S.equals([]))(() => 'You pocket is empty')(
-    elementsInPocket => `You have these things in your pocket: ${elementsInPocket}`
+    elementsInPocket => `You have these things in your pocket: ${S.joinWith(', ')(elementsInPocket as string[])}`
   )
 
   return {
