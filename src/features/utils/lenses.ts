@@ -3,12 +3,14 @@ import Stage from '../../models/stage'
 import Command from '../../models/command'
 import * as R from 'ramda'
 import Actor from '../../models/actor'
+import Element from '../../models/element'
 import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
 import State from '../../models/state'
 
 const stageLens = lens<Stage>()
 const commandLens = lens<Command>()
 const actorLens = lens<Actor>()
+const elementLens = lens<Element>()
 const effectLens = lens<Effect>()
 const nextStageEffectLens = lens<NextStageEffect>()
 const elementEffectLens = lens<ElementEffect>()
@@ -27,6 +29,9 @@ const actorStageIdLens = actorLens.stageId
 const actorIntervalLens = actorLens.interval
 const actorKnowledgeLens = actorLens.knowledge
 
+const elementNameLens = elementLens.name
+const elementDescriptionLens = elementLens.description
+
 const effectOperationLens = effectLens.operation
 const effectMessageLens = effectLens.message
 
@@ -36,6 +41,7 @@ const elementEffectLensEffectLens = elementEffectLens.element
 const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId
 
 const stateSystemMessagesLens = stateLens.messages
+const stateStagesLens = stateLens.stages
 
 //ramda lenses
 const idLens = R.lensProp('id')
@@ -45,7 +51,6 @@ const pocketLens = R.lensProp('pocket')
 const doorsLens = R.lensProp('doors')
 const actorsLens = R.lensProp('actors')
 const systemMessages = R.lensProp('systemMessages')
-
 
 const elementsLens = R.lensProp('elements')
 
@@ -57,12 +62,6 @@ const restLens = R.lensProp('rest')
 
 const messageLens = R.lensProp('message')
 const nextStageId = R.lensProp('nextStageId')
-const elementLens = R.lensProp('element')
-
-// const stageIdLens = R.lensProp('stageId')
-// const intervalLens = R.lensProp('interval')
-// const knowledgeLens = R.lensProp('knowledge')
-
 
 const commandsLens = R.lensProp('commands')
 const positionLens = R.lensProp('position')
@@ -80,12 +79,15 @@ export {
   actorStageIdLens,
   actorIntervalLens,
   actorKnowledgeLens,
+  elementNameLens,
+  elementDescriptionLens,
   effectOperationLens,
   effectMessageLens,
   nextStageEffecNextStageIdLens,
   elementEffectLensEffectLens,
   elementEffectCurrentStageIdLens,
   stateSystemMessagesLens,
+  stateStagesLens,
 
 //ramda lenses
   nameLens,
@@ -103,10 +105,6 @@ export {
   operationLens,
   messageLens,
   nextStageId,
-  elementLens,
-  // stageIdLens,
-  // intervalLens,
-  // knowledgeLens,
   commandsLens,
   positionLens
 }

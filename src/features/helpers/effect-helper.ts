@@ -5,7 +5,7 @@ import * as CF from '../domain/command-functions'
 import * as CP from '../processors/commands-processor'
 import * as DF from '../domain/door-functions'
 import * as EO from '../utils/effect-operations'
-import * as GH from '../domain/general-usage-functions'
+import * as EF from '../domain/elements-functions'
 import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as S from 'sanctuary'
@@ -95,7 +95,7 @@ const getDescriptionEffect = function(
     const element = S.maybeToNullable(maybeElement) as Element
     return {
       operation: EO.noStateChange,
-      message: GH.descriptionOf(element)
+      message: EF.descriptionOf(element)
     } as Effect
   })
 
@@ -180,7 +180,7 @@ const getTakenElementEffect = function(
         operation: EO.takeElement,
         element: element,
         currentStageId: currentStageId,
-        message: `${GH.nameOf(element as Element)} is taken`
+        message: `${EF.nameOf(element as Element)} is taken`
       } as ElementEffect
 
     case isPlace && S.isNothing(maybeTakenElement):
@@ -212,7 +212,7 @@ const getPutElementEffect = function(
       operation: EO.putElement,
       element: elementFromPocket,
       currentStageId: currentStageId,
-      message: `${GH.nameOf(elementFromPocket)} is now put to the ground.`
+      message: `${EF.nameOf(elementFromPocket)} is now put to the ground.`
     } as ElementEffect
   })
 

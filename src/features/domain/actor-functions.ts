@@ -6,15 +6,15 @@ const actorsForStage: (actors: Actor[]) => (stageId: number) => Actor[] =
   actors =>
   stageId => S.filter((a: Actor) => S.equals(stageId)(S.prop('stageId')(a)))(actors)
 
-const nameOf = (actor: Actor) => L.actorNameLens.get()(actor)
+const nameOf: (actor: Actor) => string = L.actorNameLens.get()
 
-const stageIdOf = (actor: Actor) => L.actorStageIdLens.get()(actor)
+const stageIdOf: (actor: Actor) => number = L.actorStageIdLens.get()
 
-const intervalOf = (actor: Actor) => L.actorIntervalLens.get()(actor)
+const intervalOf: (actor: Actor) => number = L.actorIntervalLens.get()
 
-const idOf = (actor: Actor) => L.actorIdLens.get()(actor)
+const idOf: (actor: Actor) => number = L.actorIdLens.get()
 
-const knowledgeOf = (actor: Actor) => L.actorKnowledgeLens.get()(actor)
+const knowledgeOf: (actor: Actor) => string = L.actorKnowledgeLens.get()
 
 export {
   actorsForStage,

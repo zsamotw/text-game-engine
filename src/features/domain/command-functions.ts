@@ -9,7 +9,7 @@ const isNameEqual = S.curry2((name: string, object: any) => {
 })
 
 //public api
-const restOfCommand: (command: Command) => string = command =>  L.commandRestLens.get()(command)
+const restOfCommand: (command: Command) => string = L.commandRestLens.get()
 
 const isRestOfCommandEqualsToNameOf = S.compose(isNameEqual)(L.commandRestLens.get())
 

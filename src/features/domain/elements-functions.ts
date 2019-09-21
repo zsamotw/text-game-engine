@@ -1,4 +1,5 @@
 import Stage from '../../models/stage'
+import Element from '../../models/element'
 import * as SF from './stage-functions'
 import * as L from '../utils/lenses'
 import * as S from 'sanctuary'
@@ -13,6 +14,12 @@ const elementsFrom = (i: number) => (stages: Stage[]) => {
   }
 }
 
+const nameOf: (element: Element) => string = L.elementNameLens.get()
+
+const descriptionOf: (element: Element) => string = L.elementDescriptionLens.get()
+
 export {
-  elementsFrom
+  elementsFrom,
+  nameOf,
+  descriptionOf
 }

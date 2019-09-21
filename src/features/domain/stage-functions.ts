@@ -1,18 +1,17 @@
-import * as R from 'ramda'
 import * as S from 'sanctuary'
 import * as L from '../utils/lenses'
 import State from '../../models/state'
 import Stage from '../../models/stage'
 import Element from '../../models/element'
 import{Maybe} from '../../features/utils/types'
-const { equals } = require('sanctuary')
 
-const stagesOf: (state: State) => Stage[] = R.view(L.stagesLens)
+const stagesOf: (state: State) => Stage[] = L.stateStagesLens.get()
 
+//TODO make functions easier
 const maybeStage: (
   stages: Stage[]
 ) => (stageId: number) => Maybe<Stage> = stages => stageId =>
-  S.find(s => equals(S.prop('id')(s))(stageId))(stages)
+  S.find(s => S.equals(S.prop('id')(s))(stageId))(stages)
 
 const elementsForMaybeStage: (maybeStage: Maybe<Stage>) => Element[] = maybeStage => {
   if (S.isNothing(maybeStage)) 

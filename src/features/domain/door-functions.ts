@@ -7,6 +7,7 @@ import { getRandomInt } from './general-usage-functions'
 import { Maybe } from '../../features/utils/types'
 const { size } = require('sanctuary')
 
+//TODO make functions easier
 const maybeDoorsOf: (maybeStage: Maybe<Stage>) => Maybe<Doors> = maybeStage => {
   const maybeDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(maybeStage => {
     const stage = S.maybeToNullable(maybeStage)
