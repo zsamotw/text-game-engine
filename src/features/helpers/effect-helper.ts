@@ -65,7 +65,7 @@ const getOverviewEffect = function(
   const overviewEffectOf = S.ifElse(S.isNothing)(() => {
     return {
       operation: EO.noStateChange,
-      message: 'Error. No stage defined as current. Contact with game owner.'
+      message: 'Error. No stage defined. Contact with game owner.'
     } as Effect
   })(effectForStage)
 
@@ -133,7 +133,7 @@ const getChangeStageEffect = function(
       return {
         operation: EO.changeNextStageId,
         nextStageId: S.maybeToNullable(maybeNextStageId),
-        message: `You are in  ${name}`
+        message: `You are in stage. It is ${name}`
       } as NextStageEffect
     })(() => {
       return {
@@ -169,7 +169,7 @@ const getTakenElementEffect = function(
     case S.not(isPlace): {
       return {
         operation: EO.noStateChange,
-        message: 'There is no place in pocket'
+        message: 'There is no place in pocket. Your pocket is full. You can put unused things to the ground'
       } as Effect
     }
 
@@ -224,7 +224,7 @@ const getPocketEffect = function(command: Command, pocket: Element[]) {
   const elementsInPocket = getElementsNamesFrom(pocket)
 
   const messageFrom = S.ifElse(S.equals([]))(() => 'You pocket is empty')(
-    elementsInPocket => `In your pocket: ${elementsInPocket}`
+    elementsInPocket => `You have these things in your pocket: ${elementsInPocket}`
   )
 
   return {
@@ -244,7 +244,7 @@ const getTalkEffect = function(
   const actorsOnStage = S.filter((actor: Actor) =>
     S.and(nameEqualsTo(AF.nameOf(actor)))(stageIdEqualsTo(AF.stageIdOf(actor)))
   )
-  const actorsKnowledge = S.compose(S.map((a: Actor) => a.knowledge))(
+  const actorsKnowledge = S.compose(S.map((actor: Actor) => L.actorKnowledgeLens.get()(actor)))(
     actorsOnStage
   )
   const noActorsOnStage = S.compose(S.equals([]))(actorsOnStage)
@@ -255,8 +255,8 @@ const getTalkEffect = function(
     message: noActorsOnStage(actors)
       ? 'There is no actor with that name'
       : isAnybodyKnowsSomething(actors)
-      ? actorsKnowledge(actors).toString()
-      : 'Actors on this stage have no knowledge'
+      ? S.joinWith(' & ')(actorsKnowledge(actors) as string[])
+      : 'That person has nothing to say'
   } as Effect
 }
 
