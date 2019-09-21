@@ -32,4 +32,13 @@ const descriptionOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage
   }
 }
 
-export { stagesOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage }
+const nameOfMaybeStage: (maybeStage: Maybe<Stage>) => String = maybeStage => {
+  if (S.isNothing(maybeStage)) 
+    return 'This stage has no name'
+  else {
+    const stage = S.maybeToNullable(maybeStage) as Stage
+    return L.stageNameLens.get()(stage)
+  }
+}
+
+export { stagesOf, maybeStage, elementsForMaybeStage, descriptionOfMaybeStage, nameOfMaybeStage }

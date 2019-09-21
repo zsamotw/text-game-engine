@@ -15,12 +15,14 @@ const elementEffectLens = lens<ElementEffect>()
 const stateLens = lens<State>()
 
 const stageDoorsLens = stageLens.doors
+const stageNameLens = stageLens.name
 const stageDescriptionLens = stageLens.description
 const stageElementsLens = stageLens.elements
 
 const commandRestLens = commandLens.rest
 
 const actorIdLens = actorLens.id
+const actorNameLens = actorLens.name
 const actorStageIdLens = actorLens.stageId
 const actorIntervalLens = actorLens.interval
 const actorKnowledgeLens = actorLens.knowledge
@@ -69,10 +71,12 @@ export {
   stageLens,
   stageDoorsLens,
   stageDescriptionLens,
+  stageNameLens,
   stageElementsLens,
   commandLens,
   commandRestLens, 
   actorIdLens,
+  actorNameLens,
   actorStageIdLens,
   actorIntervalLens,
   actorKnowledgeLens,
