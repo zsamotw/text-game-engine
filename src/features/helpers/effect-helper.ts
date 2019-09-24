@@ -112,7 +112,7 @@ const getChangeStageEffect = function(
 
   const directionFrom: (command: Command) => string = L.commandRestLens.get()
 
-  const maybeNextStageId = S.get(() => true)(directionFrom(command) as any)(
+  const maybeOfMaybeNextStageId = S.get(() => true)(directionFrom(command) as any)(
     doors
   )
 
@@ -147,7 +147,7 @@ const getChangeStageEffect = function(
     return openDoorOrStay(maybeNextStage as Maybe<Stage>)
   })
 
-  return changeStageEffectFrom(maybeNextStageId)
+  return changeStageEffectFrom(maybeOfMaybeNextStageId)
 }
 
 const getTakenElementEffect = function(
@@ -169,7 +169,7 @@ const getTakenElementEffect = function(
     case S.not(isPlace): {
       return {
         operation: EO.noStateChange,
-        message: 'There is no place in pocket. Your pocket is full. You can put unused things to the ground'
+        message: 'There is no place in pocket. Your pocket is full. You can put unused things to the ground and take others'
       } as Effect
     }
 

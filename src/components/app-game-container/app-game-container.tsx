@@ -16,10 +16,7 @@ export interface IAppGameContainerState {
   messages: string[]
 }
 
-export default class AppGameContainer extends React.Component<
-  IAppGameContainerProps,
-  IAppGameContainerState
-> {
+export default class AppGameContainer extends React.Component< IAppGameContainerProps, IAppGameContainerState > {
   state = {
     lastCommand: '',
     messages: []

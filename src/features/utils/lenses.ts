@@ -1,13 +1,14 @@
 import { lens } from 'lens.ts'
 import Stage from '../../models/stage'
 import Command from '../../models/command'
-import * as R from 'ramda'
 import Actor from '../../models/actor'
 import Element from '../../models/element'
 import { Effect, NextStageEffect, ElementEffect } from '../../models/effect'
 import State from '../../models/state'
+import CommandsHistory from '../../models/commandsHistory'
 
 const stageLens = lens<Stage>()
+const stagesLens = lens<Stage[]>()
 const commandLens = lens<Command>()
 const actorLens = lens<Actor>()
 const elementLens = lens<Element>()
@@ -15,6 +16,7 @@ const effectLens = lens<Effect>()
 const nextStageEffectLens = lens<NextStageEffect>()
 const elementEffectLens = lens<ElementEffect>()
 const stateLens = lens<State>()
+const commandHistoryLens = lens<CommandsHistory>()
 
 const stageDoorsLens = stageLens.doors
 const stageNameLens = stageLens.name
@@ -43,68 +45,30 @@ const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId
 const stateSystemMessagesLens = stateLens.messages
 const stateStagesLens = stateLens.stages
 
-//ramda lenses
-const idLens = R.lensProp('id')
-const stagesLens = R.lensProp('stages')
-const currentStageIdLens = R.lensProp('currentStageId')
-const pocketLens = R.lensProp('pocket')
-const doorsLens = R.lensProp('doors')
-const actorsLens = R.lensProp('actors')
-const systemMessages = R.lensProp('systemMessages')
-
-const elementsLens = R.lensProp('elements')
-
-const descriptionLens = R.lensProp('description')
-const nameLens = R.lensProp('name')
-
-const operationLens = R.lensProp('operation')
-const restLens = R.lensProp('rest')
-
-const messageLens = R.lensProp('message')
-const nextStageId = R.lensProp('nextStageId')
-
-const commandsLens = R.lensProp('commands')
-const positionLens = R.lensProp('position')
 
 export {
-  stageLens,
-  stageDoorsLens,
-  stageDescriptionLens,
-  stageNameLens,
-  stageElementsLens,
-  commandLens,
-  commandRestLens, 
   actorIdLens,
-  actorNameLens,
-  actorStageIdLens,
   actorIntervalLens,
   actorKnowledgeLens,
-  elementNameLens,
-  elementDescriptionLens,
-  effectOperationLens,
+  actorLens,
+  actorNameLens,
+  actorStageIdLens,
+  commandHistoryLens,
+  commandLens,
+  commandRestLens, 
   effectMessageLens,
-  nextStageEffecNextStageIdLens,
-  elementEffectLensEffectLens,
+  effectOperationLens,
+  elementDescriptionLens,
   elementEffectCurrentStageIdLens,
-  stateSystemMessagesLens,
-  stateStagesLens,
-
-//ramda lenses
-  nameLens,
-  descriptionLens,
-
-  idLens,
+  elementEffectLensEffectLens,
+  elementNameLens,
+  nextStageEffecNextStageIdLens,
+  stageDescriptionLens,
+  stageDoorsLens,
+  stageElementsLens,
+  stageLens,
+  stageNameLens,
   stagesLens,
-  currentStageIdLens,
-  pocketLens,
-  doorsLens,
-  actorsLens,
-  systemMessages,
-  elementsLens,
-  restLens,
-  operationLens,
-  messageLens,
-  nextStageId,
-  commandsLens,
-  positionLens
+  stateStagesLens,
+  stateSystemMessagesLens
 }

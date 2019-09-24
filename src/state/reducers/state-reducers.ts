@@ -8,13 +8,14 @@ import {
 } from '../initial-state'
 import { createStore } from 'redux'
 import * as AT from '../actions/action-types'
+import * as L from '../../features/utils/lenses'
 import * as PF from '../../features/domain/pocket-functions'
-import * as R from 'ramda'
+import * as S from 'sanctuary'
 import Actor from '../../models/actor'
+import CommandsHistory from '../../models/commandsHistory'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
-import CommandsHistory from '../../models/commandsHistory'
-import * as L from '../../features/utils/lenses'
+const { size } = require('sanctuary')
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
   switch (action.type) {
@@ -23,21 +24,18 @@ function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
 
     case AT.TAKE_ELEMENT_FROM_STAGE: {
       const { element, currentStageId } = action
-      return R.over(
-        R.lensPath([currentStageId, 'elements']),
-        R.filter((e: Element) => e.name !== element.name),
-        stagesState
+      const stages = L.stagesLens[currentStageId].elements.set(es =>
+        es.filter(e => e.name !== element.name)
       )
+      return stages(stagesState)
     }
 
     case AT.PUT_ELEMENT_INTO_STAGE: {
       const { element, currentStageId } = action
-      const stages = R.over(
-        R.lensPath([currentStageId, 'elements']),
-        R.append(element),
-        stagesState
+      const stages = L.stagesLens[currentStageId].elements.set(es =>
+        S.append(element)(es)
       )
-      return stages
+      return stages(stagesState)
     }
 
     default:
@@ -68,10 +66,12 @@ function reducePocket(pocketState: Element[] = pocket, action: any): Element[] {
 
     case AT.TAKE_ELEMENT_FROM_POCKET: {
       const { element } = action
-      const elementsWithDifferentNameTo = R.curry(
+      const elementsWithDifferentNameTo = S.curry2(
         (name: string, element: Element) => element.name !== name
       )
-      const pocket = R.filter(elementsWithDifferentNameTo(element.name), pocketState)
+      const pocket = S.filter(elementsWithDifferentNameTo(element.name))(
+        pocketState
+      )
       return pocket
     }
 
@@ -84,10 +84,11 @@ function reduceActors(actorState: Actor[] = actors, action: any): Actor[] {
   switch (action.type) {
     case AT.CHANGE_ACTOR_STAGE:
       const { stageId, actorId } = action
-      const actors = R.map((el: Actor) => {
-        if (el.id === actorId) return R.assoc('stageId', stageId, el)
-        else return el
-      }, actorState)
+      const actors = S.map((actor: Actor) => {
+        if (actor.id === actorId)
+          return L.actorLens.stageId.set(id => stageId)(actor)
+        else return actor
+      })(actorState)
       return actors
 
     default:
@@ -102,7 +103,7 @@ function reduceMessages(
   switch (action.type) {
     case AT.ADD_MESSAGE:
       const { message } = action
-      return R.append(message, messagesState)
+      return S.append(message)(messagesState)
 
     default:
       return messagesState
@@ -116,36 +117,30 @@ function reduceCommandsHistory(
   switch (action.type) {
     case AT.ADD_COMMAND:
       const { command } = action
-      const commands = R.view(L.commandsLens, commandsHistoryState) as string[]
-      const updatedCommands = R.prepend(command, commands)
-      const updatedCommandHistoryState = R.set(
-        L.commandsLens,
-        updatedCommands,
-        commandsHistoryState
+      const update = L.commandHistoryLens.commands.set(commands =>
+        S.prepend(command)(commands)
       )
-      return updatedCommandHistoryState
+      return update(commandsHistoryState)
 
     case AT.SET_NEXT_COMMAND_HISTORY_POSITION:
-      if (commandsHistoryState.position < commandsHistoryState.commands.length)
-        return R.over(
-          L.positionLens,
-          position => position + 1,
-          commandsHistoryState
-        )
-      else return R.over(L.positionLens, () => 0, commandsHistoryState)
-    case AT.SET_PREVIOUS_COMMAND_HISTORY_POSITION:
-      if (commandsHistoryState.position > 0)
-        return R.over(
-          L.positionLens,
-          position => position - 1,
+      if (
+        S.gt(commandsHistoryState.position)(size(commandsHistoryState.commands))
+      )
+        return L.commandHistoryLens.position.set(p => p + 1)(
           commandsHistoryState
         )
       else
-        return R.over(
-          L.positionLens,
-          () => commandsHistoryState.commands.length - 1,
+        return L.commandHistoryLens.position.set(p => 0)(commandsHistoryState)
+
+    case AT.SET_PREVIOUS_COMMAND_HISTORY_POSITION:
+      if (S.lt(commandsHistoryState.position)(0))
+        return L.commandHistoryLens.position.set(p => p - 1)(
           commandsHistoryState
         )
+      else
+        return L.commandHistoryLens.position.set(
+          p => size(commandsHistoryState.commands) - 1
+        )(commandsHistoryState)
 
     default:
       return commandsHistoryState

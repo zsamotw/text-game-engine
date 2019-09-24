@@ -29,10 +29,10 @@ const maybeDoorsForStage = (stages: Stage[]) =>
 const openedDoors = (maybeDoors: Maybe<Doors>) => {
   const openedDoorsOf = S.ifElse(S.isNothing)(() => S.Nothing)(justDoors => {
     const doors = S.maybeToNullable(justDoors)
-    const stagesIds = S.values(doors as any)
+    const maybesOfStagesIds = S.values(doors as any)
     const justStagesIds = S.pipe([S.filter(S.isJust), S.sequence(S.Maybe)])
 
-    return justStagesIds(stagesIds)
+    return justStagesIds(maybesOfStagesIds)
   })
   return openedDoorsOf(maybeDoors)
 }

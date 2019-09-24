@@ -5,14 +5,12 @@ const { size } = require('sanctuary')
 
 it('Should return true if is enough place in pocket', () => {
     const pocket = [{name: 'foo' } as Element, {name: 'bar'} as Element]
-    const expected = true
-    expect(PF.isPlaceInPocket(pocket)).toEqual(expected)
+    expect(PF.isPlaceInPocket(pocket)).toBeTruthy
 })
 
 it('Should return false when pocket is full', () => {
     const pocket = [{name: 'foo' } as Element, {name: 'bar'} as Element, {name: 'baz'} as Element]
-    const expected = false
-    expect(PF.isPlaceInPocket(pocket)).toEqual(expected)
+    expect(PF.isPlaceInPocket(pocket)).toBeFalsy
 })
 
 it('Should return add element to pocket', () => {
