@@ -1,16 +1,18 @@
-import * as R from 'ramda'
 import * as CH from './command-helper'
-import * as PMH from './pattern-matcher-helper'
+import { match } from 'minta'
+import * as P from '../utils/patterns'
 
-const stringMatcher = R.cond([
-  [PMH.isLookPattern, R.always(CH.getLookCommand())],
-  [PMH.isLookAtPattern, str => CH.getLookAtCommand(str)],
-  [PMH.isGoPattern, str => CH.getGoCommand(str)],
-  [PMH.isTakePattern, str => CH.getTakeCommand(str)],
-  [PMH.isPutPattern, str => CH.getPutCommand(str)],
-  [PMH.isPocketPattern, str => CH.getPocketCommand(str)],
-  [PMH.isTalkPattern, str => CH.getTalkCommand(str)],
-  [R.T, str => CH.getUndefinedCommand(str)]
-])
+const matchStringAndGetCommand = (str: string) => {
+  return  match(str) (
+    P.lookPattern, () => CH.getLookCommand(),
+    P.lookAtPattern, () => CH.getLookAtCommand(str),
+    P.goPattern, () => CH.getGoCommand(str),
+    P.takePattern, () => CH.getTakeCommand(str),
+    P.putPattern, () => CH.getPutCommand(str),
+    P.pocketPattern, () => CH.getPocketCommand(str),
+    P.talkToPattern || P.talkWithPattern, () => CH.getTalkCommand(str),
+    otherwise => CH.getUndefinedCommand
+  )
+}
 
-export { stringMatcher }
+export { matchStringAndGetCommand }

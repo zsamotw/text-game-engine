@@ -20,7 +20,7 @@ const { equals } = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
-  const command = SMH.stringMatcher(input as never)
+  const command = SMH.matchStringAndGetCommand(input as never)
   return CP.processCommandAndGetEffect(command, state)
 }
 

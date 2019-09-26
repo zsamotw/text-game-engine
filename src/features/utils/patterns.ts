@@ -4,7 +4,8 @@ const goPattern = /^go/
 const takePattern = /^take/
 const putPattern = /^put/
 const pocketPattern = /^pocket$/
-const talkPattern = /^talk to/
+const talkToPattern = /^talk to/
+const talkWithPattern = /^talk with/
 
 export {
   lookPattern,
@@ -13,5 +14,6 @@ export {
   takePattern,
   putPattern,
   pocketPattern,
-  talkPattern
+  talkToPattern,
+  talkWithPattern
 }
