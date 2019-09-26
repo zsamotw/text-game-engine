@@ -19,7 +19,7 @@ export interface IAppGameContainerState {
 export default class AppGameContainer extends React.Component< IAppGameContainerProps, IAppGameContainerState > {
   state = {
     lastCommand: '',
-    messages: []
+    messages: ['WELCOME IN GAME!!!']
   }
 
   componentDidMount() {

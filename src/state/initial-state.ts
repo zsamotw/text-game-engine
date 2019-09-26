@@ -93,7 +93,7 @@ const actors: Actor[] = [
   } as Actor
 ]
 
-const messages: string[] = ['Welcome in game']
+const messages: string[] = []
 
 const commandsHistory = {
   command: '',
