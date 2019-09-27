@@ -10,7 +10,8 @@ const matchStringAndGetCommand = (str: string) => {
     P.takePattern, () => CH.getTakeCommand(str),
     P.putPattern, () => CH.getPutCommand(str),
     P.pocketPattern, () => CH.getPocketCommand(str),
-    P.talkToPattern || P.talkWithPattern, () => CH.getTalkCommand(str),
+    P.talkToPattern, () => CH.getTalkCommand(str),
+    P.talkWithPattern, () => CH.getTalkCommand(str),
     otherwise => CH.getUndefinedCommand
   )
 }

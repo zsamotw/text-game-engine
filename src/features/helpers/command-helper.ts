@@ -11,7 +11,7 @@ const getLookCommand = function(): Command {
 const getLookAtCommand = function(str: string): Command {
   const rest = str.split(P.lookAtPattern)[1].trim()
   return {
-    order: 'LookAt',
+    order: 'Look At',
     rest: rest
   } as Command
 }
@@ -48,7 +48,7 @@ const getPocketCommand = function(str: string): Command {
 }
 
 const getTalkCommand = function(str: string): Command {
-  const rest = str.split(P.talkPattern)[1].trim()
+  const rest = str.split(P.talkToPattern)[1] || str.split(P.talkWithPattern)[1].trim()
   return {
     order: 'Talk',
     rest: rest

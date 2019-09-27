@@ -7,7 +7,8 @@ const isGoPattern = (str: string) => S.test(P.goPattern)(str)
 const isTakePattern = (str: string) => S.test(P.takePattern)(str)
 const isPutPattern = (str: string) => S.test(P.putPattern)(str)
 const isPocketPattern = (str: string) => S.test(P.pocketPattern)(str)
-const isTalkPattern = (str: string) => S.test(P.talkPattern)(str)
+const isTalkPattern = (str: string) => S.test(P.talkToPattern)(str)
+// const isTalkWithPattern = (str: string) => S.test(P.talkWithPattern)(str)
 
 export {
   isLookAtPattern,
@@ -16,5 +17,6 @@ export {
   isTakePattern,
   isPutPattern,
   isPocketPattern,
-  isTalkPattern
+  isTalkPattern,
+  // isTalkWithPattern
 }
