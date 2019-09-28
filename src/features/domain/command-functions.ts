@@ -1,11 +1,12 @@
 import * as L from '../utils/lenses'
 import * as S from 'sanctuary'
+import * as SF from './string-functions'
 import Command from '../../models/command'
 import Element from '../../models/element'
 
 const isNameEqual = S.curry2((name: string, object: any) => {
   const nameFromObject = S.prop('name')(object)
-  return S.equals(nameFromObject)(name)
+  return SF.equalsIgnoreCase(nameFromObject)(name)
 })
 
 //public api
