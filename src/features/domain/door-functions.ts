@@ -17,7 +17,7 @@ const getRandomWayOut = (maybeDoors: Maybe<Doors>) => {
         S.map(size),
         S.map(getRandomInt)
       ])
-      return S.Just(stageIdToGo(justDoors))
+      return stageIdToGo(justDoors)
     }
   )
   return maybeIdOfNextStageFrom(maybeDoors)

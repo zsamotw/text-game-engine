@@ -8,6 +8,7 @@ import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
+import { ActorMoveAction } from '../../models/action';
 
 
 export interface IAppGameContainerProps {}
@@ -34,9 +35,9 @@ export default class AppGameContainer extends React.Component< IAppGameContainer
       })
     })
     //subscribe to actors stream. The stream change actors placement
-    // getActorsStream().subscribe(actions => {
-    //   actions.forEach(a => appStore.dispatch(a))
-    // })
+    getActorsStream().subscribe(actions => {
+      actions.forEach((a: ActorMoveAction) => appStore.dispatch(a))
+    })
   }
 
   handleCommandEnter = (command: string) => {
