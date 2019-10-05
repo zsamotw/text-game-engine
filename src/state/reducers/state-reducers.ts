@@ -103,7 +103,7 @@ function reduceMessages(
   switch (action.type) {
     case AT.ADD_MESSAGE:
       const { message } = action
-      return S.append(message)(messagesState)
+      return S.prepend(message)(messagesState)
 
     default:
       return messagesState
@@ -117,14 +117,17 @@ function reduceCommandsHistory(
   switch (action.type) {
     case AT.ADD_COMMAND:
       const { command } = action
-      const update = L.commandHistoryLens.commands.set(commands =>
+      const addCommand = L.commandHistoryLens.commands.set(commands =>
         S.prepend(command)(commands)
       )
-      return update(commandsHistoryState)
+      const resetPosition = L.commandHistoryLens.position.set(position => 0)
+      return S.compose(resetPosition)(addCommand)(commandsHistoryState)
 
     case AT.SET_NEXT_COMMAND_HISTORY_POSITION:
       if (
-        S.gt(commandsHistoryState.position)(size(commandsHistoryState.commands))
+        S.lt(size(commandsHistoryState.commands) - 1)(
+          commandsHistoryState.position
+        )
       )
         return L.commandHistoryLens.position.set(p => p + 1)(
           commandsHistoryState
