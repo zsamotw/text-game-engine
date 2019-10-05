@@ -1,5 +1,6 @@
 import * as P from '../utils/patterns'
 import Command from '../../models/command'
+import * as SF from '../domain/string-functions'
 
 const getLookCommand = function(): Command {
   return {
@@ -9,7 +10,7 @@ const getLookCommand = function(): Command {
 }
 
 const getLookAtCommand = function(str: string): Command {
-  const rest = str.split(P.lookAtPattern)[1].trim()
+  const rest = SF.splitAndTakeRest(P.lookAtPatternGlobal)(str)
   return {
     order: 'Look At',
     rest: rest
@@ -17,7 +18,7 @@ const getLookAtCommand = function(str: string): Command {
 }
 
 const getGoCommand = function(str: string): Command {
-  const rest = str.split(P.goPattern)[1].trim()
+  const rest = SF.splitAndTakeRest(P.goPatternGlobal)(str)
   return {
     order: 'Go',
     rest: rest
@@ -25,7 +26,7 @@ const getGoCommand = function(str: string): Command {
 }
 
 const getTakeCommand = function(str: string): Command {
-  const rest = str.split(P.takePattern)[1].trim()
+  const rest = SF.splitAndTakeRest(P.takePatternGlobal)(str)
   return {
     order: 'Take',
     rest: rest
@@ -33,14 +34,14 @@ const getTakeCommand = function(str: string): Command {
 }
 
 const getPutCommand = function(str: string): Command {
-  const rest = str.split(P.putPattern)[1].trim()
+  const rest = SF.splitAndTakeRest(P.putPatternGlobal)(str)
   return {
     order: 'Put',
     rest: rest
   } as Command
 }
 
-const getPocketCommand = function(str: string): Command {
+const getPocketCommand = function(): Command {
   return {
     order: 'Pocket',
     rest: ''
@@ -48,17 +49,26 @@ const getPocketCommand = function(str: string): Command {
 }
 
 const getTalkCommand = function(str: string): Command {
-  const rest = str.split(P.talkToPattern)[1] || str.split(P.talkWithPattern)[1].trim()
+  const rest =
+    SF.splitAndTakeRest(P.talkToPatternGlobal)(str) ||
+    SF.splitAndTakeRest(P.talkWithPatternGlobal)(str)
   return {
     order: 'Talk',
     rest: rest
   } as Command
 }
 
+const getHelpCommand = function(): Command {
+  return {
+    order: 'Help',
+    rest: ''
+  } as Command
+}
+
 const getUndefinedCommand = function(str: string): Command {
   return {
     order: 'Undefined',
-    rest: ''
+    rest: str
   } as Command
 }
 
@@ -70,5 +80,6 @@ export {
   getPutCommand,
   getPocketCommand,
   getTalkCommand,
+  getHelpCommand,
   getUndefinedCommand
 }

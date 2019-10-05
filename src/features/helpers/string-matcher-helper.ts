@@ -9,10 +9,11 @@ const matchStringAndGetCommand = (str: string) => {
     P.goPattern, () => CH.getGoCommand(str),
     P.takePattern, () => CH.getTakeCommand(str),
     P.putPattern, () => CH.getPutCommand(str),
-    P.pocketPattern, () => CH.getPocketCommand(str),
+    P.pocketPattern, () => CH.getPocketCommand(),
     P.talkToPattern, () => CH.getTalkCommand(str),
     P.talkWithPattern, () => CH.getTalkCommand(str),
-    otherwise => CH.getUndefinedCommand
+    P.helpPattern, () => CH.getHelpCommand(),
+    otherwise => CH.getUndefinedCommand(str)
   )
 }
 

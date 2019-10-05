@@ -43,6 +43,10 @@ const processCommandAndGetEffect = (command: Command, state: State) => {
       const { actors, currentStageId } = state
       return EH.getTalkEffect(command, currentStageId, actors)
     },
+    S.equals(order)('Help'),
+    () => {
+      return EH.getHelpEffect(command, state)
+    },
     S.equals(order)('Undefined'),
     () => EH.getUndefinedEffect(command, state),
     otherwise => 'Error!!!'

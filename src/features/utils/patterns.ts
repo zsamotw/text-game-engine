@@ -1,11 +1,19 @@
-const lookPattern = /^look$/
-const lookAtPattern = /^look at/
-const goPattern = /^go/
-const takePattern = /^take/
-const putPattern = /^put/
-const pocketPattern = /^pocket$/
-const talkToPattern = /^talk to/
-const talkWithPattern = /^talk with/
+const lookPattern = /^look$/i
+const lookAtPattern = /^look at/i
+const goPattern = /^go/i
+const takePattern = /^take/i
+const putPattern = /^put/i
+const pocketPattern = /^pocket$/i
+const talkToPattern = /^talk to/i
+const talkWithPattern = /^talk with/i
+const helpPattern = /^help$/i
+
+const lookAtPatternGlobal = /^look at/gi
+const goPatternGlobal = /^go/gi
+const takePatternGlobal = /^take/gi
+const putPatternGlobal = /^put/gi
+const talkToPatternGlobal = /^talk to/gi
+const talkWithPatternGlobal = /^talk with/gi
 
 export {
   lookPattern,
@@ -15,5 +23,12 @@ export {
   putPattern,
   pocketPattern,
   talkToPattern,
-  talkWithPattern
+  talkWithPattern,
+  helpPattern,
+  lookAtPatternGlobal,
+  goPatternGlobal,
+  takePatternGlobal,
+  putPatternGlobal,
+  talkToPatternGlobal,
+  talkWithPatternGlobal
 }
