@@ -10,6 +10,7 @@ import * as L from '../utils/lenses'
 import * as PF from '../domain/pocket-functions'
 import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
+import * as SRF from '../domain/string-functions'
 import * as SMH from './string-matcher-helper'
 import Actor from '../../models/actor'
 import Command from '../../models/command'
@@ -35,7 +36,7 @@ const getOverviewEffect = function(
     const mapToNames = S.map(getName)
 
     const joinedNames = S.ifElse(equals([]))(() => 'No one thing here.')(
-      names => `Things: ${S.joinWith(', ')(names as string[])}.`
+      names => ` Things in this stage: ${S.joinWith(', ')(names as string[])}.`
     )
 
     const elementsDescription = S.pipe([
@@ -44,8 +45,9 @@ const getOverviewEffect = function(
       joinedNames
     ])
 
-    const joinedActorsNames = S.ifElse(S.equals([])) (() => 'Nobody here')(
-      actorsNames => `Persons: ${S.joinWith(', ')(actorsNames as string[])}.`
+    const joinedActorsNames = S.ifElse(S.equals([]))(() => 'Nobody here')(
+      actorsNames =>
+        ` Persons here: ${S.joinWith(', ')(actorsNames as string[])}.`
     )
 
     const actorsDescription = S.pipe([
@@ -110,9 +112,11 @@ const getChangeStageEffect = function(
   const maybeDoorsInCurrentStage = DF.maybeDoorsForStage(stages)(currentStageId)
   const doors = S.maybeToNullable(maybeDoorsInCurrentStage)
 
-  const directionFrom: (command: Command) => string = L.commandRestLens.get()
+  const directionFrom: (command: Command) => string = S.compose(S.toLower)(
+    L.commandRestLens.get()
+  )
 
-  const maybeOfMaybeNextStageId = S.get(() => true)(directionFrom(command) as any)(
+  const maybeOfMaybeNextStageId = S.get(() => true)(directionFrom(command))(
     doors
   )
 
@@ -169,7 +173,8 @@ const getTakenElementEffect = function(
     case S.not(isPlace): {
       return {
         operation: EO.noStateChange,
-        message: 'There is no place in pocket. Your pocket is full. You can put unused things to the ground and take others'
+        message:
+          'There is no place in pocket. Your pocket is full. You can put unused things to the ground and take others'
       } as Effect
     }
 
@@ -224,7 +229,10 @@ const getPocketEffect = function(command: Command, pocket: Element[]) {
   const elementsInPocket = getElementsNamesFrom(pocket)
 
   const messageFrom = S.ifElse(S.equals([]))(() => 'You pocket is empty')(
-    elementsInPocket => `You have these things in your pocket: ${S.joinWith(', ')(elementsInPocket as string[])}`
+    elementsInPocket =>
+      `You have these things in your pocket: ${S.joinWith(', ')(
+        elementsInPocket as string[]
+      )}`
   )
 
   return {
@@ -240,13 +248,13 @@ const getTalkEffect = function(
 ) {
   const actorName = CF.restOfCommand(command)
   const stageIdEqualsTo = S.equals(stageId)
-  const nameEqualsTo = S.equals(actorName)
+  const nameEqualsTo = SRF.equalsIgnoreCase(actorName)
   const actorsOnStage = S.filter((actor: Actor) =>
     S.and(nameEqualsTo(AF.nameOf(actor)))(stageIdEqualsTo(AF.stageIdOf(actor)))
   )
-  const actorsKnowledge = S.compose(S.map((actor: Actor) => L.actorKnowledgeLens.get()(actor)))(
-    actorsOnStage
-  )
+  const actorsKnowledge = S.compose(
+    S.map((actor: Actor) => L.actorKnowledgeLens.get()(actor))
+  )(actorsOnStage)
   const noActorsOnStage = S.compose(S.equals([]))(actorsOnStage)
   const isAnybodyKnowsSomething = S.pipe([actorsKnowledge, S.equals([]), S.not])
 
@@ -260,10 +268,19 @@ const getTalkEffect = function(
   } as Effect
 }
 
-const getUndefinedEffect = function(command: Command, state: State) {
+const getHelpEffect = function(command: Command, state: State) {
   return {
     operation: EO.undefinedCommand,
-    message: 'oops!! it is wrong command.'
+    message:
+      'It is possible to use command like: look, look at (name), take (name), put (name), pocket, go (east, south, west, north), talk to (name), help'
+  } as Effect
+}
+
+const getUndefinedEffect = function(command: Command, state: State) {
+  const rest = CF.restOfCommand(command)
+  return {
+    operation: EO.undefinedCommand,
+    message: `${rest} is wrong command. Use \'help\' command to get help`
   } as Effect
 }
 
@@ -276,5 +293,6 @@ export {
   getPutElementEffect,
   getPocketEffect,
   getTalkEffect,
+  getHelpEffect,
   getUndefinedEffect
 }
