@@ -80,15 +80,15 @@ const actors: Actor[] = [
     name: 'tomasz',
     description: 'It is tomasz',
     knowledge: 'halo it is Tomasz',
-    interval: 300000,
-    stageId: 0
+    interval: 2,
+    stageId: 2
   } as Actor,
   {
-    id: 1,
+    id: 2,
     name: 'antonina',
     description: 'It is antonina',
     knowledge: 'halo it is Antonina',
-    interval: 300000,
+    interval: 1,
     stageId: 1
   } as Actor
 ]
@@ -105,4 +105,12 @@ const settings = {
   maxPocketSize: 2
 }
 
-export { stages, currentStageId, pocket, actors, messages, commandsHistory, settings }
+export {
+  stages,
+  currentStageId,
+  pocket,
+  actors,
+  messages,
+  commandsHistory,
+  settings
+}
