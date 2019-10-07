@@ -1,8 +1,8 @@
 import Element from './element'
-import { currentStageId } from '../state/initial-state'
+import { EffectOperation } from '../features/utils/effect-operations'
 
 export interface Effect {
-  operation: string
+  operation: EffectOperation
   message: string
 }
 

@@ -1,10 +1,11 @@
 import * as P from '../utils/patterns'
 import Command from '../../models/command'
 import * as SF from '../domain/string-functions'
+import * as CO from '../utils/command-order'
 
 const getLookCommand = function(): Command {
   return {
-    order: 'Look',
+    order: CO.Look,
     rest: ''
   } as Command
 }
@@ -12,7 +13,7 @@ const getLookCommand = function(): Command {
 const getLookAtCommand = function(str: string): Command {
   const rest = SF.splitAndTakeRest(P.lookAtPatternGlobal)(str)
   return {
-    order: 'Look At',
+    order: CO.LookAt,
     rest: rest
   } as Command
 }
@@ -20,7 +21,7 @@ const getLookAtCommand = function(str: string): Command {
 const getGoCommand = function(str: string): Command {
   const rest = SF.splitAndTakeRest(P.goPatternGlobal)(str)
   return {
-    order: 'Go',
+    order: CO.Go,
     rest: rest
   } as Command
 }
@@ -28,7 +29,7 @@ const getGoCommand = function(str: string): Command {
 const getTakeCommand = function(str: string): Command {
   const rest = SF.splitAndTakeRest(P.takePatternGlobal)(str)
   return {
-    order: 'Take',
+    order: CO.Take,
     rest: rest
   } as Command
 }
@@ -36,14 +37,14 @@ const getTakeCommand = function(str: string): Command {
 const getPutCommand = function(str: string): Command {
   const rest = SF.splitAndTakeRest(P.putPatternGlobal)(str)
   return {
-    order: 'Put',
+    order: CO.Put,
     rest: rest
   } as Command
 }
 
 const getPocketCommand = function(): Command {
   return {
-    order: 'Pocket',
+    order: CO.Pocket,
     rest: ''
   } as Command
 }
@@ -53,21 +54,21 @@ const getTalkCommand = function(str: string): Command {
     SF.splitAndTakeRest(P.talkToPatternGlobal)(str) ||
     SF.splitAndTakeRest(P.talkWithPatternGlobal)(str)
   return {
-    order: 'Talk',
+    order: CO.Talk,
     rest: rest
   } as Command
 }
 
 const getHelpCommand = function(): Command {
   return {
-    order: 'Help',
+    order: CO.Help,
     rest: ''
   } as Command
 }
 
 const getUndefinedCommand = function(str: string): Command {
   return {
-    order: 'Undefined',
+    order: CO.Undefined,
     rest: str
   } as Command
 }

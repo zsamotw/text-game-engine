@@ -102,7 +102,18 @@ const commandsHistory = {
 } as CommandsHistory
 
 const settings = {
-  maxPocketSize: 2
+  maxPocketSize: 2,
+  commands: [
+    'look at',
+    'look',
+    'take',
+    'put',
+    'talk to',
+    'talk with',
+    'pocket',
+    'go'
+  ],
+  minStringDistance: 0.7
 }
 
 export {

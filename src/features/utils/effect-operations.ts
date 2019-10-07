@@ -1,23 +1,23 @@
-const noStateChange = 'noStateChange'
-const changeNextStageId = 'changeNextStageId'
-const takeElement = 'takeElement'
-const putElement = 'putElement'
-const pocket = 'pocket'
-const undefinedCommand = 'undefinedCommand'
+const NoStateChange = 'NoStateChange'
+const ChangeNextStageId = 'ChangeNextStageId'
+const TakeElement = 'TakeElement'
+const PutElement = 'PutElement'
+const Pocket = 'Pocket'
+const UndefinedCommand = 'UndefinedCommand'
 
 export type EffectOperation =
-  | 'noStateChange'
-  | 'changeNextStageId'
-  | 'takeElement'
-  | 'putElement'
-  | 'pocket'
-  | 'undefinedCommand'
+  | 'NoStateChange'
+  | 'ChangeNextStageId'
+  | 'TakeElement'
+  | 'PutElement'
+  | 'Pocket'
+  | 'UndefinedCommand'
 
 export {
-  noStateChange,
-  changeNextStageId,
-  takeElement,
-  putElement,
-  pocket,
-  undefinedCommand
+  NoStateChange,
+  ChangeNextStageId,
+  TakeElement,
+  PutElement,
+  Pocket,
+  UndefinedCommand
 }

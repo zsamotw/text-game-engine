@@ -1,7 +1,7 @@
 import * as APT from '../../state/actions/pocket-actions'
 import * as AST from '../../state/actions/stages-actions'
 import * as AMT from '../../state/actions/messages-actions'
-import * as ED from '../utils/effect-operations'
+import * as EO from '../utils/effect-operations'
 import * as EF from '../domain/effect-functions'
 import State from '../../models/state'
 import Element from '../../models/element'
@@ -16,16 +16,16 @@ const getActions = function(effect: Effect, state: State): Action[] {
   const addMessageAction = AMT.addMessage(message)
 
   switch (operation) {
-    case ED.noStateChange:
+    case EO.NoStateChange:
       return [addMessageAction]
 
-    case ED.changeNextStageId: {
+    case EO.ChangeNextStageId: {
       const nextStageId = EF.nextStageIdOf(effect as NextStageEffect)
       const changeNextStageIdAction = changeStage(nextStageId)
       return [changeNextStageIdAction, addMessageAction]
     }
 
-    case ED.takeElement: {
+    case EO.TakeElement: {
       const element: Element = EF.elementOf(effect as ElementEffect)
       const currentStageId = EF.currentStageIdOf(effect as ElementEffect)
 
@@ -42,17 +42,24 @@ const getActions = function(effect: Effect, state: State): Action[] {
       ]
     }
 
-    case ED.putElement: {
+    case EO.PutElement: {
       const element: Element = EF.elementOf(effect as ElementEffect)
       const currentStageId = EF.currentStageIdOf(effect as ElementEffect)
 
       const takeElementFromPocketAction = APT.takeElementFromPocket(element)
-      const putElementToStageAction = AST.putElementInToStage(element, currentStageId)
+      const putElementToStageAction = AST.putElementInToStage(
+        element,
+        currentStageId
+      )
 
-      return [takeElementFromPocketAction, putElementToStageAction, addMessageAction]
+      return [
+        takeElementFromPocketAction,
+        putElementToStageAction,
+        addMessageAction
+      ]
     }
 
-    case ED.undefinedCommand: {
+    case EO.UndefinedCommand: {
       return [addMessageAction]
     }
     default:

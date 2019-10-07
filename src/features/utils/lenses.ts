@@ -45,7 +45,6 @@ const elementEffectCurrentStageIdLens = elementEffectLens.currentStageId
 const stateSystemMessagesLens = stateLens.messages
 const stateStagesLens = stateLens.stages
 
-
 export {
   actorIdLens,
   actorIntervalLens,
@@ -55,7 +54,7 @@ export {
   actorStageIdLens,
   commandHistoryLens,
   commandLens,
-  commandRestLens, 
+  commandRestLens,
   effectMessageLens,
   effectOperationLens,
   elementDescriptionLens,

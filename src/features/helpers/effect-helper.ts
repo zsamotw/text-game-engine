@@ -12,16 +12,19 @@ import * as S from 'sanctuary'
 import * as SF from '../domain/stage-functions'
 import * as SRF from '../domain/string-functions'
 import * as SMH from './string-matcher-helper'
+import * as MH from './message-helper'
+import * as NLP from '../domain/nlp-functions'
 import Actor from '../../models/actor'
 import Command from '../../models/command'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
 import State from '../../models/state'
+import { settings } from '../../state/initial-state'
 const { equals } = require('sanctuary')
 
 // getEffect :: String -> State -> Effect
 const getEffect = function(input: string, state: State) {
-  const command = SMH.matchStringAndGetCommand(input as never)
+  const command = SMH.matchStringAndGetCommand(input) //as never)
   return CP.processCommandAndGetEffect(command, state)
 }
 
@@ -57,7 +60,7 @@ const getOverviewEffect = function(
     ])
 
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message: `${SF.descriptionOfMaybeStage(maybeStage)}
                 ${elementsDescription(maybeStage)}
                 ${actorsDescription(currentStageId)}`
@@ -66,12 +69,13 @@ const getOverviewEffect = function(
 
   const overviewEffectOf = S.ifElse(S.isNothing)(() => {
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message: 'Error. No stage defined. Contact with game owner.'
     } as Effect
   })(effectForStage)
 
   const maybeCurrentStage = SF.maybeStage(stages)(currentStageId)
+
   return overviewEffectOf(maybeCurrentStage)
 }
 
@@ -90,18 +94,23 @@ const getDescriptionEffect = function(
 
   const descriptionEffectFrom = S.ifElse(S.isNothing)(() => {
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message: 'No such thing in this stage'
     } as Effect
   })(maybeElement => {
     const element = S.maybeToNullable(maybeElement) as Element
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message: EF.descriptionOf(element)
     } as Effect
   })
 
-  return descriptionEffectFrom(maybeElement)
+  return S.equals(CF.restOfCommand(command))('')
+    ? {
+        operation: EO.NoStateChange,
+        message: MH.messageWhenEmptyString(command)
+      }
+    : descriptionEffectFrom(maybeElement)
 }
 
 const getChangeStageEffect = function(
@@ -122,7 +131,7 @@ const getChangeStageEffect = function(
 
   const changeStageEffectFrom = S.ifElse(S.isNothing)(() => {
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message:
         'Oops. Something wrong. You can not go this direction. Try: north, south, west and east'
     } as Effect
@@ -135,13 +144,13 @@ const getChangeStageEffect = function(
     const openDoorOrStay = S.ifElse(S.isJust)(() => {
       const name = SF.nameOfMaybeStage(maybeNextStage as Maybe<Stage>)
       return {
-        operation: EO.changeNextStageId,
+        operation: EO.ChangeNextStageId,
         nextStageId: S.maybeToNullable(maybeNextStageId),
         message: `You are in stage. It is ${name}`
       } as NextStageEffect
     })(() => {
       return {
-        operation: EO.noStateChange,
+        operation: EO.NoStateChange,
         message: `There are no way from this stage in ${directionFrom(
           command
         )} direction`
@@ -151,7 +160,12 @@ const getChangeStageEffect = function(
     return openDoorOrStay(maybeNextStage as Maybe<Stage>)
   })
 
-  return changeStageEffectFrom(maybeOfMaybeNextStageId)
+  return S.equals(CF.restOfCommand(command))('')
+    ? {
+        operation: EO.NoStateChange,
+        message: MH.messageWhenEmptyString(command)
+      }
+    : changeStageEffectFrom(maybeOfMaybeNextStageId)
 }
 
 const getTakenElementEffect = function(
@@ -169,31 +183,40 @@ const getTakenElementEffect = function(
   )
   const isPlace = PF.isPlaceInPocket(pocket)
 
-  switch (true) {
-    case S.not(isPlace): {
-      return {
-        operation: EO.noStateChange,
-        message:
-          'There is no place in pocket. Your pocket is full. You can put unused things to the ground and take others'
-      } as Effect
+  const takeEffect = () => {
+    switch (true) {
+      case S.not(isPlace): {
+        return {
+          operation: EO.NoStateChange,
+          message:
+            'There is no place in pocket. Your pocket is full. You can put unused things to the ground and take others'
+        } as Effect
+      }
+
+      case isPlace && S.isJust(maybeTakenElement):
+        const element = S.maybeToNullable(maybeTakenElement)
+
+        return {
+          operation: EO.TakeElement,
+          element: element,
+          currentStageId: currentStageId,
+          message: `${EF.nameOf(element as Element)} is taken`
+        } as ElementEffect
+
+      case isPlace && S.isNothing(maybeTakenElement):
+        return {
+          operation: EO.NoStateChange,
+          message: 'No such thing in this stage'
+        } as Effect
     }
-
-    case isPlace && S.isJust(maybeTakenElement):
-      const element = S.maybeToNullable(maybeTakenElement)
-
-      return {
-        operation: EO.takeElement,
-        element: element,
-        currentStageId: currentStageId,
-        message: `${EF.nameOf(element as Element)} is taken`
-      } as ElementEffect
-
-    case isPlace && S.isNothing(maybeTakenElement):
-      return {
-        operation: EO.noStateChange,
-        message: 'No such thing in this stage'
-      } as Effect
   }
+
+  return S.equals(CF.restOfCommand(command))('')
+    ? {
+        operation: EO.NoStateChange,
+        message: MH.messageWhenEmptyString(command)
+      }
+    : takeEffect()
 }
 
 const getPutElementEffect = function(
@@ -205,7 +228,7 @@ const getPutElementEffect = function(
 
   const putEffectFrom = S.ifElse(S.isNothing)(() => {
     return {
-      operation: EO.noStateChange,
+      operation: EO.NoStateChange,
       message: 'No such thing in pocket'
     } as Effect
   })(maybeElementFromPocket => {
@@ -214,14 +237,19 @@ const getPutElementEffect = function(
     ) as Element
 
     return {
-      operation: EO.putElement,
+      operation: EO.PutElement,
       element: elementFromPocket,
       currentStageId: currentStageId,
       message: `${EF.nameOf(elementFromPocket)} is now put to the ground.`
     } as ElementEffect
   })
 
-  return putEffectFrom(maybeElementFromPocket)
+  return S.equals(CF.restOfCommand(command))('')
+    ? {
+        operation: EO.NoStateChange,
+        message: MH.messageWhenEmptyString(command)
+      }
+    : putEffectFrom(maybeElementFromPocket)
 }
 
 const getPocketEffect = function(command: Command, pocket: Element[]) {
@@ -236,7 +264,7 @@ const getPocketEffect = function(command: Command, pocket: Element[]) {
   )
 
   return {
-    operation: EO.noStateChange,
+    operation: EO.NoStateChange,
     message: messageFrom(elementsInPocket)
   } as Effect
 }
@@ -258,19 +286,28 @@ const getTalkEffect = function(
   const noActorsOnStage = S.compose(S.equals([]))(actorsOnStage)
   const isAnybodyKnowsSomething = S.pipe([actorsKnowledge, S.equals([]), S.not])
 
-  return {
-    operation: EO.undefinedCommand,
-    message: noActorsOnStage(actors)
-      ? 'There is no actor with that name'
-      : isAnybodyKnowsSomething(actors)
-      ? S.joinWith(' & ')(actorsKnowledge(actors) as string[])
-      : 'That person has nothing to say'
-  } as Effect
+  const talkEffect = () => {
+    return {
+      operation: EO.UndefinedCommand,
+      message: noActorsOnStage(actors)
+        ? 'There is no actor with that name'
+        : isAnybodyKnowsSomething(actors)
+        ? S.joinWith(' & ')(actorsKnowledge(actors) as string[])
+        : 'That person has nothing to say'
+    } as Effect
+  }
+
+  return S.equals(CF.restOfCommand(command))('')
+    ? {
+        operation: EO.NoStateChange,
+        message: MH.messageWhenEmptyString(command)
+      }
+    : talkEffect()
 }
 
 const getHelpEffect = function(command: Command, state: State) {
   return {
-    operation: EO.undefinedCommand,
+    operation: EO.UndefinedCommand,
     message:
       'It is possible to use command like: look, look at (name), take (name), put (name), pocket, go (east, south, west, north), talk to (name), help'
   } as Effect
@@ -278,9 +315,16 @@ const getHelpEffect = function(command: Command, state: State) {
 
 const getUndefinedEffect = function(command: Command, state: State) {
   const rest = CF.restOfCommand(command)
+  const bestMatches = NLP.bestMatches(rest)(settings.commands)(
+    settings.minStringDistance
+  )
   return {
-    operation: EO.undefinedCommand,
-    message: `${rest} is wrong command. Use \'help\' command to get help`
+    operation: EO.UndefinedCommand,
+    message: `${rest} is wrong command.${
+      S.equals(bestMatches)([])
+        ? ''
+        : `Similar command are: ${S.joinWith(', ')(bestMatches as string[])}.`
+    } \nUse \'help\' command to get help`
   } as Effect
 }
 
