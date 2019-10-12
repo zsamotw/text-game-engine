@@ -24,8 +24,8 @@ const processCommandAndGetEffect = (command: Command, state: State) => {
     },
     S.equals(order)(CO.LookAt),
     () => {
-      const { stages, currentStageId } = state
-      return getDescriptionEffect(command, stages, currentStageId)
+      const { stages, currentStageId, actors } = state
+      return getDescriptionEffect(command, stages, currentStageId, actors)
     },
     S.equals(order)(CO.Go),
     () => {
@@ -57,7 +57,10 @@ const processCommandAndGetEffect = (command: Command, state: State) => {
       return getHelpEffect(command, state)
     },
     S.equals(order)(CO.Undefined),
-    () => getUndefinedEffect(command, state),
+    () => {
+      const { settings } = state
+      getUndefinedEffect(command, settings)
+    },
     otherwise => 'Error!!!'
   )
 }

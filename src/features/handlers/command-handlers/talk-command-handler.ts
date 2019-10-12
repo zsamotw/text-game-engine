@@ -11,29 +11,31 @@ import Command from '../../../models/command'
 
 export const getTalkEffect = function(
   command: Command,
-  stageId: number,
+  currentStageId: number,
   actors: Actor[]
 ) {
   const actorName = CF.restOfCommand(command)
-  const stageIdEqualsTo = S.equals(stageId)
-  const nameEqualsTo = SRF.equalsIgnoreCase(actorName)
-  const actorsOnStage = S.filter((actor: Actor) =>
-    S.and(nameEqualsTo(AF.nameOf(actor)))(stageIdEqualsTo(AF.stageIdOf(actor)))
+  const equalsToCurrentStageId = S.equals(currentStageId)
+  const equalsToNameFromInput = SRF.equalsIgnoreCase(actorName)
+  const actorsOnCurrentStage = S.filter((actor: Actor) =>
+    S.and(equalsToNameFromInput(AF.nameOf(actor)))(
+      equalsToCurrentStageId(AF.stageIdOf(actor))
+    )
   )
   const actorsKnowledge = S.compose(
     S.map((actor: Actor) => L.actorKnowledgeLens.get()(actor))
-  )(actorsOnStage)
-  const noActorsOnStage = S.compose(S.equals([]))(actorsOnStage)
+  )(actorsOnCurrentStage)
+  const noActorsOnStage = S.compose(S.equals([]))(actorsOnCurrentStage)
   const isAnybodyKnowsSomething = S.pipe([actorsKnowledge, S.equals([]), S.not])
 
   const talkEffect = () => {
     return {
       operation: EO.UndefinedCommand,
       message: noActorsOnStage(actors)
-        ? 'There is no actor with that name'
+        ? 'There is no actors with that name'
         : isAnybodyKnowsSomething(actors)
         ? S.joinWith(' & ')(actorsKnowledge(actors) as string[])
-        : 'That person has nothing to say'
+        : `Persons with name:${actorName} have nothing to say`
     } as Effect
   }
 

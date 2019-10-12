@@ -27,6 +27,7 @@ const commandRestLens = commandLens.rest
 
 const actorIdLens = actorLens.id
 const actorNameLens = actorLens.name
+const actorDescriptionLens = actorLens.description
 const actorStageIdLens = actorLens.stageId
 const actorIntervalLens = actorLens.interval
 const actorKnowledgeLens = actorLens.knowledge
@@ -51,6 +52,7 @@ export {
   actorKnowledgeLens,
   actorLens,
   actorNameLens,
+  actorDescriptionLens,
   actorStageIdLens,
   commandHistoryLens,
   commandLens,

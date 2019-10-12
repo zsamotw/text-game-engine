@@ -4,10 +4,12 @@ import * as EO from '../../utils/effect-operations'
 import * as S from 'sanctuary'
 import * as NLP from '../../domain/nlp-functions'
 import Command from '../../../models/command'
-import State from '../../../models/state'
-import { settings } from '../../../state/initial-state'
+import Settings from '../../../models/settings'
 
-export const getUndefinedEffect = function(command: Command, state: State) {
+export const getUndefinedEffect = function(
+  command: Command,
+  settings: Settings
+) {
   const rest = CF.restOfCommand(command)
   const bestMatches = NLP.bestMatches(rest)(settings.commands)(
     settings.minStringDistance

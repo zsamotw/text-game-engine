@@ -4,7 +4,8 @@ import {
   pocket,
   actors,
   messages,
-  commandsHistory
+  commandsHistory,
+  settings
 } from '../initial-state'
 import { createStore } from 'redux'
 import * as AT from '../actions/action-types'
@@ -15,6 +16,7 @@ import Actor from '../../models/actor'
 import CommandsHistory from '../../models/commandsHistory'
 import Element from '../../models/element'
 import Stage from '../../models/stage'
+import Settings from '../../models/settings'
 const { size } = require('sanctuary')
 
 function reduceStages(stagesState: Stage[] = stages, action: any): Stage[] {
@@ -149,6 +151,15 @@ function reduceCommandsHistory(
       return commandsHistoryState
   }
 }
+function reduceSettings(
+  settingsState: Settings = settings,
+  action: any
+): Settings {
+  switch (action.type) {
+    default:
+      return settingsState
+  }
+}
 
 function reduceState(state: any = {}, action: any) {
   return {
@@ -157,7 +168,8 @@ function reduceState(state: any = {}, action: any) {
     pocket: reducePocket(state.pocket, action),
     actors: reduceActors(state.actors, action),
     messages: reduceMessages(state.messages, action),
-    commandsHistory: reduceCommandsHistory(state.commandsHistory, action)
+    commandsHistory: reduceCommandsHistory(state.commandsHistory, action),
+    settings: reduceSettings(state.settings, action)
   }
 }
 

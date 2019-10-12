@@ -1,6 +1,7 @@
 import Stage from './stage'
 import Actor from './actor'
 import Element from './element'
+import Settings from './settings'
 
 export default interface State {
   stages: Stage[]
@@ -8,4 +9,5 @@ export default interface State {
   pocket: Element[]
   actors: Actor[]
   messages: string[]
+  settings: Settings
 }
