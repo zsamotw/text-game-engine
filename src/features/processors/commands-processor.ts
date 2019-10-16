@@ -59,7 +59,7 @@ const processCommandAndGetEffect = (command: Command, state: State) => {
     S.equals(order)(CO.Undefined),
     () => {
       const { settings } = state
-      getUndefinedEffect(command, settings)
+      return getUndefinedEffect(command, settings)
     },
     otherwise => 'Error!!!'
   )

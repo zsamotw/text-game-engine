@@ -47,7 +47,8 @@ export default class AppTerminal extends React.Component<
   public render() {
     return (
       <div>
-        <span>{this.icon}</span>
+        {/* <span>{this.icon}</span> */}
+        <span>~$ </span>
         <input
           type='text'
           name='terminal'

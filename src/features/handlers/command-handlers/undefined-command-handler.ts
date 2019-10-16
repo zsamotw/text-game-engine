@@ -18,10 +18,10 @@ export const getUndefinedEffect = function(
     operation: EO.UndefinedCommand,
     message: `${
       S.equals(rest)('') ? 'Empty command' : `'${rest}'`
-    } is wrong command.${
+    } is wrong command. ${
       S.equals(bestMatches)([])
         ? ''
         : `Similar command are: ${S.joinWith(', ')(bestMatches as string[])}.`
-    } \nUse 'help' command to get help`
+    }  Use 'help' command to get help`
   } as Effect
 }

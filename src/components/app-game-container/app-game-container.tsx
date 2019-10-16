@@ -1,15 +1,18 @@
 import './app-game-container.css'
-import { addCommand,setNextCommandHistoryPosition, setPreviousCommandHistoryPosition  } from '../../state/actions/commands-history-actions'
+import {
+  addCommand,
+  setNextCommandHistoryPosition,
+  setPreviousCommandHistoryPosition
+} from '../../state/actions/commands-history-actions'
 import { appStore } from '../../state/reducers/state-reducers'
-import { Directions } from '../../models/directions';
+import { Directions } from '../../models/directions'
 import { getActions } from '../../features/processors/effect-processor'
 import { getActorsStream } from '../../features/processors/actors-processor'
 import { getEffect } from '../../features/helpers/effect-helper'
 import * as React from 'react'
 import AppMessages from '../app-messages/app-messages'
 import AppTerminal from '../app-terminal/app-terminal'
-import { ActorMoveAction } from '../../models/action';
-
+import { ActorMoveAction } from '../../models/action'
 
 export interface IAppGameContainerProps {}
 export interface IAppGameContainerState {
@@ -17,7 +20,10 @@ export interface IAppGameContainerState {
   messages: string[]
 }
 
-export default class AppGameContainer extends React.Component< IAppGameContainerProps, IAppGameContainerState > {
+export default class AppGameContainer extends React.Component<
+  IAppGameContainerProps,
+  IAppGameContainerState
+> {
   state = {
     lastCommand: '',
     messages: ['WELCOME IN GAME!!!']
@@ -31,7 +37,7 @@ export default class AppGameContainer extends React.Component< IAppGameContainer
       const messages = appStore.getState().messages
       this.setState({
         lastCommand: commands[position],
-        messages 
+        messages
       })
     })
     //subscribe to actors stream. The stream change actors placement
@@ -50,10 +56,9 @@ export default class AppGameContainer extends React.Component< IAppGameContainer
   }
 
   handleCommandFromHistory = (direction: Directions): void => {
-    if(direction === Directions.previous) {
+    if (direction === Directions.previous) {
       appStore.dispatch(setPreviousCommandHistoryPosition())
-      }
-    else if(direction === Directions.next) {
+    } else if (direction === Directions.next) {
       appStore.dispatch(setNextCommandHistoryPosition())
     }
   }
@@ -65,7 +70,9 @@ export default class AppGameContainer extends React.Component< IAppGameContainer
         <AppTerminal
           lastCommand={this.state.lastCommand}
           onCommandEnter={command => this.handleCommandEnter(command)}
-          onCommandFromHistory={(direction: Directions) => this.handleCommandFromHistory(direction)}
+          onCommandFromHistory={(direction: Directions) =>
+            this.handleCommandFromHistory(direction)
+          }
         />
       </div>
     )

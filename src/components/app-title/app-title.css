@@ -1,18 +1,39 @@
+.title-container {
+  margin: auto;
+}
+
+.info-container {
+  opacity: 0;
+  font-size: 0.8rem;
+  text-transform: none;
+  transition: all 1s;
+}
+
 .title {
-    text-decoration: darkturquoise;
-    text-transform: uppercase;
-    font-size: 150%;
-    margin: auto;
+  text-decoration: darkturquoise;
+  text-transform: uppercase;
+  font-size: 150%;
+}
+
+.title:hover .info-container {
+  opacity: 1;
+  top: 20px;
 }
 
 .animated-eye {
-    animation-name: eye;
-    animation-duration: 5s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+  margin-left: 10px;
+  animation-name: eye;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 @keyframes eye {
-    from {color: black;}
-    to {color: white;}
+  from {
+    color: black;
+  }
+
+  to {
+    color: white;
+  }
 }
