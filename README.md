@@ -3,7 +3,7 @@
 Text game engine.
 
 ## Technology Stack
-It is run in browser application. It is developed with such libraries:
+
 * Typescript
 * React
 * Redux
